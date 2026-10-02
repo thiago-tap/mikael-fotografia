@@ -1,0 +1,17 @@
+---
+import { ehSvg, icone } from '../lib/marca';
+import { rota } from '../lib/site';
+---
+
+{
+  icone ? (
+    <>
+      <link rel="icon" type="image/png" sizes="32x32" href={rota('/icones/favicon-32.png')} />
+      {ehSvg(icone) && <link rel="icon" type="image/svg+xml" href={icone.src} />}
+      <link rel="apple-touch-icon" sizes="180x180" href={rota('/icones/apple-touch-icon.png')} />
+    </>
+  ) : (
+    <link rel="icon" type="image/svg+xml" href={rota('/favicon.svg')} />
+  )
+}
+<link rel="manifest" href={rota('/site.webmanifest')} />

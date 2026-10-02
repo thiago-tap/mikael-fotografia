@@ -3,10 +3,13 @@ import '../styles/global.css';
 import { render } from 'astro:content';
 import FotoPdf from '../components/FotoPdf.astro';
 import Icone from '../components/Icone.astro';
+import Icones from '../components/Icones.astro';
+import Marca from '../components/Marca.astro';
 import RodapePdf from '../components/RodapePdf.astro';
 import { diferenciais, extras, pacotes, perguntas, sobre } from '../lib/conteudo';
 import type { Vaga } from '../lib/fotos';
-import { formatarPreco, linkWhatsApp, rota, site } from '../lib/site';
+import { logoClaro } from '../lib/marca';
+import { formatarPreco, linkWhatsApp, site } from '../lib/site';
 
 const [listaPacotes, listaExtras, listaDiferenciais, faqResumido, paginaSobre] = await Promise.all([
   pacotes(),
@@ -48,7 +51,7 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
     <meta name="viewport" content="width=1080" />
     <meta name="robots" content="noindex, nofollow" />
     <title>Proposta de fotografia para casamento · {site.nome}</title>
-    <link rel="icon" type="image/svg+xml" href={rota('/favicon.svg')} />
+    <Icones />
   </head>
   <body class="proposta-pdf">
     <section class="folha bg-tinta text-papel" id="capa">
@@ -56,8 +59,8 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
         <FotoPdf vagas={['pdf-capa', 'proposta-hero']} alt={`Casamento fotografado por ${site.nome}`} largura={1080} escura class="h-full w-full" />
       </div>
       <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(0_0_0/0.35),transparent_30%,transparent_65%,rgb(0_0_0/0.55))]"></div>
-      <div class="absolute inset-x-0 top-[25%] text-center">
-        <p class="font-serif text-[64px] font-light tracking-[0.2em] uppercase">{site.nome}</p>
+      <div class="absolute inset-x-0 top-[25%] flex justify-center px-[120px] text-center">
+        {logoClaro ? <Marca tamanho="capa" escuro /> : <p class="font-serif text-[64px] font-light tracking-[0.2em] uppercase">{site.nome}</p>}
       </div>
       <div class="absolute inset-x-0 bottom-[150px] px-[120px] text-center">
         <p class="font-sans text-[18px] tracking-[0.4em] uppercase opacity-80">Proposta de fotografia para casamento</p>
@@ -210,6 +213,13 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
         </div>
 
         <div class="mt-auto bg-tinta px-[120px] pt-[80px] pb-[130px] text-center text-papel">
+          {
+            logoClaro && (
+              <div class="mb-12 flex justify-center">
+                <Marca tamanho="contato" escuro />
+              </div>
+            )
+          }
           <p class="font-sans text-[16px] tracking-[0.36em] uppercase opacity-70">Vamos conversar?</p>
           <p class="mt-5 font-serif text-[52px] leading-tight font-light italic">Reserve a data do seu casamento</p>
           <a href={linkWhatsApp(mensagemProposta)} class="mt-10 inline-flex items-center gap-4 border border-papel px-12 py-6 font-sans text-[18px] tracking-[0.28em] uppercase">

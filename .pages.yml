@@ -29,6 +29,12 @@ media:
     output: /src/content/blog
     rename: safe
     extensions: [jpg, jpeg, png, webp]
+  - name: marca
+    label: Logo e ícone
+    input: src/assets/marca
+    output: /src/assets/marca
+    rename: safe
+    extensions: [png, svg, webp]
 
 components:
   vaga:
@@ -43,6 +49,27 @@ content:
     path: src/content/configuracoes.json
     format: json
     fields:
+      - name: logo
+        label: Logo
+        type: image
+        description: "PNG com fundo transparente ou SVG. Horizontal, mínimo 1200 px de largura (ideal 2000 × 600 px). Versão escura, para fundo claro. Aparece no cabeçalho e no rodapé. Sem logo, o site mostra o nome em texto."
+        options:
+          media: marca
+          extensions: [png, svg, webp]
+      - name: logoClaro
+        label: Logo para fundo escuro (opcional)
+        type: image
+        description: "Mesma logo em branco/clara, PNG transparente ou SVG, mínimo 1200 px de largura. Usada na capa e no contato do PDF da proposta. Sem ela, esses lugares mostram o nome em texto claro."
+        options:
+          media: marca
+          extensions: [png, svg, webp]
+      - name: icone
+        label: Ícone
+        type: image
+        description: "Quadrado, PNG transparente ou SVG, mínimo 512 × 512 px (ideal 1024 × 1024). É o símbolo usado na aba do navegador e no atalho do celular. Deixe uma pequena margem ao redor do desenho."
+        options:
+          media: marca
+          extensions: [png, svg, webp]
       - name: whatsapp
         label: WhatsApp
         type: object

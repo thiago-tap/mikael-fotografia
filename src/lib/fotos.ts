@@ -11,10 +11,6 @@ const imagensDoRepositorio = import.meta.glob<ModuloImagem>(
   { eager: true },
 );
 
-const marca = import.meta.glob<ModuloImagem>('/src/assets/marca/logo.{png,svg,webp}', {
-  eager: true,
-});
-
 export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3' | '9:16';
 
 /** Fotos fixas do site. O arquivo vai em src/assets/fotos com o nome indicado ou é escolhido em configuracoes.json → fotos. */
@@ -71,10 +67,6 @@ export function fotoDoSite(nome: string): ImageMetadata | undefined {
     ([caminho]) => caminho.startsWith('/src/assets/fotos/') && nomeSemExtensao(caminho) === nome,
   );
   return encontrada?.[1].default;
-}
-
-export function logo(): ImageMetadata | undefined {
-  return Object.values(marca)[0]?.default;
 }
 
 export type FotoPortfolio = {

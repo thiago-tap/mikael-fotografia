@@ -4,11 +4,13 @@ import fonteTitulo from '@fontsource/cormorant-garamond/files/cormorant-garamond
 import Cabecalho from '../components/Cabecalho.astro';
 import Consentimento from '../components/Consentimento.astro';
 import DadosEstruturados from '../components/DadosEstruturados.astro';
+import Icones from '../components/Icones.astro';
 import Lightbox from '../components/Lightbox.astro';
 import Revelar from '../components/Revelar.astro';
 import Rodape from '../components/Rodape.astro';
 import WhatsAppFlutuante from '../components/WhatsAppFlutuante.astro';
 import { faixaDePrecos, pacotes } from '../lib/conteudo';
+import { enderecoDoLogo } from '../lib/marca';
 import { formatarPreco, regiao, rota, site } from '../lib/site';
 
 type Trilha = { nome: string; caminho: string }[];
@@ -27,6 +29,7 @@ const canonica = new URL(Astro.url.pathname, Astro.site);
 const inicio = new URL(rota('/'), Astro.site);
 const imagemOg = new URL(imagemSocial ?? rota('/og-padrao.png'), Astro.site);
 const [menorPreco, maiorPreco] = faixaDePrecos(await pacotes());
+const logoDoSite = await enderecoDoLogo();
 
 const negocio = {
   '@type': 'ProfessionalService',
@@ -35,6 +38,7 @@ const negocio = {
   description: site.descricao,
   url: inicio.href,
   image: new URL(rota('/og-padrao.png'), Astro.site).href,
+  ...(logoDoSite && { logo: new URL(logoDoSite, Astro.site).href }),
   telephone: `+${site.whatsapp.numero}`,
   priceRange: `${formatarPreco(menorPreco)} – ${formatarPreco(maiorPreco)}`,
   sameAs: [site.instagram.url],
@@ -70,7 +74,7 @@ const migalhas = trilhaFinal.length > 0 && {
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonica} />
     <link rel="preload" href={fonteTitulo} as="font" type="font/woff2" crossorigin />
-    <link rel="icon" type="image/svg+xml" href={rota('/favicon.svg')} />
+    <Icones />
     <link rel="sitemap" href={rota('/sitemap-index.xml')} />
     <meta name="theme-color" content="#faf8f5" />
 

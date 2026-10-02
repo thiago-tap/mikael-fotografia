@@ -1,5 +1,5 @@
 import { appendFileSync, existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { extname, join, relative, resolve } from 'node:path';
+import { extname, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
 
 const pastasPadrao = [
@@ -8,7 +8,9 @@ const pastasPadrao = [
   'src/content/portfolio',
   'src/content/depoimentos',
   'src/content/blog',
+  'src/assets/marca',
 ];
+const pastasSemReducao = ['src/assets/marca'];
 const ladoMaximo = 3000;
 const tamanhoMaximo = 3 * 1024 * 1024;
 const economiaMinima = 0.05;
@@ -41,12 +43,17 @@ const nomeExibido = (caminho) => relative(raiz, caminho).replaceAll('\\', '/');
 const dimensoesOrientadas = (meta) =>
   (meta.orientation ?? 1) >= 5 ? { largura: meta.height, altura: meta.width } : { largura: meta.width, altura: meta.height };
 
-const codificar = (entrada, extensao) => {
-  const pipeline = sharp(entrada, { failOn: 'none' })
-    .rotate()
-    .resize({ width: ladoMaximo, height: ladoMaximo, fit: 'inside', withoutEnlargement: true });
-  if (extensao === '.png') return pipeline.png({ palette: true, quality: qualidadePng, compressionLevel: 9, effort: 10 }).toBuffer();
-  if (extensao === '.webp') return pipeline.webp({ quality: qualidadeWebp, effort: 6 }).toBuffer();
+const semReducao = (arquivo) => pastasSemReducao.some((pasta) => arquivo.startsWith(resolve(raiz, pasta) + sep));
+
+const codificar = (entrada, extensao, preservar) => {
+  const pipeline = sharp(entrada, { failOn: 'none' }).rotate();
+  if (!preservar) pipeline.resize({ width: ladoMaximo, height: ladoMaximo, fit: 'inside', withoutEnlargement: true });
+  if (extensao === '.png') {
+    return preservar
+      ? pipeline.png({ compressionLevel: 9, effort: 10 }).toBuffer()
+      : pipeline.png({ palette: true, quality: qualidadePng, compressionLevel: 9, effort: 10 }).toBuffer();
+  }
+  if (extensao === '.webp') return pipeline.webp(preservar ? { lossless: true, effort: 6 } : { quality: qualidadeWebp, effort: 6 }).toBuffer();
   return pipeline
     .jpeg({ quality: qualidadeJpeg, mozjpeg: true, progressive: true, chromaSubsampling: '4:2:0' })
     .toBuffer();
@@ -85,7 +92,7 @@ if (modoVerificar) {
     const { largura, altura } = dimensoesOrientadas(meta);
     const tamanho = statSync(arquivo).size;
     const motivos = [
-      ...(Math.max(largura, altura) > ladoMaximo ? [`${largura}×${altura} px`] : []),
+      ...(Math.max(largura, altura) > ladoMaximo && !semReducao(arquivo) ? [`${largura}×${altura} px`] : []),
       ...(tamanho > tamanhoMaximo ? [formatarTamanho(tamanho)] : []),
     ];
     if (motivos.length) problemas.push([nomeExibido(arquivo), motivos.join(', ')]);
@@ -109,8 +116,9 @@ for (const arquivo of imagens) {
   const meta = await sharp(original).metadata();
   if ((meta.pages ?? 1) > 1) continue;
   const { largura, altura } = dimensoesOrientadas(meta);
-  const redimensionar = Math.max(largura, altura) > ladoMaximo;
-  const otimizado = await codificar(original, extensao);
+  const preservar = semReducao(arquivo);
+  const redimensionar = !preservar && Math.max(largura, altura) > ladoMaximo;
+  const otimizado = await codificar(original, extensao, preservar);
   const economia = 1 - otimizado.length / original.length;
   const gravar = redimensionar || economia > economiaMinima;
   const depois = gravar ? otimizado.length : original.length;

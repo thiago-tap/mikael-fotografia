@@ -1,43 +1,43 @@
 ---
 import { Image } from 'astro:assets';
-import { logo } from '../lib/fotos';
+import { ehSvg, logo, logoClaro } from '../lib/marca';
 import { site } from '../lib/site';
 
+const tamanhos = {
+  normal: { altura: 48, imagem: 'h-9 md:h-12', nome: 'text-xl md:text-2xl', complemento: 'mt-1.5 text-[0.55rem]' },
+  grande: { altura: 80, imagem: 'h-20', nome: 'text-4xl md:text-5xl', complemento: 'mt-3 text-xs' },
+  capa: { altura: 150, imagem: 'h-[150px]', nome: 'text-[64px]', complemento: 'mt-5 text-[18px]' },
+  contato: { altura: 90, imagem: 'h-[90px]', nome: 'text-[44px]', complemento: 'mt-4 text-[14px]' },
+};
+
 interface Props {
-  tamanho?: 'normal' | 'grande';
+  tamanho?: keyof typeof tamanhos;
+  escuro?: boolean;
 }
 
-const { tamanho = 'normal' } = Astro.props;
-const imagem = logo();
+const { tamanho = 'normal', escuro = false } = Astro.props;
+const imagem = escuro ? logoClaro : logo;
+const medida = tamanhos[tamanho];
+const classesImagem = ['w-auto max-w-full object-contain', medida.imagem];
 ---
 
 {
   imagem ? (
-    <Image
-      src={imagem}
-      alt={site.nome}
-      widths={[240, 480]}
-      sizes="240px"
-      class:list={[tamanho === 'grande' ? 'h-20 w-auto' : 'h-12 w-auto md:h-14']}
-    />
+    ehSvg(imagem) ? (
+      <img
+        src={imagem.src}
+        alt={site.nome}
+        width={Math.round((imagem.width / imagem.height) * medida.altura)}
+        height={medida.altura}
+        class:list={classesImagem}
+      />
+    ) : (
+      <Image src={imagem} alt={site.nome} height={medida.altura} densities={[1, 2]} loading="eager" class:list={classesImagem} />
+    )
   ) : (
     <span class="flex flex-col items-center leading-none">
-      <span
-        class:list={[
-          'font-serif font-light tracking-[0.34em] text-tinta',
-          tamanho === 'grande' ? 'text-4xl md:text-5xl' : 'text-xl md:text-2xl',
-        ]}
-      >
-        MIKAEL
-      </span>
-      <span
-        class:list={[
-          'font-sans tracking-[0.5em] text-taupe',
-          tamanho === 'grande' ? 'mt-3 text-xs' : 'mt-1.5 text-[0.55rem]',
-        ]}
-      >
-        FOTOGRAFIA
-      </span>
+      <span class:list={['font-serif font-light tracking-[0.34em]', escuro ? 'text-papel' : 'text-tinta', medida.nome]}>MIKAEL</span>
+      <span class:list={['font-sans tracking-[0.5em]', escuro ? 'text-papel/70' : 'text-taupe', medida.complemento]}>FOTOGRAFIA</span>
     </span>
   )
 }

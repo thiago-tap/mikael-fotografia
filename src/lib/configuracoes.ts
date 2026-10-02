@@ -14,6 +14,9 @@ const textoOpcional = z
   .transform((valor) => valor?.trim() ?? '');
 
 const esquemaConfiguracoes = z.object({
+  logo: textoOpcional,
+  logoClaro: textoOpcional,
+  icone: textoOpcional,
   whatsapp: z.object({
     numero: z.string().transform((valor) => valor.replace(/\D/g, '')),
     exibicao: z.string(),

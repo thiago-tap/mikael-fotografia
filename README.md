@@ -167,7 +167,15 @@ As fotos do topo (`home-hero` e `proposta-hero`) ocupam a tela inteira e são co
 ]
 ```
 
-**Marca:** logo horizontal em `src/assets/marca/logo.png` (ou `.svg`/`.webp`), fundo transparente, largura mínima de 1200 px. Sem o arquivo, o cabeçalho usa o nome em texto. O ícone da aba fica em `public/favicon.svg`.
+**Logo e ícone:** enviados em **Configurações** no painel (só PNG, SVG ou WebP; ficam em `src/assets/marca/`).
+
+| Campo | Arquivo | Onde aparece | Sem o arquivo |
+| --- | --- | --- | --- |
+| **Logo** | PNG com fundo transparente ou SVG, horizontal, mínimo 1200 px de largura (ideal 2000 × 600 px). Versão escura, para fundo claro | Cabeçalho (36 px de altura no celular, 48 px no computador), rodapé e dados estruturados do Google (`logo`) | Nome "MIKAEL / FOTOGRAFIA" em texto |
+| **Logo para fundo escuro** (opcional) | Mesma logo em branco/clara, PNG transparente ou SVG, mínimo 1200 px de largura | Capa e bloco de contato do PDF da proposta | Capa com o nome em texto claro; contato sem logo |
+| **Ícone** | Quadrado, PNG transparente ou SVG, mínimo 512 × 512 px (ideal 1024 × 1024), com uma pequena margem ao redor do desenho | Aba do navegador, atalho do celular (`apple-touch-icon`) e `site.webmanifest` | `public/favicon.svg` (monograma MV) |
+
+No build, o ícone vira `icones/favicon-32.png`, `icones/apple-touch-icon.png` (180 px, com fundo papel) e `icones/icone-192.png`/`icone-512.png` do manifesto; se for SVG, ele também é usado direto na aba. Sem escolha no painel, o site procura em `src/assets/marca/` os arquivos `logo`, `logo-claro` e `icone` (`.png`, `.svg` ou `.webp`). A otimização automática não reduz as imagens dessa pasta: só recomprime PNG e WebP sem perda, e não mexe em SVG. A imagem de compartilhamento (`public/og-padrao.png`) continua sendo gerada à parte, com `npm run og`.
 
 ## Fotos: tamanho e otimização
 
