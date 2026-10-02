@@ -1,0 +1,207 @@
+<dialog
+  class="lightbox m-0 h-dvh max-h-none w-screen max-w-none bg-transparent p-0 text-papel backdrop:bg-tinta"
+  aria-label="Foto ampliada"
+  data-lightbox-dialogo
+>
+  <div class="flex h-full flex-col items-center justify-center px-3 pt-16 pb-5 md:px-24 md:pb-6" data-lightbox-palco>
+    <img class="h-[calc(100svh-9rem)] w-full object-contain select-none" alt="" draggable="false" data-lightbox-foto />
+    <div class="mt-4 flex w-full max-w-4xl items-baseline justify-between gap-6 px-1 font-sans text-xs tracking-wide text-papel/75">
+      <p class="line-clamp-2" data-lightbox-legenda></p>
+      <p class="shrink-0 tracking-[0.2em] tabular-nums" data-lightbox-contador></p>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    class="absolute top-2 right-2 flex h-12 w-12 items-center justify-center text-papel/80 outline-papel/60 transition-colors hover:text-papel md:top-4 md:right-4"
+    aria-label="Fechar"
+    data-lightbox-fechar
+  >
+    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="absolute top-1/2 left-1 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-papel/80 outline-papel/60 transition-colors hover:text-papel md:left-6 md:bg-transparent"
+    aria-label="Foto anterior"
+    data-lightbox-anterior
+  >
+    <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+      <path d="M15 5l-7 7 7 7" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    class="absolute top-1/2 right-1 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-tinta/40 text-papel/80 outline-papel/60 transition-colors hover:text-papel md:right-6 md:bg-transparent"
+    aria-label="Próxima foto"
+    data-lightbox-proxima
+  >
+    <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+</dialog>
+
+<style>
+  .lightbox[open],
+  .lightbox[open]::backdrop {
+    animation: lightbox-surgir 250ms ease-out;
+  }
+
+  .lightbox[data-fechando],
+  .lightbox[data-fechando]::backdrop {
+    animation: lightbox-sumir 180ms ease-in forwards;
+  }
+
+  @keyframes lightbox-surgir {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes lightbox-sumir {
+    to {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  function iniciar(dialogo: HTMLDialogElement) {
+    const foto = dialogo.querySelector<HTMLImageElement>('[data-lightbox-foto]')!;
+    const palco = dialogo.querySelector<HTMLElement>('[data-lightbox-palco]')!;
+    const legenda = dialogo.querySelector<HTMLElement>('[data-lightbox-legenda]')!;
+    const contador = dialogo.querySelector<HTMLElement>('[data-lightbox-contador]')!;
+    const setas = [
+      dialogo.querySelector<HTMLButtonElement>('[data-lightbox-anterior]')!,
+      dialogo.querySelector<HTMLButtonElement>('[data-lightbox-proxima]')!,
+    ];
+    const raiz = document.documentElement;
+
+    let grupo: HTMLAnchorElement[] = [];
+    let indice = 0;
+    let origem: HTMLAnchorElement | null = null;
+    let toqueInicial: { x: number; y: number } | null = null;
+
+    function mostrar(novo: number) {
+      indice = (novo + grupo.length) % grupo.length;
+      const link = grupo[indice];
+      const miniatura = link.querySelector('img');
+      const ampliada = link.href;
+
+      foto.alt = miniatura?.alt ?? '';
+      legenda.textContent = link.dataset.legenda || miniatura?.alt || '';
+      contador.textContent = grupo.length > 1 ? `${indice + 1} / ${grupo.length}` : '';
+
+      const carregando = new Image();
+      carregando.src = ampliada;
+      if (carregando.complete || !miniatura?.currentSrc) {
+        foto.src = ampliada;
+      } else {
+        foto.src = miniatura.currentSrc;
+        carregando.addEventListener('load', () => {
+          if (grupo[indice] === link) foto.src = ampliada;
+        });
+      }
+
+      if (grupo.length > 1) {
+        new Image().src = grupo[(indice + 1) % grupo.length].href;
+        new Image().src = grupo[(indice - 1 + grupo.length) % grupo.length].href;
+      }
+    }
+
+    function abrir(link: HTMLAnchorElement) {
+      grupo = [...document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${link.dataset.lightbox}"]`)];
+      origem = link;
+      setas.forEach((seta) => (seta.hidden = grupo.length < 2));
+      mostrar(grupo.indexOf(link));
+      raiz.style.overflow = 'hidden';
+      raiz.style.scrollbarGutter = 'stable';
+      dialogo.showModal();
+    }
+
+    function fechar() {
+      if (!dialogo.open || 'fechando' in dialogo.dataset) return;
+      dialogo.dataset.fechando = '';
+      const concluir = () => {
+        if (!('fechando' in dialogo.dataset)) return;
+        delete dialogo.dataset.fechando;
+        dialogo.close();
+      };
+      dialogo.addEventListener('animationend', concluir, { once: true });
+      setTimeout(concluir, 300);
+    }
+
+    function navegar(passo: number) {
+      if (grupo.length > 1) mostrar(indice + passo);
+    }
+
+    function dentroDaFoto(evento: MouseEvent): boolean {
+      const caixa = foto.getBoundingClientRect();
+      const razao = foto.naturalWidth / foto.naturalHeight || 1;
+      const largura = Math.min(caixa.width, caixa.height * razao);
+      const altura = largura / razao;
+      const esquerda = caixa.left + (caixa.width - largura) / 2;
+      const topo = caixa.top + (caixa.height - altura) / 2;
+      return (
+        evento.clientX >= esquerda &&
+        evento.clientX <= esquerda + largura &&
+        evento.clientY >= topo &&
+        evento.clientY <= topo + altura
+      );
+    }
+
+    document.addEventListener('click', (evento) => {
+      const link = (evento.target as Element).closest<HTMLAnchorElement>('a[data-lightbox]');
+      if (!link || evento.button !== 0 || evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;
+      evento.preventDefault();
+      abrir(link);
+    });
+
+    dialogo.addEventListener('click', (evento) => {
+      const alvo = evento.target as Element;
+      if (alvo.closest('[data-lightbox-fechar]')) fechar();
+      else if (alvo.closest('[data-lightbox-anterior]')) navegar(-1);
+      else if (alvo.closest('[data-lightbox-proxima]')) navegar(1);
+      else if (alvo === dialogo || alvo === palco || (alvo === foto && !dentroDaFoto(evento))) fechar();
+    });
+
+    dialogo.addEventListener('keydown', (evento) => {
+      if (evento.key === 'ArrowLeft') navegar(-1);
+      else if (evento.key === 'ArrowRight') navegar(1);
+    });
+
+    dialogo.addEventListener('cancel', (evento) => {
+      evento.preventDefault();
+      fechar();
+    });
+
+    dialogo.addEventListener('close', () => {
+      raiz.style.overflow = '';
+      raiz.style.scrollbarGutter = '';
+      origem?.focus();
+    });
+
+    dialogo.addEventListener(
+      'touchstart',
+      (evento) => {
+        const toque = evento.touches[0];
+        toqueInicial = evento.touches.length === 1 ? { x: toque.clientX, y: toque.clientY } : null;
+      },
+      { passive: true },
+    );
+
+    dialogo.addEventListener('touchend', (evento) => {
+      if (!toqueInicial) return;
+      const toque = evento.changedTouches[0];
+      const dx = toque.clientX - toqueInicial.x;
+      const dy = toque.clientY - toqueInicial.y;
+      toqueInicial = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) navegar(dx < 0 ? 1 : -1);
+    });
+  }
+
+  const dialogo = document.querySelector<HTMLDialogElement>('[data-lightbox-dialogo]');
+  if (dialogo) iniciar(dialogo);
+</script>

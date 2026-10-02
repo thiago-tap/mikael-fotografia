@@ -1,4 +1,5 @@
 import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
 import legendas from '../content/portfolio/legendas.json';
 
 type ModuloImagem = { default: ImageMetadata };
@@ -36,6 +37,12 @@ export type Vaga = keyof typeof vagas;
 export function larguras(foto: ImageMetadata, maxima = 2400): number[] {
   const padrao = [480, 800, 1200, 1600].filter((largura) => largura < Math.min(foto.width, maxima));
   return [...padrao, Math.min(foto.width, maxima)];
+}
+
+/** Versão grande usada no lightbox e no link da foto quando o JavaScript não roda. */
+export async function versaoAmpliada(foto: ImageMetadata): Promise<string> {
+  const ampliada = await getImage({ src: foto, width: Math.min(foto.width, 2400), format: 'webp', quality: 85 });
+  return ampliada.src;
 }
 
 function nomeSemExtensao(caminho: string): string {

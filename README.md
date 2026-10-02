@@ -71,7 +71,9 @@ Fotos fixas vão em `src/assets/fotos/`, com exatamente estes nomes (extensão `
 | `pacote-promessa` | Pacote Promessa | 3:2 horizontal | 2400 × 1600 px |
 | `pacote-eternidade` | Pacote Eternidade | 3:2 horizontal | 2400 × 1600 px |
 
-As fotos do topo são cortadas nas laterais e em cima/embaixo conforme a tela. Mantenha o casal no centro.
+As fotos do topo (`home-hero` e `proposta-hero`) usam o mesmo arquivo em todas as telas, cortado a partir do centro: no celular aparecem em formato vertical (4:5), mostrando só a faixa central, cerca de metade da largura; no tablet ficam em 2:1 e no computador em 12:5, cortando um pouco em cima e embaixo. Escolha fotos com o casal no centro e com folga ao redor. A `faixa` fica 3:2 no celular e 12:5 a partir do tablet.
+
+**Ampliar fotos:** no portfólio e na capa dos posts, clicar na foto abre a versão grande (até 2400 px) em tela cheia, com setas, teclado e deslizar no celular.
 
 **Portfólio:** coloque as fotos em `src/content/portfolio/` (24 a 40 para começar, misturando 3:2 de 2400 × 1600 e 4:5 de 1600 × 2000). A ordem segue o nome do arquivo (`01.jpg`, `02.jpg`…). Texto alternativo e legenda são opcionais, em `src/content/portfolio/legendas.json`:
 

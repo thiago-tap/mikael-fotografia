@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Cabecalho from '../components/Cabecalho.astro';
+import Lightbox from '../components/Lightbox.astro';
 import Rodape from '../components/Rodape.astro';
 import WhatsAppFlutuante from '../components/WhatsAppFlutuante.astro';
 import { rota, site } from '../lib/site';
@@ -51,5 +52,6 @@ const imagemOg = imagemSocial ? new URL(imagemSocial, Astro.site) : undefined;
     </main>
     <Rodape />
     <WhatsAppFlutuante />
+    <Lightbox />
   </body>
 </html>
