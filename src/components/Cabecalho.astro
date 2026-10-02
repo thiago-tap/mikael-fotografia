@@ -4,6 +4,7 @@ import { menu, rota } from '../lib/site';
 
 const atual = Astro.url.pathname;
 const ativo = (caminho: string) => atual.startsWith(rota(caminho));
+const menuDesktop = [...menu, { rotulo: 'Proposta', caminho: '/proposta/' }];
 ---
 
 <header class="relative z-30 bg-papel">
@@ -13,15 +14,15 @@ const ativo = (caminho: string) => atual.startsWith(rota(caminho));
     </a>
 
     <nav aria-label="Principal" class="hidden lg:block">
-      <ul class="flex items-center gap-10">
+      <ul class="flex items-center gap-6 xl:gap-10">
         {
-          menu.map((item) => (
+          menuDesktop.map((item) => (
             <li>
               <a
                 href={rota(item.caminho)}
                 aria-current={ativo(item.caminho) ? 'page' : undefined}
                 class:list={[
-                  'border-b pb-1 font-sans text-[0.7rem] tracking-[0.3em] uppercase transition-colors',
+                  'border-b pb-1 font-sans text-[0.7rem] tracking-[0.22em] whitespace-nowrap uppercase transition-colors xl:tracking-[0.3em]',
                   ativo(item.caminho)
                     ? 'border-tinta text-tinta'
                     : 'border-transparent text-grafite hover:border-linha hover:text-tinta',

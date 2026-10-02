@@ -17,8 +17,8 @@ const rotulo = 'sobrelinha text-grafite';
       <div>
         <TituloSecao sobrelinha="Contato" titulo="Vamos conversar?" nivel="h1" alinhamento="esquerda" />
         <p class="texto-corrido mt-8">
-          Preencha os dados ao lado e a mensagem já abre pronta no WhatsApp. Se preferir, chame direto pelo número ou
-          pelo Instagram.
+          Preencha o formulário e a mensagem já abre pronta no WhatsApp. Se preferir, chame direto pelo número ou pelo
+          Instagram.
         </p>
         <ul class="mt-10 space-y-5">
           <li>
@@ -41,7 +41,7 @@ const rotulo = 'sobrelinha text-grafite';
           <label for="nome" class={rotulo}>Nomes do casal</label>
           <input id="nome" name="nome" type="text" required autocomplete="name" class={campo} placeholder="Ana e Pedro" />
         </div>
-        <div class="grid gap-8 sm:grid-cols-2">
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
           <div>
             <label for="data" class={rotulo}>Data do casamento</label>
             <input id="data" name="data" type="date" class={campo} />
