@@ -1,0 +1,117 @@
+---
+import { configuracoes } from '../lib/configuracoes';
+import { rota } from '../lib/site';
+
+const { gaId, gtmId } = configuracoes.analytics;
+const ativo = gaId.length > 0 || gtmId.length > 0;
+---
+
+{
+  ativo && (
+    <div
+      class="fixed inset-x-3 bottom-3 z-50 max-w-md bg-tinta p-5 text-papel shadow-xl shadow-tinta/30 sm:right-auto md:bottom-8 md:left-8 md:p-7"
+      role="dialog"
+      aria-labelledby="consentimento-titulo"
+      aria-describedby="consentimento-texto"
+      data-consentimento
+      data-ga={gaId}
+      data-gtm={gtmId}
+      data-esconde-flutuante
+      hidden
+    >
+      <p id="consentimento-titulo" class="sobrelinha text-papel/80">Privacidade</p>
+      <p id="consentimento-texto" class="mt-3 font-sans text-pequeno leading-relaxed text-papel/90">
+        Usamos cookies de análise do Google para entender como o site é visitado. Eles só são ativados se você aceitar.{' '}
+        <a href={rota('/privacidade/')} class="underline underline-offset-4 hover:text-papel">
+          Política de privacidade
+        </a>
+      </p>
+      <div class="mt-5 grid grid-cols-2 gap-3">
+        <button type="button" class="botao-claro px-4" data-consentir="aceito">
+          Aceitar
+        </button>
+        <button type="button" class="botao-contorno-claro px-4" data-consentir="recusado">
+          Recusar
+        </button>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  import { consentimentoSalvo, rastrear, salvarConsentimento, type Consentimento } from '../lib/rastreamento';
+
+  const aviso = document.querySelector<HTMLElement>('[data-consentimento]');
+
+  if (aviso) {
+    const gaId = aviso.dataset.ga ?? '';
+    const gtmId = aviso.dataset.gtm ?? '';
+    let carregado = false;
+
+    window.dataLayer = window.dataLayer ?? [];
+    window.gtag = function gtag() {
+      window.dataLayer!.push(arguments);
+    };
+    window.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied',
+      wait_for_update: 500,
+    });
+
+    function adicionarScript(src: string) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = src;
+      document.head.append(script);
+    }
+
+    function carregar() {
+      if (carregado) return;
+      carregado = true;
+      window.gtag!('consent', 'update', { analytics_storage: 'granted' });
+      if (gtmId) {
+        window.dataLayer!.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+        adicionarScript(`https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmId)}`);
+      }
+      if (gaId) {
+        window.gtag!('js', new Date());
+        window.gtag!('config', gaId);
+        adicionarScript(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`);
+      }
+    }
+
+    function decidir(valor: Consentimento) {
+      salvarConsentimento(valor);
+      aviso!.hidden = true;
+      if (valor === 'aceito') carregar();
+      else if (carregado) window.gtag!('consent', 'update', { analytics_storage: 'denied' });
+    }
+
+    aviso.querySelectorAll<HTMLButtonElement>('[data-consentir]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        const valor = botao.dataset.consentir;
+        if (valor === 'aceito' || valor === 'recusado') decidir(valor);
+      });
+    });
+
+    document.querySelectorAll('[data-reabrir-consentimento]').forEach((botao) => {
+      botao.addEventListener('click', () => {
+        salvarConsentimento(null);
+        aviso.hidden = false;
+        aviso.querySelector<HTMLButtonElement>('[data-consentir]')?.focus();
+      });
+    });
+
+    const salvo = consentimentoSalvo();
+    if (salvo === 'aceito') carregar();
+    else if (salvo === null) aviso.hidden = false;
+
+    document.addEventListener('click', (evento) => {
+      const alvo = (evento.target as Element | null)?.closest<HTMLElement>('[data-evento]');
+      if (!alvo?.dataset.evento) return;
+      rastrear(alvo.dataset.evento, alvo.dataset.origem ? { origem: alvo.dataset.origem } : {});
+    });
+  }
+</script>

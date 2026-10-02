@@ -1,0 +1,63 @@
+---
+import { Picture } from 'astro:assets';
+import Icone from './Icone.astro';
+import { postsDoInstagram } from '../lib/configuracoes';
+import { formatos, imagemDoRepositorio, larguras } from '../lib/fotos';
+import { site } from '../lib/site';
+
+const itens = postsDoInstagram.flatMap((post) => {
+  const imagem = imagemDoRepositorio(post.imagem);
+  return imagem ? [{ ...post, imagem }] : [];
+});
+const altPadrao = `Foto publicada no Instagram @${site.instagram.usuario}`;
+---
+
+{
+  itens.length > 0 && (
+    <section class="border-t border-linha px-6 py-24 md:py-32">
+      <div class="mx-auto max-w-6xl">
+        <div class="text-center" data-revelar>
+          <p class="sobrelinha">Acompanhe no Instagram</p>
+          <h2 class="mt-5 font-serif text-titulo-2 font-light text-tinta">
+            <a
+              href={site.instagram.url}
+              target="_blank"
+              rel="noopener"
+              class="sublinhado-animado"
+              data-evento="clique_instagram"
+              data-origem="grade-instagram"
+            >
+              @{site.instagram.usuario}
+            </a>
+          </h2>
+        </div>
+        <ul class="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4">
+          {itens.map((post) => (
+            <li data-revelar>
+              <a
+                href={post.link || site.instagram.url}
+                target="_blank"
+                rel="noopener"
+                class="group relative block overflow-hidden bg-areia"
+                data-evento="clique_instagram"
+                data-origem="grade-instagram"
+              >
+                <Picture
+                  src={post.imagem}
+                  formats={formatos}
+                  alt={post.alt || altPadrao}
+                  widths={larguras(post.imagem, 720)}
+                  sizes="(min-width: 1152px) 368px, (min-width: 640px) 33vw, 50vw"
+                  class="zoom-suave aspect-square w-full object-cover"
+                />
+                <span class="absolute inset-0 flex items-center justify-center bg-tinta/0 text-papel opacity-0 transition duration-300 group-hover:bg-tinta/35 group-hover:opacity-100 group-focus-visible:bg-tinta/35 group-focus-visible:opacity-100">
+                  <Icone nome="instagram" class="h-6 w-6" />
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

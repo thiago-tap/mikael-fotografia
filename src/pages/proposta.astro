@@ -120,6 +120,18 @@ const catalogo = {
       <div class="mt-14 md:px-6">
         <ComparativoPacotes pacotes={listaPacotes} />
       </div>
+      <p class="mt-12 px-6 text-center">
+        <a
+          href={rota('/proposta-mikael-fotografia.pdf')}
+          class="botao"
+          download
+          data-evento="download_pdf"
+          data-origem="proposta"
+        >
+          <Icone nome="download" class="h-4 w-4" />
+          Baixar proposta em PDF
+        </a>
+      </p>
     </div>
   </section>
 

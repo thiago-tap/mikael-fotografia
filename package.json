@@ -8,6 +8,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "pdf": "node scripts/gerar-pdf.mjs",
+    "og": "node scripts/gerar-og.mjs",
     "astro": "astro"
   },
   "dependencies": {

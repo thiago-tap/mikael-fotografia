@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { configuracoes } from '../lib/configuracoes';
+import { linkWhatsApp, rota, site } from '../lib/site';
+
+const { gaId, gtmId } = configuracoes.analytics;
+const comAnalytics = gaId.length > 0 || gtmId.length > 0;
+---
+
+<Base
+  titulo="Política de privacidade"
+  descricao={`Como o site da ${site.nome} trata seus dados pessoais, de acordo com a LGPD.`}
+  trilha={[{ nome: 'Privacidade', caminho: rota('/privacidade/') }]}
+>
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto max-w-2xl">
+      <TituloSecao sobrelinha="LGPD" titulo="Política de" enfase="privacidade" nivel="h1" />
+
+      <div class="texto-corrido mt-14">
+        <p>
+          Esta página explica como o site da {site.nome}, do fotógrafo {site.fotografo}, trata os seus dados pessoais,
+          conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+        </p>
+
+        <h2>Formulário de contato e WhatsApp</h2>
+        <p>
+          O formulário de contato não grava nada no site. Ao enviar, ele apenas abre o WhatsApp com a mensagem já escrita,
+          e a conversa acontece no próprio WhatsApp. Usamos o nome, a data, o local e as demais informações que você enviar
+          somente para responder sobre a disponibilidade e preparar o orçamento do seu casamento.
+        </p>
+
+        <h2>Cookies e estatísticas de visita</h2>
+        {
+          comAnalytics ? (
+            <>
+              <p>
+                Com a sua permissão, usamos ferramentas do Google (Google Analytics e/ou Google Tag Manager) para saber
+                quantas pessoas visitam o site, quais páginas são vistas e quais botões são clicados, como o de WhatsApp.
+                Esses dados são estatísticos e não servem para identificar você.
+              </p>
+              <p>
+                Nada disso é ativado antes da sua escolha. Se você recusar, o site continua funcionando normalmente. A
+                escolha fica salva só no seu navegador, e você pode mudar de ideia quando quiser.
+              </p>
+              <p>
+                <button type="button" class="botao" data-reabrir-consentimento>
+                  Alterar minha escolha de cookies
+                </button>
+              </p>
+            </>
+          ) : (
+            <p>No momento, o site não usa cookies de estatística nem de publicidade.</p>
+          )
+        }
+
+        <h2>Seus direitos</h2>
+        <p>
+          Você pode pedir a qualquer momento para ver, corrigir ou apagar os dados que nos enviou. Basta falar com a gente
+          pelo{' '}
+          <a href={linkWhatsApp('Olá, Mikael! Quero falar sobre os meus dados pessoais.')} target="_blank" rel="noopener">
+            WhatsApp {site.whatsapp.exibicao}
+          </a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,492 @@
+media:
+  - name: fotos
+    label: Fotos do site
+    input: src/assets/fotos
+    output: /src/assets/fotos
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: portfolio
+    label: Portfólio
+    input: src/content/portfolio
+    output: /src/content/portfolio
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: instagram
+    label: Instagram
+    input: src/assets/instagram
+    output: /src/assets/instagram
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: depoimentos
+    label: Depoimentos
+    input: src/content/depoimentos
+    output: /src/content/depoimentos
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+  - name: blog
+    label: Blog
+    input: src/content/blog
+    output: /src/content/blog
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
+
+components:
+  vaga:
+    type: image
+    options:
+      media: fotos
+
+content:
+  - name: configuracoes
+    label: Configurações
+    type: file
+    path: src/content/configuracoes.json
+    format: json
+    fields:
+      - name: whatsapp
+        label: WhatsApp
+        type: object
+        fields:
+          - name: numero
+            label: Número com DDI e DDD
+            type: string
+            required: true
+            description: "Só números, com 55 e o DDD. Ex.: 5561982042153"
+            pattern:
+              regex: "^55\\d{10,11}$"
+              message: "Use só números, começando com 55. Ex.: 5561982042153"
+          - name: exibicao
+            label: Número como aparece no site
+            type: string
+            required: true
+            description: "Ex.: (61) 98204-2153"
+          - name: mensagem
+            label: Mensagem padrão
+            type: text
+            required: true
+            description: "Texto que já vem escrito quando a pessoa clica no WhatsApp do rodapé."
+      - name: instagram
+        label: Instagram
+        type: object
+        fields:
+          - name: usuario
+            label: Usuário (sem @)
+            type: string
+            required: true
+          - name: url
+            label: Endereço do perfil
+            type: string
+            required: true
+            description: "Ex.: https://www.instagram.com/mikaelvt_fotografia/"
+      - name: analytics
+        label: Google Analytics / Tag Manager
+        type: object
+        fields:
+          - name: gaId
+            label: ID do Google Analytics 4
+            type: string
+            description: "Ex.: G-XXXXXXXXXX. Deixe vazio para desligar. Com um ID preenchido, o site mostra o aviso de cookies."
+            pattern:
+              regex: "^(G-[A-Z0-9]+)?$"
+              message: "O ID começa com G- (ex.: G-AB12CD34EF)."
+          - name: gtmId
+            label: ID do Google Tag Manager
+            type: string
+            description: "Ex.: GTM-XXXXXXX. Use só se o Analytics for configurado dentro do Tag Manager; nesse caso deixe o campo acima vazio."
+            pattern:
+              regex: "^(GTM-[A-Z0-9]+)?$"
+              message: "O ID começa com GTM- (ex.: GTM-AB12CD3)."
+      - name: fotos
+        label: Fotos fixas do site
+        type: object
+        description: "Escolha a foto de cada espaço. Sem escolha, o site procura em Fotos do site um arquivo com o nome do espaço (ex.: home-hero.jpg)."
+        fields:
+          - name: home-hero
+            label: Topo da página inicial (3:2 horizontal, 3000 × 2000 px)
+            component: vaga
+          - name: proposta-hero
+            label: Topo da proposta (3:2 horizontal, 3000 × 2000 px)
+            component: vaga
+          - name: faixa
+            label: Faixa larga da proposta (3:2 horizontal, 3000 × 2000 px)
+            component: vaga
+          - name: sobre-retrato
+            label: Retrato da página Sobre (4:5 vertical, 1600 × 2000 px)
+            component: vaga
+          - name: pacote-micro-wedding
+            label: Pacote Micro Wedding (3:2 horizontal, 2400 × 1600 px)
+            component: vaga
+          - name: pacote-mini-wedding
+            label: Pacote Mini Wedding (3:2 horizontal, 2400 × 1600 px)
+            component: vaga
+          - name: pacote-promessa
+            label: Pacote Promessa (3:2 horizontal, 2400 × 1600 px)
+            component: vaga
+          - name: pacote-eternidade
+            label: Pacote Eternidade (3:2 horizontal, 2400 × 1600 px)
+            component: vaga
+          - name: pdf-capa
+            label: Capa do PDF (9:16 vertical, 1800 × 3200 px)
+            component: vaga
+          - name: pdf-extras
+            label: Página de extras do PDF (3:2 horizontal, 2400 × 1600 px)
+            component: vaga
+          - name: pdf-diferenciais
+            label: Página "Por que Mikael Fotografia?" do PDF (2:3 vertical, 1600 × 2400 px)
+            component: vaga
+
+  - name: agenda
+    label: Faixa de agenda
+    type: file
+    path: src/content/agenda.json
+    format: json
+    fields:
+      - name: ativo
+        label: Mostrar a faixa
+        type: boolean
+      - name: texto
+        label: Texto da faixa
+        type: string
+        description: "Ex.: Últimas datas de 2026 disponíveis. Agenda de 2027 aberta."
+
+  - name: proposta
+    label: Proposta
+    type: group
+    items:
+      - name: pacotes
+        label: Pacotes
+        type: file
+        path: src/content/pacotes.json
+        format: json
+        list: true
+        fields:
+          - name: id
+            label: Identificador
+            type: string
+            required: true
+            description: "Sem espaços nem acentos (ex.: promessa). Não altere depois de criado."
+            pattern: "^[a-z0-9-]+$"
+          - name: nome
+            label: Nome
+            type: string
+            required: true
+          - name: ordem
+            label: Ordem
+            type: number
+            required: true
+          - name: preco
+            label: Preço (R$)
+            type: number
+            required: true
+          - name: cobertura
+            label: Cobertura
+            type: string
+            required: true
+            description: "Ex.: 6 horas de cobertura"
+          - name: chamada
+            label: Frase de chamada
+            type: text
+          - name: itens
+            label: O que está incluso
+            type: string
+            list: true
+            required: true
+          - name: idealPara
+            label: Ideal para
+            type: text
+          - name: pagamento
+            label: Forma de pagamento
+            type: text
+          - name: destaque
+            label: Destacar como "o mais escolhido"
+            type: boolean
+          - name: comparativo
+            label: Tabela de comparação
+            type: object
+            description: "Deixe vazio o que não se aplica; a tabela mostra \"—\"."
+            fields:
+              - name: fotografos
+                label: Fotógrafos
+                type: string
+              - name: fotos
+                label: Fotos editadas
+                type: string
+              - name: preWedding
+                label: Pré-wedding
+                type: string
+              - name: makingOf
+                label: Making of da noiva
+                type: string
+              - name: galeria
+                label: Galeria online
+                type: string
+              - name: previas
+                label: Prévias oficiais
+                type: string
+              - name: poses
+                label: Direcionamento de poses
+                type: string
+
+      - name: extras
+        label: Serviços extras
+        type: file
+        path: src/content/extras.json
+        format: json
+        list: true
+        fields:
+          - name: id
+            label: Identificador
+            type: string
+            required: true
+            description: "Sem espaços nem acentos (ex.: pre-wedding)."
+            pattern: "^[a-z0-9-]+$"
+          - name: nome
+            label: Nome
+            type: string
+            required: true
+          - name: preco
+            label: Preço (R$)
+            type: number
+            required: true
+          - name: aPartirDe
+            label: Mostrar "a partir de"
+            type: boolean
+          - name: unidade
+            label: Unidade
+            type: string
+            description: "Ex.: por hora"
+          - name: descricao
+            label: Descrição
+            type: text
+          - name: itens
+            label: Itens
+            type: string
+            list: true
+          - name: ordem
+            label: Ordem
+            type: number
+            required: true
+
+      - name: diferenciais
+        label: Por que Mikael Fotografia?
+        type: file
+        path: src/content/diferenciais.json
+        format: json
+        list: true
+        fields:
+          - name: id
+            label: Identificador
+            type: string
+            required: true
+            pattern: "^[a-z0-9-]+$"
+          - name: titulo
+            label: Título
+            type: string
+            required: true
+          - name: texto
+            label: Texto
+            type: text
+            required: true
+          - name: ordem
+            label: Ordem
+            type: number
+            required: true
+
+      - name: comoFunciona
+        label: Como funciona
+        type: file
+        path: src/content/comoFunciona.json
+        format: json
+        list: true
+        fields:
+          - name: id
+            label: Identificador
+            type: string
+            required: true
+            pattern: "^[a-z0-9-]+$"
+          - name: ordem
+            label: Ordem
+            type: number
+            required: true
+          - name: titulo
+            label: Título
+            type: string
+            required: true
+          - name: texto
+            label: Texto
+            type: text
+            required: true
+          - name: detalhe
+            label: Detalhe curto
+            type: string
+            description: "Ex.: Em até 15 dias"
+
+  - name: faq
+    label: Perguntas frequentes
+    type: collection
+    path: src/content/faq
+    filename: "{pergunta}.md"
+    view:
+      primary: pergunta
+      fields: [pergunta, ordem, naProposta]
+      sort: ordem
+      order: asc
+    fields:
+      - name: pergunta
+        label: Pergunta
+        type: string
+        required: true
+      - name: ordem
+        label: Ordem
+        type: number
+        required: true
+      - name: naProposta
+        label: Mostrar também na proposta
+        type: boolean
+      - name: body
+        label: Resposta
+        type: text
+        required: true
+
+  - name: depoimentos
+    label: Depoimentos
+    type: collection
+    path: src/content/depoimentos
+    filename: "{casal}.md"
+    view:
+      primary: casal
+      fields: [casal, local, ordem]
+      sort: ordem
+      order: asc
+    fields:
+      - name: casal
+        label: Casal
+        type: string
+        required: true
+        description: "Ex.: Ana e Pedro"
+      - name: local
+        label: Local
+        type: string
+      - name: data
+        label: Data do casamento
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: foto
+        label: Foto do casal
+        type: image
+        options:
+          media: depoimentos
+      - name: ordem
+        label: Ordem
+        type: number
+      - name: body
+        label: Depoimento
+        type: text
+        required: true
+
+  - name: blog
+    label: Blog
+    type: collection
+    path: src/content/blog
+    filename: "{titulo}.md"
+    view:
+      primary: titulo
+      fields: [titulo, data]
+      sort: data
+      order: desc
+    fields:
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: descricao
+        label: Resumo
+        type: text
+        required: true
+      - name: data
+        label: Data
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - name: capa
+        label: Foto de capa
+        type: image
+        options:
+          media: blog
+      - name: capaAlt
+        label: Descrição da capa (acessibilidade)
+        type: string
+      - name: body
+        label: Texto
+        type: rich-text
+        options:
+          format: markdown
+          media: blog
+
+  - name: sobre
+    label: Página Sobre
+    type: file
+    path: src/content/sobre.md
+    format: yaml-frontmatter
+    fields:
+      - name: titulo
+        label: Título
+        type: string
+        required: true
+      - name: subtitulo
+        label: Subtítulo
+        type: string
+      - name: resumo
+        label: Resumo (aparece na proposta)
+        type: text
+        required: true
+      - name: body
+        label: Texto
+        type: rich-text
+        options:
+          format: markdown
+          media: false
+
+  - name: portfolio
+    label: Portfólio (ordem e legendas)
+    type: file
+    path: src/content/portfolio/legendas.json
+    format: json
+    list: true
+    fields:
+      - name: imagem
+        label: Foto
+        type: image
+        required: true
+        options:
+          media: portfolio
+      - name: alt
+        label: Descrição da foto (acessibilidade)
+        type: string
+      - name: legenda
+        label: Legenda
+        type: string
+
+  - name: instagram
+    label: Instagram (até 6 fotos)
+    type: file
+    path: src/content/instagram.json
+    format: json
+    list: true
+    fields:
+      - name: imagem
+        label: Foto
+        type: image
+        required: true
+        options:
+          media: instagram
+      - name: link
+        label: Link do post
+        type: string
+        description: "Ex.: https://www.instagram.com/p/XXXX/. Vazio leva ao perfil."
+      - name: alt
+        label: Descrição da foto (acessibilidade)
+        type: string

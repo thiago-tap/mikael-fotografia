@@ -1,6 +1,6 @@
 ---
 interface Props {
-  nome: 'whatsapp' | 'instagram' | 'seta';
+  nome: 'whatsapp' | 'instagram' | 'seta' | 'download';
   class?: string;
 }
 
@@ -27,6 +27,13 @@ const { nome, class: classe = 'h-5 w-5' } = Astro.props;
   nome === 'seta' && (
     <svg class={classe} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
       <path d="M4 12h16M14 6l6 6-6 6" />
+    </svg>
+  )
+}
+{
+  nome === 'download' && (
+    <svg class={classe} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+      <path d="M12 3v12M7 10l5 5 5-5M4 20h16" />
     </svg>
   )
 }

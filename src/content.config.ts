@@ -2,6 +2,11 @@ import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+const textoOpcional = z
+  .string()
+  .nullish()
+  .transform((valor) => valor ?? undefined);
+
 const pacotes = defineCollection({
   loader: file('src/content/pacotes.json'),
   schema: z.object({
@@ -9,22 +14,22 @@ const pacotes = defineCollection({
     ordem: z.number(),
     preco: z.number(),
     cobertura: z.string(),
-    chamada: z.string().optional(),
+    chamada: textoOpcional,
     itens: z.array(z.string()).min(1),
-    idealPara: z.string().optional(),
-    pagamento: z.string().optional(),
+    idealPara: textoOpcional,
+    pagamento: textoOpcional,
     destaque: z.boolean().default(false),
     comparativo: z
       .object({
-        fotografos: z.string().optional(),
-        fotos: z.string().optional(),
-        preWedding: z.string().optional(),
-        makingOf: z.string().optional(),
-        galeria: z.string().optional(),
-        previas: z.string().optional(),
-        poses: z.string().optional(),
+        fotografos: textoOpcional,
+        fotos: textoOpcional,
+        preWedding: textoOpcional,
+        makingOf: textoOpcional,
+        galeria: textoOpcional,
+        previas: textoOpcional,
+        poses: textoOpcional,
       })
-      .default({}),
+      .prefault({}),
   }),
 });
 
@@ -33,7 +38,7 @@ const comoFunciona = defineCollection({
   schema: z.object({
     titulo: z.string(),
     texto: z.string(),
-    detalhe: z.string().optional(),
+    detalhe: textoOpcional,
     ordem: z.number(),
   }),
 });
@@ -44,8 +49,8 @@ const extras = defineCollection({
     nome: z.string(),
     preco: z.number(),
     aPartirDe: z.boolean().default(false),
-    unidade: z.string().optional(),
-    descricao: z.string().optional(),
+    unidade: textoOpcional,
+    descricao: textoOpcional,
     itens: z.array(z.string()).default([]),
     ordem: z.number(),
   }),
@@ -64,7 +69,7 @@ const paginas = defineCollection({
   loader: glob({ pattern: 'sobre.md', base: './src/content' }),
   schema: z.object({
     titulo: z.string(),
-    subtitulo: z.string().optional(),
+    subtitulo: textoOpcional,
     resumo: z.string(),
   }),
 });
@@ -80,26 +85,24 @@ const faq = defineCollection({
 
 const depoimentos = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/depoimentos' }),
-  schema: ({ image }) =>
-    z.object({
-      casal: z.string(),
-      local: z.string().optional(),
-      data: z.coerce.date().optional(),
-      foto: image().optional(),
-      ordem: z.number().default(0),
-    }),
+  schema: z.object({
+    casal: z.string(),
+    local: textoOpcional,
+    data: z.preprocess((valor) => (valor === '' || valor === null ? undefined : valor), z.coerce.date().optional()),
+    foto: textoOpcional,
+    ordem: z.preprocess((valor) => valor ?? undefined, z.number().default(0)),
+  }),
 });
 
 const blog = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/blog' }),
-  schema: ({ image }) =>
-    z.object({
-      titulo: z.string(),
-      descricao: z.string(),
-      data: z.coerce.date(),
-      capa: image().optional(),
-      capaAlt: z.string().optional(),
-    }),
+  schema: z.object({
+    titulo: z.string(),
+    descricao: z.string(),
+    data: z.coerce.date(),
+    capa: textoOpcional,
+    capaAlt: textoOpcional,
+  }),
 });
 
 export const collections = { pacotes, comoFunciona, extras, diferenciais, paginas, faq, depoimentos, blog };

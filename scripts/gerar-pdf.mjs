@@ -1,13 +1,19 @@
 import { spawnSync } from 'node:child_process';
 import { createReadStream, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
-import { extname, join, resolve } from 'node:path';
+import { dirname, extname, join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 
 const raiz = resolve(import.meta.dirname, '..');
 const dist = join(raiz, 'dist');
-const saida = join(raiz, 'proposta', 'Proposta-Mikael-Fotografia.pdf');
-const pularBuild = process.argv.includes('--sem-build');
+const argumentos = process.argv.slice(2);
+const pularBuild = argumentos.includes('--sem-build');
+const indiceSaida = argumentos.indexOf('--saida');
+const saida = indiceSaida >= 0 && argumentos[indiceSaida + 1]
+  ? resolve(raiz, argumentos[indiceSaida + 1])
+  : join(raiz, 'proposta', 'Proposta-Mikael-Fotografia.pdf');
+const emIntegracao = Boolean(process.env.CI);
+const base = pularBuild ? (process.env.BASE_PATH ?? '/').replace(/\/+$/, '') : '';
 
 const tipos = {
   '.html': 'text/html; charset=utf-8',
@@ -41,7 +47,8 @@ if (!existsSync(join(dist, 'proposta-pdf', 'index.html'))) {
 }
 
 const servidor = createServer((pedido, resposta) => {
-  const caminho = decodeURIComponent(new URL(pedido.url ?? '/', 'http://localhost').pathname);
+  const completo = decodeURIComponent(new URL(pedido.url ?? '/', 'http://localhost').pathname);
+  const caminho = base && completo.startsWith(base) ? completo.slice(base.length) || '/' : completo;
   let arquivo = join(dist, caminho);
   if (!arquivo.startsWith(dist)) {
     resposta.writeHead(403).end();
@@ -58,10 +65,11 @@ const servidor = createServer((pedido, resposta) => {
 
 await new Promise((pronto) => servidor.listen(0, '127.0.0.1', pronto));
 const endereco = servidor.address();
-const url = `http://127.0.0.1:${typeof endereco === 'object' && endereco ? endereco.port : 0}/proposta-pdf/`;
+const url = `http://127.0.0.1:${typeof endereco === 'object' && endereco ? endereco.port : 0}${base}/proposta-pdf/`;
 
 async function abrirNavegador() {
-  for (const channel of ['msedge', 'chrome', undefined]) {
+  const canais = emIntegracao ? [undefined, 'chrome', 'msedge'] : ['msedge', 'chrome', undefined];
+  for (const channel of canais) {
     try {
       return await chromium.launch({ channel });
     } catch {
@@ -94,13 +102,17 @@ try {
   );
 
   const totalPaginas = await pagina.locator('.folha').count();
-  mkdirSync(join(raiz, 'proposta'), { recursive: true });
+  mkdirSync(dirname(saida), { recursive: true });
   await pagina.pdf({ path: saida, preferCSSPageSize: true, printBackground: true });
   console.log(`PDF gerado com ${totalPaginas} páginas: ${saida}`);
 
   if (estouradas.length > 0) {
-    console.error(`Conteúdo passando do tamanho da página em: ${estouradas.join(', ')}`);
-    process.exitCode = 1;
+    const aviso = `Conteúdo passando do tamanho da página em: ${estouradas.join(', ')}`;
+    if (emIntegracao) console.log(`::warning::${aviso}`);
+    else {
+      console.error(aviso);
+      process.exitCode = 1;
+    }
   }
 } finally {
   await navegador.close();

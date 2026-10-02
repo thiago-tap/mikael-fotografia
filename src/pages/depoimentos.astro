@@ -6,9 +6,14 @@ import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import EstadoVazio from '../components/EstadoVazio.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { depoimentos } from '../lib/conteudo';
+import { imagemDoRepositorio } from '../lib/fotos';
 
 const lista = await Promise.all(
-  (await depoimentos()).map(async (depoimento) => ({ depoimento, Texto: (await render(depoimento)).Content })),
+  (await depoimentos()).map(async (depoimento) => ({
+    depoimento,
+    foto: imagemDoRepositorio(depoimento.data.foto, 'src/content/depoimentos'),
+    Texto: (await render(depoimento)).Content,
+  })),
 );
 ---
 
@@ -20,18 +25,18 @@ const lista = await Promise.all(
       {
         lista.length > 0 ? (
           <ul class="space-y-24">
-            {lista.map(({ depoimento, Texto }) => (
+            {lista.map(({ depoimento, foto, Texto }) => (
               <li class="grid items-center gap-10 md:grid-cols-[1fr_2fr]" data-revelar>
-                {depoimento.data.foto && (
+                {foto && (
                   <Image
-                    src={depoimento.data.foto}
+                    src={foto}
                     alt={`${depoimento.data.casal} no dia do casamento`}
                     widths={[480, 800]}
                     sizes="(min-width: 768px) 33vw, 100vw"
                     class="aspect-[4/5] w-full object-cover"
                   />
                 )}
-                <blockquote class:list={[!depoimento.data.foto && 'md:col-span-2 text-center']}>
+                <blockquote class:list={[!foto && 'md:col-span-2 text-center']}>
                   <div class="font-serif text-titulo-4 font-light text-grafite italic">
                     <Texto />
                   </div>

@@ -1,3 +1,5 @@
+import { configuracoes } from './configuracoes';
+
 export const site = {
   nome: 'Mikael Fotografia',
   fotografo: 'Mikael Vitor',
@@ -7,16 +9,9 @@ export const site = {
   url: 'https://thiago-tap.github.io/mikael-fotografia/',
   descricao:
     'Fotógrafo de casamento em Brasília/DF. Mikael Vitor e equipe fotografam Micro Wedding, Mini Wedding e casamentos completos, com fotos tratadas em alta resolução e atendimento próximo.',
-  whatsapp: {
-    numero: '5561982042153',
-    exibicao: '(61) 98204-2153',
-    mensagem: 'Olá, Mikael! Vi seu site e quero saber mais sobre a fotografia do meu casamento.',
-  },
-  instagram: {
-    usuario: 'mikaelvt_fotografia',
-    url: 'https://www.instagram.com/mikaelvt_fotografia/',
-  },
-} as const;
+  whatsapp: configuracoes.whatsapp,
+  instagram: configuracoes.instagram,
+};
 
 export const regiao = `${site.cidade}/${site.uf}`;
 
@@ -38,6 +33,7 @@ const nomesDasPaginas: Record<string, string> = {
   '/contato/': 'a página de contato',
   '/depoimentos/': 'os depoimentos',
   '/blog/': 'o blog',
+  '/privacidade/': 'a política de privacidade',
 };
 
 export function nomeDaPagina(caminhoCompleto: string): string | undefined {

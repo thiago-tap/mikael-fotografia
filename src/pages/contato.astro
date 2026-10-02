@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Icone from '../components/Icone.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { pacotes } from '../lib/conteudo';
-import { linkWhatsApp, mensagemDisponibilidade, regiao, site } from '../lib/site';
+import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
 const listaPacotes = await pacotes();
 const campo =
@@ -52,6 +52,16 @@ const rotulo = 'sobrelinha text-grafite';
             </a>
           </li>
         </ul>
+        <a
+          href={rota('/proposta-mikael-fotografia.pdf')}
+          class="botao mt-12"
+          download
+          data-evento="download_pdf"
+          data-origem="contato"
+        >
+          <Icone nome="download" class="h-4 w-4" />
+          Baixar proposta em PDF
+        </a>
       </div>
 
       <form class="space-y-8" data-form-whatsapp data-numero={site.whatsapp.numero} data-esconde-flutuante novalidate>
@@ -121,6 +131,8 @@ const rotulo = 'sobrelinha text-grafite';
 </Base>
 
 <script>
+  import { rastrear } from '../lib/rastreamento';
+
   const formulario = document.querySelector<HTMLFormElement>('[data-form-whatsapp]');
   const erro = document.querySelector<HTMLElement>('[data-erro]');
   const erroData = document.querySelector<HTMLElement>('[data-erro-data]');
@@ -185,6 +197,8 @@ const rotulo = 'sobrelinha text-grafite';
       ...(valor('mensagem') ? ['', valor('mensagem')] : []),
     ].join('\n');
     const url = `https://wa.me/${formulario.dataset.numero}?text=${encodeURIComponent(texto)}`;
+
+    rastrear('envio_formulario', { origem: 'contato', pacote: valor('pacote') || 'nao_informado' });
 
     const janela = window.open(url, '_blank');
     if (janela) janela.opener = null;

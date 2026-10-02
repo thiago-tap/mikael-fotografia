@@ -4,9 +4,10 @@ import Base from '../../layouts/Base.astro';
 import EstadoVazio from '../../components/EstadoVazio.astro';
 import TituloSecao from '../../components/TituloSecao.astro';
 import { formatarData, posts } from '../../lib/conteudo';
+import { imagemDoRepositorio } from '../../lib/fotos';
 import { rota } from '../../lib/site';
 
-const lista = await posts();
+const lista = (await posts()).map((post) => ({ post, capa: imagemDoRepositorio(post.data.capa, 'src/content/blog') }));
 ---
 
 <Base titulo="Blog" descricao="Casamentos completos, bastidores e dicas para o grande dia.">
@@ -18,13 +19,13 @@ const lista = await posts();
         {
           lista.length > 0 ? (
             <ul class="grid gap-x-10 gap-y-16 md:grid-cols-2">
-              {lista.map((post) => (
+              {lista.map(({ post, capa }) => (
                 <li>
                   <a href={rota(`/blog/${post.id}/`)} class="group block" data-revelar>
-                    {post.data.capa && (
+                    {capa && (
                       <div class="overflow-hidden">
                         <Image
-                          src={post.data.capa}
+                          src={capa}
                           alt={post.data.capaAlt ?? post.data.titulo}
                           widths={[480, 800, 1200]}
                           sizes="(min-width: 768px) 50vw, 100vw"
