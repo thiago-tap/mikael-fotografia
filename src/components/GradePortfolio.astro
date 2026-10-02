@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import Foto from './Foto.astro';
-import { fotosPortfolio, larguras, versaoAmpliada } from '../lib/fotos';
+import { formatos, fotosPortfolio, larguras, versaoAmpliada } from '../lib/fotos';
 
 interface Props {
   limite?: number;
@@ -22,23 +22,24 @@ const proporcoesVazias = ['4:5', '3:2', '4:5', '3:2', '4:5', '3:2', '3:2', '4:5'
   fotos.length > 0 ? (
     <div class="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
       {fotos.map((foto) => (
-        <figure class="break-inside-avoid">
+        <figure class="break-inside-avoid" data-revelar>
           <a
             href={foto.ampliada}
-            class="block cursor-zoom-in overflow-hidden bg-areia"
+            class="group block cursor-zoom-in overflow-hidden bg-areia"
             data-lightbox="portfolio"
             data-legenda={foto.legenda}
           >
-            <Image
+            <Picture
               src={foto.imagem}
               alt={foto.alt}
               widths={larguras(foto.imagem, 1200)}
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              class="h-auto w-full transition-transform duration-700 hover:scale-[1.02]"
+              formats={formatos}
+              class="zoom-suave h-auto w-full"
             />
           </a>
           {foto.legenda && (
-            <figcaption class="mt-2 font-sans text-xs tracking-wide text-grafite">{foto.legenda}</figcaption>
+            <figcaption class="mt-2 font-serif text-lg text-grafite italic">{foto.legenda}</figcaption>
           )}
         </figure>
       ))}

@@ -1,14 +1,62 @@
 ---
 import Icone from './Icone.astro';
-import { linkWhatsApp } from '../lib/site';
+import { linkWhatsApp, mensagemDisponibilidade, nomeDaPagina } from '../lib/site';
+
+const link = linkWhatsApp(mensagemDisponibilidade(nomeDaPagina(Astro.url.pathname)));
 ---
 
 <a
-  href={linkWhatsApp()}
+  href={link}
   target="_blank"
   rel="noopener"
-  class="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-tinta text-papel shadow-lg shadow-tinta/20 transition-transform duration-300 hover:scale-105 md:right-8 md:bottom-8"
-  aria-label="Conversar com o Mikael no WhatsApp"
+  class="flutuante fixed right-4 bottom-4 z-40 flex h-12 items-center justify-center gap-2.5 rounded-full bg-tinta px-5 font-sans text-rotulo tracking-[0.22em] text-papel uppercase shadow-lg shadow-tinta/25 transition-[opacity,translate,background-color] duration-500 hover:bg-grafite max-[359px]:w-12 max-[359px]:px-0 md:right-8 md:bottom-8"
+  aria-label="Consultar a disponibilidade da minha data pelo WhatsApp"
+  data-flutuante
+  data-evento="clique_whatsapp"
+  data-origem="flutuante"
 >
-  <Icone nome="whatsapp" class="h-6 w-6" />
+  <Icone nome="whatsapp" class="h-5 w-5 shrink-0" />
+  <span class="max-[359px]:hidden" aria-hidden="true">Consultar data</span>
 </a>
+
+<style>
+  :global(.js) .flutuante:not([data-visivel]) {
+    opacity: 0;
+    translate: 0 1rem;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const botao = document.querySelector<HTMLElement>('[data-flutuante]');
+
+  if (botao) {
+    const alvo = document.querySelector('[data-hero]') ?? document.querySelector('main h1');
+    const cobrindo = new Set<Element>();
+    let passou = !alvo;
+
+    function atualizar() {
+      const visivel = passou && cobrindo.size === 0;
+      botao!.toggleAttribute('data-visivel', visivel);
+      botao!.inert = !visivel;
+    }
+
+    if (alvo) {
+      new IntersectionObserver(([entrada]) => {
+        passou = !entrada.isIntersecting && entrada.boundingClientRect.bottom <= 0;
+        atualizar();
+      }).observe(alvo);
+    }
+
+    const observadorConteudo = new IntersectionObserver((entradas) => {
+      for (const entrada of entradas) {
+        if (entrada.isIntersecting) cobrindo.add(entrada.target);
+        else cobrindo.delete(entrada.target);
+      }
+      atualizar();
+    });
+    document.querySelectorAll('[data-esconde-flutuante]').forEach((elemento) => observadorConteudo.observe(elemento));
+
+    atualizar();
+  }
+</script>

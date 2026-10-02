@@ -3,32 +3,50 @@ import Base from '../layouts/Base.astro';
 import Icone from '../components/Icone.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { pacotes } from '../lib/conteudo';
-import { linkWhatsApp, site } from '../lib/site';
+import { linkWhatsApp, mensagemDisponibilidade, regiao, site } from '../lib/site';
 
 const listaPacotes = await pacotes();
 const campo =
-  'mt-2 w-full border-0 border-b border-linha bg-transparent px-0 py-3 font-sans text-tinta placeholder:text-taupe/70 focus:border-tinta focus:ring-0 focus:outline-none';
+  'mt-2 w-full border-0 border-b border-linha bg-transparent px-0 py-3 font-sans text-corpo text-tinta placeholder:text-taupe/70 focus:border-tinta focus:ring-0 focus:outline-none';
 const rotulo = 'sobrelinha text-grafite';
 ---
 
-<Base titulo="Contato" descricao="Fale com o Mikael pelo WhatsApp ou Instagram para reservar a data do seu casamento.">
+<Base
+  titulo={`Contato · Fotógrafo de casamento em ${regiao}`}
+  descricao={`Fale com o Mikael pelo WhatsApp ou Instagram e consulte a disponibilidade da data do seu casamento em ${regiao}.`}
+  trilha={[{ nome: 'Contato', caminho: Astro.url.pathname }]}
+>
   <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
     <div class="mx-auto grid max-w-6xl gap-16 md:grid-cols-2 md:gap-24">
       <div>
-        <TituloSecao sobrelinha="Contato" titulo="Vamos conversar?" nivel="h1" alinhamento="esquerda" />
+        <TituloSecao sobrelinha="Contato" titulo="Vamos" enfase="conversar?" nivel="h1" alinhamento="esquerda" />
         <p class="texto-corrido mt-8">
           Preencha o formulário e a mensagem já abre pronta no WhatsApp. Se preferir, chame direto pelo número ou pelo
           Instagram.
         </p>
         <ul class="mt-10 space-y-5">
           <li>
-            <a href={linkWhatsApp()} target="_blank" rel="noopener" class="flex items-center gap-4 font-sans text-lg text-tinta hover:text-taupe">
+            <a
+              href={linkWhatsApp(mensagemDisponibilidade('a página de contato'))}
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-4 font-sans text-lg text-tinta transition-colors hover:text-taupe"
+              data-evento="clique_whatsapp"
+              data-origem="contato"
+            >
               <Icone nome="whatsapp" class="h-5 w-5" />
               {site.whatsapp.exibicao}
             </a>
           </li>
           <li>
-            <a href={site.instagram.url} target="_blank" rel="noopener" class="flex items-center gap-4 font-sans text-lg text-tinta hover:text-taupe">
+            <a
+              href={site.instagram.url}
+              target="_blank"
+              rel="noopener"
+              class="flex items-center gap-4 font-sans text-lg text-tinta transition-colors hover:text-taupe"
+              data-evento="clique_instagram"
+              data-origem="contato"
+            >
               <Icone nome="instagram" class="h-5 w-5" />
               @{site.instagram.usuario}
             </a>
@@ -36,7 +54,7 @@ const rotulo = 'sobrelinha text-grafite';
         </ul>
       </div>
 
-      <form class="space-y-8" data-form-whatsapp data-numero={site.whatsapp.numero} novalidate>
+      <form class="space-y-8" data-form-whatsapp data-numero={site.whatsapp.numero} data-esconde-flutuante novalidate>
         <div>
           <label for="nome" class={rotulo}>Nomes do casal</label>
           <input id="nome" name="nome" type="text" required autocomplete="name" class={campo} placeholder="Ana e Pedro" />
@@ -58,20 +76,35 @@ const rotulo = 'sobrelinha text-grafite';
             <p class="mt-2 hidden font-sans text-sm text-red-800" role="alert" data-erro-data>Informe a data no formato dd/mm/aaaa.</p>
           </div>
           <div>
+            <label for="convidados" class={rotulo}>Número de convidados</label>
+            <input
+              id="convidados"
+              name="convidados"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="5"
+              class={campo}
+              placeholder="Ex.: 120"
+            />
+          </div>
+        </div>
+        <div class="grid gap-8 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
+          <div>
             <label for="cidade" class={rotulo}>Cidade</label>
             <input id="cidade" name="cidade" type="text" class={campo} placeholder="Onde vai ser" />
+          </div>
+          <div>
+            <label for="pacote" class={rotulo}>Pacote de interesse</label>
+            <select id="pacote" name="pacote" class={campo}>
+              <option value="">Ainda não sei</option>
+              {listaPacotes.map((pacote) => <option value={pacote.data.nome}>{pacote.data.nome}</option>)}
+            </select>
           </div>
         </div>
         <div>
           <label for="local" class={rotulo}>Local da cerimônia e da festa</label>
           <input id="local" name="local" type="text" class={campo} />
-        </div>
-        <div>
-          <label for="pacote" class={rotulo}>Pacote de interesse</label>
-          <select id="pacote" name="pacote" class={campo}>
-            <option value="">Ainda não sei</option>
-            {listaPacotes.map((pacote) => <option value={pacote.data.nome}>{pacote.data.nome}</option>)}
-          </select>
         </div>
         <div>
           <label for="mensagem" class={rotulo}>Conte um pouco sobre vocês</label>
@@ -92,6 +125,7 @@ const rotulo = 'sobrelinha text-grafite';
   const erro = document.querySelector<HTMLElement>('[data-erro]');
   const erroData = document.querySelector<HTMLElement>('[data-erro-data]');
   const campoData = document.querySelector<HTMLInputElement>('#data');
+  const campoConvidados = document.querySelector<HTMLInputElement>('#convidados');
 
   function mascararData(valor: string): string {
     const digitos = valor.replace(/\D/g, '').slice(0, 8);
@@ -109,6 +143,11 @@ const rotulo = 'sobrelinha text-grafite';
   campoData?.addEventListener('input', () => {
     const mascarado = mascararData(campoData.value);
     if (mascarado !== campoData.value) campoData.value = mascarado;
+  });
+
+  campoConvidados?.addEventListener('input', () => {
+    const digitos = campoConvidados.value.replace(/\D/g, '');
+    if (digitos !== campoConvidados.value) campoConvidados.value = digitos;
   });
 
   formulario?.addEventListener('submit', (evento) => {
@@ -133,18 +172,22 @@ const rotulo = 'sobrelinha text-grafite';
     const detalhes: [string, string][] = [
       ['Casal', valor('nome')],
       ['Data', valor('data')],
+      ['Convidados', valor('convidados')],
       ['Cidade', valor('cidade')],
       ['Local', valor('local')],
       ['Pacote', valor('pacote')],
     ];
 
     const texto = [
-      'Olá, Mikael! Vim pelo site e quero saber sobre a fotografia do nosso casamento.',
+      'Olá, Mikael! Vim pelo site e quero consultar a disponibilidade da data do nosso casamento.',
       '',
       ...detalhes.filter(([, conteudo]) => conteudo).map(([rotulo, conteudo]) => `*${rotulo}:* ${conteudo}`),
       ...(valor('mensagem') ? ['', valor('mensagem')] : []),
     ].join('\n');
     const url = `https://wa.me/${formulario.dataset.numero}?text=${encodeURIComponent(texto)}`;
-    window.open(url, '_blank', 'noopener');
+
+    const janela = window.open(url, '_blank');
+    if (janela) janela.opener = null;
+    else location.href = url;
   });
 </script>

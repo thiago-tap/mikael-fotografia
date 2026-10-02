@@ -2,24 +2,26 @@
 interface Props {
   sobrelinha?: string;
   titulo: string;
+  enfase?: string;
   nivel?: 'h1' | 'h2';
   alinhamento?: 'centro' | 'esquerda';
   class?: string;
 }
 
-const { sobrelinha, titulo, nivel = 'h2', alinhamento = 'centro', class: classe = '' } = Astro.props;
+const { sobrelinha, titulo, enfase, nivel = 'h2', alinhamento = 'centro', class: classe = '' } = Astro.props;
 const Tag = nivel;
 ---
 
-<div class:list={[alinhamento === 'centro' ? 'text-center' : 'text-left', classe]}>
+<div class:list={[alinhamento === 'centro' ? 'text-center' : 'text-left', classe]} data-revelar>
   {sobrelinha && <p class="sobrelinha mb-5">{sobrelinha}</p>}
   <Tag
     class:list={[
-      'font-serif font-light text-tinta',
-      nivel === 'h1' ? 'text-5xl leading-[1.05] md:text-7xl' : 'text-4xl leading-tight md:text-6xl',
+      'font-serif font-light text-balance text-tinta',
+      nivel === 'h1' ? 'text-titulo-1' : 'text-titulo-2',
     ]}
   >
     {titulo}
+    {enfase && <span class="italic"> {enfase}</span>}
   </Tag>
   <slot />
 </div>

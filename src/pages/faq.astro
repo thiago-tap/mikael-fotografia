@@ -3,14 +3,27 @@ import Base from '../layouts/Base.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import ListaFaq from '../components/ListaFaq.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { perguntas } from '../lib/conteudo';
+import { perguntas, textoSimples } from '../lib/conteudo';
+import { regiao } from '../lib/site';
 
 const todas = await perguntas();
+const paginaFaq = {
+  '@type': 'FAQPage',
+  mainEntity: todas.map((pergunta) => ({
+    '@type': 'Question',
+    name: pergunta.data.pergunta,
+    acceptedAnswer: { '@type': 'Answer', text: textoSimples(pergunta.body ?? '') },
+  })),
+};
 ---
 
-<Base titulo="Perguntas frequentes" descricao="Reserva de data, formas de pagamento, fotos, equipe e extras da Mikael Fotografia.">
+<Base
+  titulo="Perguntas frequentes"
+  descricao={`Reserva de data, formas de pagamento, fotos, equipe e extras da Mikael Fotografia, fotógrafo de casamento em ${regiao}.`}
+  dados={[paginaFaq]}
+>
   <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
-    <TituloSecao sobrelinha="FAQ" titulo="Perguntas frequentes" nivel="h1" />
+    <TituloSecao sobrelinha="FAQ" titulo="Perguntas" enfase="frequentes" nivel="h1" />
     <div class="mt-16">
       <ListaFaq perguntas={todas} />
     </div>

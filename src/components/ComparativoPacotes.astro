@@ -1,0 +1,67 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { comparativo } from '../lib/conteudo';
+import { formatarPreco, rota } from '../lib/site';
+
+interface Props {
+  pacotes: CollectionEntry<'pacotes'>[];
+}
+
+const { pacotes } = Astro.props;
+const linhas = comparativo(pacotes);
+const celula = 'px-5 py-4 align-top font-sans text-pequeno text-grafite';
+const colunaFixa = 'sticky left-0 z-10 w-36 bg-papel px-5 py-4 text-left align-top font-sans text-rotulo font-normal tracking-[0.2em] text-taupe uppercase md:w-52';
+---
+
+<div data-revelar>
+  <p class="mb-4 text-center font-serif text-lg text-taupe italic md:hidden" aria-hidden="true">Deslize para comparar →</p>
+  <div class="relative overflow-x-auto border-y border-linha" role="region" aria-label="Comparativo dos pacotes" tabindex="0">
+    <table class="w-full min-w-[46rem] border-collapse">
+      <caption class="sr-only">Comparativo dos pacotes de fotografia de casamento</caption>
+      <thead>
+        <tr>
+          <th scope="col" class={colunaFixa}><span class="sr-only">Item</span></th>
+          {
+            pacotes.map((pacote) => (
+              <th scope="col" class:list={['px-5 pt-8 pb-5 text-left align-bottom font-normal', pacote.data.destaque && 'bg-areia']}>
+                {pacote.data.destaque && <span class="sobrelinha mb-2 block text-tinta">O mais escolhido</span>}
+                <a href={rota(`/proposta/#${pacote.id}`)} class="font-serif text-titulo-4 tracking-[0.08em] text-tinta uppercase hover:text-taupe">
+                  {pacote.data.nome}
+                </a>
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          linhas.map((linha) => (
+            <tr class="border-t border-linha">
+              <th scope="row" class={colunaFixa}>{linha.rotulo}</th>
+              {linha.valores.map((valor, indice) => (
+                <td class:list={[celula, pacotes[indice].data.destaque && 'bg-areia']}>
+                  {valor ?? (
+                    <>
+                      <span aria-hidden="true" class="text-taupe">—</span>
+                      <span class="sr-only">Não informado</span>
+                    </>
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+        <tr class="border-t border-linha">
+          <th scope="row" class={colunaFixa}>Investimento</th>
+          {
+            pacotes.map((pacote) => (
+              <td class:list={['px-5 pt-4 pb-8 align-top', pacote.data.destaque && 'bg-areia']}>
+                <span class="font-serif text-titulo-3 font-light whitespace-nowrap text-tinta">{formatarPreco(pacote.data.preco)}</span>
+              </td>
+            ))
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

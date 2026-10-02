@@ -1,7 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import FotoVaga from './FotoVaga.astro';
-import { formatarPreco, linkWhatsApp } from '../lib/site';
+import Icone from './Icone.astro';
+import PrecoPacote from './PrecoPacote.astro';
+import { linkWhatsApp, mensagemPacote } from '../lib/site';
 import type { Vaga } from '../lib/fotos';
 
 interface Props {
@@ -12,23 +14,22 @@ interface Props {
 const { pacote, invertido = false } = Astro.props;
 const { nome, preco, chamada, itens, idealPara, pagamento, destaque } = pacote.data;
 const vaga = `pacote-${pacote.id}` as Vaga;
-const mensagem = `Olá, Mikael! Tenho interesse no pacote ${nome} para o meu casamento.`;
 ---
 
 <article id={pacote.id} class="grid scroll-mt-10 items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-24">
-  <div class:list={[invertido && 'md:order-2']}>
-    <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Fotografia — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" />
+  <div class:list={[invertido && 'md:order-2']} data-revelar>
+    <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Fotografia — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" zoom />
   </div>
 
-  <div class:list={['text-center md:text-left', invertido && 'md:order-1']}>
+  <div class:list={['text-center md:text-left', invertido && 'md:order-1']} data-revelar style="--atraso: 120ms">
     {destaque && <p class="sobrelinha mb-4 text-tinta">O mais escolhido</p>}
-    <h3 class="font-serif text-4xl font-light uppercase tracking-[0.12em] text-tinta lg:text-5xl">{nome}</h3>
-    {chamada && <p class="mt-4 font-serif text-xl text-grafite italic">{chamada}</p>}
+    <h3 class="font-serif text-titulo-2 font-light tracking-[0.1em] text-tinta uppercase">{nome}</h3>
+    {chamada && <p class="mt-4 font-serif text-titulo-4 text-grafite italic">{chamada}</p>}
 
     <ul class="mx-auto mt-8 max-w-md space-y-3 text-left md:mx-0">
       {
         itens.map((item) => (
-          <li class="flex gap-3 font-sans text-[0.95rem] leading-relaxed text-grafite">
+          <li class="flex gap-3 font-sans text-corpo leading-relaxed text-grafite">
             <span class="text-taupe" aria-hidden="true">•</span>
             <span>{item}</span>
           </li>
@@ -40,14 +41,25 @@ const mensagem = `Olá, Mikael! Tenho interesse no pacote ${nome} para o meu cas
       idealPara && (
         <div class="mt-8 border-t border-linha pt-6">
           <p class="sobrelinha">Ideal para</p>
-          <p class="mt-2 font-serif text-xl text-grafite italic">{idealPara}</p>
+          <p class="mt-2 font-serif text-titulo-4 text-grafite italic">{idealPara}</p>
         </div>
       )
     }
 
-    <p class="mt-8 font-serif text-5xl font-light text-tinta md:text-6xl">{formatarPreco(preco)}</p>
-    {pagamento && <p class="mt-2 font-sans text-[0.68rem] tracking-[0.24em] text-taupe uppercase">Pagamento: {pagamento}</p>}
+    <div class="mt-8">
+      <PrecoPacote preco={preco} pagamento={pagamento} tamanho="grande" />
+    </div>
 
-    <a href={linkWhatsApp(mensagem)} target="_blank" rel="noopener" class="botao mt-8">Quero este pacote</a>
+    <a
+      href={linkWhatsApp(mensagemPacote(nome))}
+      target="_blank"
+      rel="noopener"
+      class="botao mt-8"
+      data-evento="clique_whatsapp"
+      data-origem={`pacote:${nome}`}
+    >
+      <Icone nome="whatsapp" class="h-4 w-4" />
+      Consultar data para este pacote
+    </a>
   </div>
 </article>

@@ -1,0 +1,18 @@
+---
+import { formatarPreco } from '../lib/site';
+
+interface Props {
+  preco: number;
+  pagamento?: string;
+  tamanho?: 'normal' | 'grande';
+}
+
+const { preco, pagamento, tamanho = 'normal' } = Astro.props;
+---
+
+<div>
+  <p class:list={['font-serif font-light text-tinta', tamanho === 'grande' ? 'text-preco' : 'text-titulo-3']}>
+    {formatarPreco(preco)}
+  </p>
+  {pagamento && <p class="mt-2 font-sans text-rotulo tracking-[0.24em] text-taupe uppercase">Pagamento: {pagamento}</p>}
+</div>

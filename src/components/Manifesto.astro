@@ -1,0 +1,18 @@
+---
+import { site } from '../lib/site';
+
+interface Props {
+  texto: string;
+  assinatura?: string;
+}
+
+const { texto, assinatura = site.fotografo } = Astro.props;
+---
+
+<section class="bg-tinta px-6 py-24 text-center text-papel md:py-36">
+  <figure class="mx-auto max-w-4xl" data-revelar>
+    <span class="block font-serif text-6xl leading-none text-papel/30" aria-hidden="true">“</span>
+    <blockquote class="mt-2 font-serif text-titulo-2 font-light text-balance italic">{texto}</blockquote>
+    <figcaption class="mt-10 font-sans text-rotulo tracking-[0.32em] text-papel/70 uppercase">{assinatura}</figcaption>
+  </figure>
+</section>

@@ -1,7 +1,7 @@
 ---
 import type { ImageMetadata } from 'astro';
-import { Image } from 'astro:assets';
-import { larguras, type Proporcao } from '../lib/fotos';
+import { Picture } from 'astro:assets';
+import { formatos, larguras, type Proporcao } from '../lib/fotos';
 
 interface Props {
   imagem?: ImageMetadata;
@@ -11,6 +11,7 @@ interface Props {
   aguardando: string;
   sizes?: string;
   carregamento?: 'eager' | 'lazy';
+  zoom?: boolean;
   class?: string;
 }
 
@@ -21,6 +22,7 @@ const {
   aguardando,
   sizes = '100vw',
   carregamento = 'lazy',
+  zoom = false,
   class: classe = '',
 } = Astro.props;
 
@@ -33,17 +35,18 @@ const proporcoes: Record<Proporcao, string> = {
 };
 ---
 
-<div class:list={['relative overflow-hidden bg-areia', proporcoes[proporcao], classe]}>
+<div class:list={['relative overflow-hidden bg-areia', proporcoes[proporcao], zoom && 'group', classe]}>
   {
     imagem ? (
-      <Image
+      <Picture
         src={imagem}
         alt={alt}
         widths={larguras(imagem)}
         sizes={sizes}
+        formats={formatos}
         loading={carregamento}
         fetchpriority={carregamento === 'eager' ? 'high' : 'auto'}
-        class="absolute inset-0 h-full w-full object-cover"
+        class:list={['absolute inset-0 h-full w-full object-cover', zoom && 'zoom-suave']}
       />
     ) : (
       <div

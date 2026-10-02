@@ -1,0 +1,24 @@
+<script>
+  const elementos = document.querySelectorAll<HTMLElement>('[data-revelar]');
+  const movimentoReduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (elementos.length > 0 && 'IntersectionObserver' in window && !movimentoReduzido) {
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          if (!entrada.isIntersecting) continue;
+          entrada.target.setAttribute('data-revelado', '');
+          observador.unobserve(entrada.target);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+
+    for (const elemento of elementos) {
+      const caixa = elemento.getBoundingClientRect();
+      if (caixa.top < innerHeight && caixa.bottom > 0) elemento.setAttribute('data-revelado', '');
+      else observador.observe(elemento);
+    }
+    document.documentElement.classList.add('revelando');
+  }
+</script>

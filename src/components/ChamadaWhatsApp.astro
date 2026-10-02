@@ -1,28 +1,45 @@
 ---
 import Icone from './Icone.astro';
-import { linkWhatsApp, site } from '../lib/site';
+import { linkWhatsApp, mensagemDisponibilidade, nomeDaPagina, site } from '../lib/site';
 
 interface Props {
   titulo?: string;
 }
 
 const { titulo = 'Vamos conversar sobre o casamento de vocês?' } = Astro.props;
+const pagina = nomeDaPagina(Astro.url.pathname);
 ---
 
-<section class="px-6 py-24 text-center md:py-32">
-  <p class="sobrelinha">Tem alguma dúvida?</p>
-  <h2 class="mx-auto mt-5 max-w-3xl font-serif text-4xl leading-tight font-light text-tinta md:text-6xl">{titulo}</h2>
-  <p class="mx-auto mt-6 max-w-xl font-sans text-grafite">
-    Conte a data, a cidade e o local. Eu respondo com a disponibilidade e tudo o que vocês precisam saber.
-  </p>
-  <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-    <a href={linkWhatsApp()} target="_blank" rel="noopener" class="botao-cheio">
-      <Icone nome="whatsapp" class="h-4 w-4" />
-      Falar no WhatsApp
-    </a>
-    <a href={site.instagram.url} target="_blank" rel="noopener" class="botao">
-      <Icone nome="instagram" class="h-4 w-4" />
-      @{site.instagram.usuario}
-    </a>
+<section class="px-6 py-24 text-center md:py-32" data-esconde-flutuante>
+  <div data-revelar>
+    <p class="sobrelinha">Tem alguma dúvida?</p>
+    <h2 class="mx-auto mt-5 max-w-3xl font-serif text-titulo-2 font-light text-balance text-tinta">{titulo}</h2>
+    <p class="mx-auto mt-6 max-w-xl font-sans text-corpo text-grafite">
+      Conte a data, a cidade e o local. Eu respondo com a disponibilidade e tudo o que vocês precisam saber.
+    </p>
+    <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a
+        href={linkWhatsApp(mensagemDisponibilidade(pagina))}
+        target="_blank"
+        rel="noopener"
+        class="botao-cheio"
+        data-evento="clique_whatsapp"
+        data-origem="chamada"
+      >
+        <Icone nome="whatsapp" class="h-4 w-4" />
+        Consultar minha data
+      </a>
+      <a
+        href={site.instagram.url}
+        target="_blank"
+        rel="noopener"
+        class="botao"
+        data-evento="clique_instagram"
+        data-origem="chamada"
+      >
+        <Icone nome="instagram" class="h-4 w-4" />
+        @{site.instagram.usuario}
+      </a>
+    </div>
   </div>
 </section>

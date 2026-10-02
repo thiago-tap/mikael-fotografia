@@ -1,33 +1,26 @@
 ---
+import Icone from './Icone.astro';
 import Marca from './Marca.astro';
-import { menu, rota } from '../lib/site';
+import { menu } from '../lib/conteudo';
+import { linkWhatsApp, mensagemDisponibilidade, nomeDaPagina, rota } from '../lib/site';
 
 const atual = Astro.url.pathname;
 const ativo = (caminho: string) => atual.startsWith(rota(caminho));
-const menuDesktop = [...menu, { rotulo: 'Proposta', caminho: '/proposta/' }];
+const itens = await menu();
 ---
 
-<header class="relative z-30 bg-papel">
-  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 md:px-10 md:py-8">
+<header class="relative z-30">
+  <div class="mx-auto flex h-(--altura-cabecalho) max-w-7xl items-center justify-between px-6 md:px-10">
     <a href={rota('/')} aria-label="Mikael Fotografia, página inicial">
       <Marca />
     </a>
 
     <nav aria-label="Principal" class="hidden lg:block">
-      <ul class="flex items-center gap-6 xl:gap-10">
+      <ul class="flex items-center gap-7 xl:gap-10">
         {
-          menuDesktop.map((item) => (
+          itens.map((item) => (
             <li>
-              <a
-                href={rota(item.caminho)}
-                aria-current={ativo(item.caminho) ? 'page' : undefined}
-                class:list={[
-                  'border-b pb-1 font-sans text-[0.7rem] tracking-[0.22em] whitespace-nowrap uppercase transition-colors xl:tracking-[0.3em]',
-                  ativo(item.caminho)
-                    ? 'border-tinta text-tinta'
-                    : 'border-transparent text-grafite hover:border-linha hover:text-tinta',
-                ]}
-              >
+              <a href={rota(item.caminho)} aria-current={ativo(item.caminho) ? 'page' : undefined} class="link-navegacao">
                 {item.rotulo}
               </a>
             </li>
@@ -43,31 +36,23 @@ const menuDesktop = [...menu, { rotulo: 'Proposta', caminho: '/proposta/' }];
       aria-controls="menu-movel"
       data-menu-botao
     >
-      <span class="sr-only">Abrir menu</span>
+      <span class="sr-only" data-menu-rotulo>Abrir menu</span>
       <span class="relative block h-3 w-7" aria-hidden="true">
-        <span class="absolute top-0 left-0 h-px w-full bg-tinta transition-transform" data-linha="1"></span>
-        <span class="absolute bottom-0 left-0 h-px w-full bg-tinta transition-transform" data-linha="2"></span>
+        <span class="absolute top-0 left-0 h-px w-full bg-tinta transition-transform duration-300" data-linha="1"></span>
+        <span class="absolute bottom-0 left-0 h-px w-full bg-tinta transition-transform duration-300" data-linha="2"></span>
       </span>
     </button>
   </div>
 
-  <nav
-    id="menu-movel"
-    aria-label="Principal"
-    class="hidden border-t border-linha bg-papel lg:hidden"
-    data-menu-painel
-  >
+  <nav id="menu-movel" aria-label="Principal" class="hidden border-t border-linha bg-papel lg:hidden" data-menu-painel>
     <ul class="flex flex-col px-6 py-6">
       {
-        menu.map((item) => (
+        itens.map((item) => (
           <li>
             <a
               href={rota(item.caminho)}
               aria-current={ativo(item.caminho) ? 'page' : undefined}
-              class:list={[
-                'block py-3 font-sans text-xs tracking-[0.3em] uppercase',
-                ativo(item.caminho) ? 'text-tinta' : 'text-grafite',
-              ]}
+              class="block py-3 font-sans text-rotulo tracking-[0.3em] text-grafite uppercase aria-[current=page]:text-tinta"
             >
               {item.rotulo}
             </a>
@@ -75,7 +60,17 @@ const menuDesktop = [...menu, { rotulo: 'Proposta', caminho: '/proposta/' }];
         ))
       }
       <li class="mt-4">
-        <a href={rota('/proposta/')} class="botao w-full">Ver a proposta</a>
+        <a
+          href={linkWhatsApp(mensagemDisponibilidade(nomeDaPagina(atual)))}
+          target="_blank"
+          rel="noopener"
+          class="botao-cheio w-full"
+          data-evento="clique_whatsapp"
+          data-origem="menu"
+        >
+          <Icone nome="whatsapp" class="h-4 w-4" />
+          Consultar minha data
+        </a>
       </li>
     </ul>
   </nav>
@@ -85,12 +80,43 @@ const menuDesktop = [...menu, { rotulo: 'Proposta', caminho: '/proposta/' }];
   const botao = document.querySelector<HTMLButtonElement>('[data-menu-botao]');
   const painel = document.querySelector<HTMLElement>('[data-menu-painel]');
 
-  botao?.addEventListener('click', () => {
-    const aberto = botao.getAttribute('aria-expanded') === 'true';
-    botao.setAttribute('aria-expanded', String(!aberto));
-    botao.querySelector('.sr-only')!.textContent = aberto ? 'Abrir menu' : 'Fechar menu';
-    painel?.classList.toggle('hidden', aberto);
-    botao.querySelector<HTMLElement>('[data-linha="1"]')!.style.transform = aberto ? '' : 'translateY(5.5px) rotate(45deg)';
-    botao.querySelector<HTMLElement>('[data-linha="2"]')!.style.transform = aberto ? '' : 'translateY(-5.5px) rotate(-45deg)';
-  });
+  if (botao && painel) {
+    const rotulo = botao.querySelector<HTMLElement>('[data-menu-rotulo]')!;
+    const linhas = [...botao.querySelectorAll<HTMLElement>('[data-linha]')];
+    const focaveis = () => [botao, ...painel.querySelectorAll<HTMLElement>('a[href]')];
+
+    function alternar(abrir: boolean, devolverFoco = false) {
+      botao!.setAttribute('aria-expanded', String(abrir));
+      rotulo.textContent = abrir ? 'Fechar menu' : 'Abrir menu';
+      painel!.classList.toggle('hidden', !abrir);
+      linhas[0].style.transform = abrir ? 'translateY(5.5px) rotate(45deg)' : '';
+      linhas[1].style.transform = abrir ? 'translateY(-5.5px) rotate(-45deg)' : '';
+      if (devolverFoco) botao!.focus();
+    }
+
+    botao.addEventListener('click', () => alternar(botao.getAttribute('aria-expanded') !== 'true'));
+
+    document.addEventListener('keydown', (evento) => {
+      if (botao.getAttribute('aria-expanded') !== 'true') return;
+      if (evento.key === 'Escape') {
+        alternar(false, true);
+        return;
+      }
+      if (evento.key !== 'Tab') return;
+      const lista = focaveis();
+      const primeiro = lista[0];
+      const ultimo = lista[lista.length - 1];
+      if (evento.shiftKey && document.activeElement === primeiro) {
+        evento.preventDefault();
+        ultimo.focus();
+      } else if (!evento.shiftKey && document.activeElement === ultimo) {
+        evento.preventDefault();
+        primeiro.focus();
+      }
+    });
+
+    matchMedia('(min-width: 64rem)').addEventListener('change', (consulta) => {
+      if (consulta.matches) alternar(false);
+    });
+  }
 </script>

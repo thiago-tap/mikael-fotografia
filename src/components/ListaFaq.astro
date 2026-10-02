@@ -11,13 +11,13 @@ const renderizadas = await Promise.all(
 );
 ---
 
-<div class="mx-auto max-w-3xl divide-y divide-linha border-y border-linha">
+<div class="mx-auto max-w-3xl divide-y divide-linha border-y border-linha" data-revelar>
   {
     renderizadas.map(({ pergunta, Conteudo }, indice) => (
       <details class="group py-6" name="faq">
         <summary class="flex cursor-pointer list-none items-baseline gap-6 [&::-webkit-details-marker]:hidden">
-          <span class="font-serif text-xl text-taupe">{indice + 1}.</span>
-          <span class="flex-1 font-serif text-2xl text-tinta md:text-[1.7rem]">{pergunta.data.pergunta}</span>
+          <span class="font-serif text-xl text-taupe italic">{indice + 1}.</span>
+          <span class="flex-1 font-serif text-titulo-4 text-tinta">{pergunta.data.pergunta}</span>
           <span
             class="font-sans text-2xl leading-none font-extralight text-grafite transition-transform duration-300 group-open:rotate-45"
             aria-hidden="true"

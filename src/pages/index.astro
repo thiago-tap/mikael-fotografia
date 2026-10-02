@@ -1,53 +1,83 @@
 ---
+import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import ComoFunciona from '../components/ComoFunciona.astro';
 import Diferenciais from '../components/Diferenciais.astro';
+import Divisor from '../components/Divisor.astro';
+import FaixaAgenda from '../components/FaixaAgenda.astro';
 import GradePortfolio from '../components/GradePortfolio.astro';
 import Hero from '../components/Hero.astro';
+import Icone from '../components/Icone.astro';
+import Manifesto from '../components/Manifesto.astro';
+import PrecoPacote from '../components/PrecoPacote.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { pacotes } from '../lib/conteudo';
-import { formatarPreco, rota, site } from '../lib/site';
+import { chamadaDoPacote, depoimentos, formatarData, pacotes, posts } from '../lib/conteudo';
+import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
-const listaPacotes = await pacotes();
+const [listaPacotes, listaDepoimentos, listaPosts] = await Promise.all([pacotes(), depoimentos(), posts()]);
+const destaquesDepoimentos = await Promise.all(
+  listaDepoimentos.slice(0, 2).map(async (depoimento) => ({ depoimento, Texto: (await render(depoimento)).Content })),
+);
+const ultimosPosts = listaPosts.slice(0, 3);
 ---
 
 <Base>
   <Hero
     vaga="home-hero"
     alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
-    sobrelinha="Fotografia de casamento"
+    sobrelinha={`Fotógrafo de casamento em ${regiao}`}
     titulo={site.frase}
   >
-    <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-      <a href={rota('/proposta/')} class="botao-cheio">Ver a proposta</a>
-      <a href={rota('/portfolio/')} class="botao">Ver o portfólio</a>
+    <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:mt-12">
+      <a
+        href={linkWhatsApp(mensagemDisponibilidade('a página inicial'))}
+        target="_blank"
+        rel="noopener"
+        class="botao-claro w-full max-w-sm sm:w-auto sm:max-w-none"
+        data-evento="clique_whatsapp"
+        data-origem="hero"
+      >
+        <Icone nome="whatsapp" class="h-4 w-4" />
+        Consultar disponibilidade da minha data
+      </a>
+      <a href={rota('/proposta/')} class="botao-contorno-claro w-full max-w-sm sm:w-auto sm:max-w-none">Ver a proposta</a>
     </div>
   </Hero>
 
+  <FaixaAgenda />
+
   <section class="px-6 py-24 md:py-32">
-    <div class="mx-auto max-w-3xl text-center">
-      <p class="sobrelinha">Mikael Fotografia</p>
-      <p class="mt-8 font-serif text-3xl leading-snug font-light text-tinta md:text-4xl">
-        Fotos com conexão real e emoção verdadeira, feitas por uma equipe que cuida do seu dia como se fosse nosso.
+    <div class="mx-auto max-w-3xl text-center" data-revelar>
+      <p class="sobrelinha">Mikael Fotografia · {regiao}</p>
+      <p class="mt-8 font-serif text-titulo-3 font-light text-balance text-tinta">
+        Fotos com conexão real e <em>emoção verdadeira</em>, feitas por uma equipe que cuida do seu dia como se fosse nosso.
       </p>
-      <a href={rota('/sobre/')} class="botao mt-12">Conheça o Mikael</a>
+      <a href={rota('/sobre/')} class="link-editorial mt-10">Conheça o Mikael</a>
     </div>
   </section>
 
-  <section class="border-t border-linha px-6 py-24 md:py-32">
+  <Divisor />
+
+  <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-6xl">
-      <TituloSecao sobrelinha="Investimento" titulo="Quatro formas de contar o seu dia" />
-      <ul class="mt-16 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4">
+      <TituloSecao sobrelinha="Investimento" titulo="Quatro formas de" enfase="contar o seu dia" />
+      <ul class="mt-16 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4" data-revelar>
         {
           listaPacotes.map((pacote) => (
             <li class="flex flex-col items-center bg-papel px-8 py-14 text-center">
-              <h3 class="font-serif text-3xl font-light tracking-[0.1em] text-tinta uppercase">{pacote.data.nome}</h3>
-              <p class="mt-4 font-sans text-[0.7rem] tracking-[0.22em] text-taupe uppercase">{pacote.data.cobertura}</p>
-              <p class="mt-6 max-w-xs flex-1 font-serif text-lg text-grafite italic">
-                {pacote.data.chamada ?? pacote.data.itens.find((item) => item.startsWith('Mais de'))}
-              </p>
-              <p class="mt-8 font-serif text-4xl font-light text-tinta">{formatarPreco(pacote.data.preco)}</p>
-              <a href={rota(`/proposta/#${pacote.id}`)} class="mt-5 py-3 font-sans text-[0.7rem] tracking-[0.28em] text-tinta uppercase underline decoration-linha underline-offset-8 hover:decoration-tinta">
+              {pacote.data.destaque ? (
+                <p class="sobrelinha mb-3 text-tinta">O mais escolhido</p>
+              ) : (
+                <p class="sobrelinha invisible mb-3 max-sm:hidden" aria-hidden="true">·</p>
+              )}
+              <h3 class="font-serif text-titulo-3 font-light tracking-[0.1em] text-tinta uppercase">{pacote.data.nome}</h3>
+              <p class="mt-4 font-sans text-rotulo tracking-[0.22em] text-taupe uppercase">{pacote.data.cobertura}</p>
+              <p class="mt-6 max-w-xs flex-1 font-serif text-lg text-grafite italic">{chamadaDoPacote(pacote.data)}</p>
+              <div class="mt-8">
+                <PrecoPacote preco={pacote.data.preco} />
+              </div>
+              <a href={rota(`/proposta/#${pacote.id}`)} class="link-editorial mt-5">
                 Detalhes do pacote
               </a>
             </li>
@@ -57,7 +87,13 @@ const listaPacotes = await pacotes();
     </div>
   </section>
 
-  <section class="border-t border-linha px-6 py-24 md:py-32">
+  <div class="border-t border-linha">
+    <ComoFunciona />
+  </div>
+
+  <Manifesto texto="Estar perto o bastante para sentir o que está acontecendo e discreto o bastante para que vocês esqueçam que a câmera está ali." />
+
+  <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-7xl">
       <TituloSecao sobrelinha="Portfólio" titulo="Casamentos" />
       <div class="mt-16">
@@ -68,6 +104,52 @@ const listaPacotes = await pacotes();
       </p>
     </div>
   </section>
+
+  {
+    destaquesDepoimentos.length > 0 && (
+      <section class="border-t border-linha px-6 py-24 md:py-32">
+        <div class="mx-auto max-w-5xl">
+          <TituloSecao sobrelinha="O que dizem os casais" titulo="Depoimentos" />
+          <ul class="mt-16 grid gap-16 md:grid-cols-2">
+            {destaquesDepoimentos.map(({ depoimento, Texto }) => (
+              <li data-revelar>
+                <blockquote>
+                  <div class="font-serif text-titulo-4 font-light text-grafite italic">
+                    <Texto />
+                  </div>
+                  <footer class="sobrelinha mt-6 text-tinta">— {depoimento.data.casal}</footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-12 text-center">
+            <a href={rota('/depoimentos/')} class="link-editorial">Ler todos os depoimentos</a>
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    ultimosPosts.length > 0 && (
+      <section class="border-t border-linha px-6 py-24 md:py-32">
+        <div class="mx-auto max-w-6xl">
+          <TituloSecao sobrelinha="Blog" titulo="Histórias de casamento" />
+          <ul class="mt-16 grid gap-12 md:grid-cols-3">
+            {ultimosPosts.map((post) => (
+              <li data-revelar>
+                <a href={rota(`/blog/${post.id}/`)} class="group block">
+                  <p class="sobrelinha">{formatarData(post.data.data)}</p>
+                  <h3 class="mt-3 font-serif text-titulo-4 text-tinta group-hover:text-taupe">{post.data.titulo}</h3>
+                  <p class="mt-3 font-sans text-pequeno text-grafite">{post.data.descricao}</p>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
 
   <Diferenciais />
 

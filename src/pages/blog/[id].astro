@@ -21,12 +21,20 @@ const { Content } = await render(post);
 const capaAmpliada = post.data.capa && (await versaoAmpliada(post.data.capa));
 ---
 
-<Base titulo={post.data.titulo} descricao={post.data.descricao} imagemSocial={post.data.capa?.src}>
+<Base
+  titulo={post.data.titulo}
+  descricao={post.data.descricao}
+  imagemSocial={post.data.capa?.src}
+  trilha={[
+    { nome: 'Blog', caminho: rota('/blog/') },
+    { nome: post.data.titulo, caminho: Astro.url.pathname },
+  ]}
+>
   <article class="px-6 pt-16 pb-24 md:pt-24">
     <header class="mx-auto max-w-3xl text-center">
       <p class="sobrelinha">{formatarData(post.data.data)}</p>
-      <h1 class="mt-5 font-serif text-5xl leading-tight font-light text-tinta md:text-6xl">{post.data.titulo}</h1>
-      <p class="mt-6 font-sans text-grafite">{post.data.descricao}</p>
+      <h1 class="mt-5 font-serif text-titulo-1 font-light text-balance text-tinta">{post.data.titulo}</h1>
+      <p class="mt-6 font-sans text-corpo text-grafite">{post.data.descricao}</p>
     </header>
 
     {

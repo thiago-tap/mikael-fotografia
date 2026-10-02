@@ -2,14 +2,19 @@
 import Base from '../layouts/Base.astro';
 import CardPacote from '../components/CardPacote.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import ComoFunciona from '../components/ComoFunciona.astro';
+import ComparativoPacotes from '../components/ComparativoPacotes.astro';
 import Diferenciais from '../components/Diferenciais.astro';
+import FaixaAgenda from '../components/FaixaAgenda.astro';
 import FotoVaga from '../components/FotoVaga.astro';
 import Hero from '../components/Hero.astro';
+import Icone from '../components/Icone.astro';
 import ListaExtras from '../components/ListaExtras.astro';
 import ListaFaq from '../components/ListaFaq.astro';
+import Manifesto from '../components/Manifesto.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { extras, pacotes, perguntas, sobre } from '../lib/conteudo';
-import { rota } from '../lib/site';
+import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
 const [listaPacotes, listaExtras, faqResumido, paginaSobre] = await Promise.all([
   pacotes(),
@@ -17,50 +22,90 @@ const [listaPacotes, listaExtras, faqResumido, paginaSobre] = await Promise.all(
   perguntas({ somenteProposta: true }),
   sobre(),
 ]);
+
+const catalogo = {
+  '@type': 'OfferCatalog',
+  name: `Pacotes de fotografia de casamento · ${site.nome}`,
+  url: new URL(rota('/proposta/'), Astro.site).href,
+  itemListElement: listaPacotes.map((pacote) => ({
+    '@type': 'Offer',
+    name: `Pacote ${pacote.data.nome}`,
+    url: new URL(rota(`/proposta/#${pacote.id}`), Astro.site).href,
+    price: pacote.data.preco,
+    priceCurrency: 'BRL',
+    seller: { '@id': `${new URL(rota('/'), Astro.site)}#negocio` },
+    itemOffered: {
+      '@type': 'Service',
+      name: `Fotografia de casamento · ${pacote.data.nome}`,
+      serviceType: 'Fotografia de casamento',
+      description: pacote.data.itens.join('; '),
+      areaServed: regiao,
+    },
+  })),
+};
 ---
 
 <Base
-  titulo="Proposta de fotografia de casamento"
-  descricao="Pacotes Micro Wedding, Mini Wedding, Promessa e Eternidade, serviços extras e formas de pagamento da Mikael Fotografia."
+  titulo={`Proposta de fotografia de casamento em ${regiao}`}
+  descricao={`Pacotes Micro Wedding, Mini Wedding, Promessa e Eternidade para casamentos em ${regiao}: comparativo, serviços extras, formas de pagamento e como funciona.`}
+  trilha={[{ nome: 'Proposta', caminho: rota('/proposta/') }]}
+  dados={[catalogo]}
 >
   <Hero
     vaga="proposta-hero"
     alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
     sobrelinha="Proposta de fotografia para casamento"
-    titulo="O dia em que duas histórias se tornam uma só."
+    titulo="Fotografia de casamento"
+    enfase={`em ${site.cidade}`}
   >
-    <nav aria-label="Pacotes" class="mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3">
+    <div class="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 md:mt-12">
+      <a
+        href={linkWhatsApp(mensagemDisponibilidade('a proposta'))}
+        target="_blank"
+        rel="noopener"
+        class="botao-claro w-full max-w-sm sm:w-auto sm:max-w-none"
+        data-evento="clique_whatsapp"
+        data-origem="hero"
+      >
+        <Icone nome="whatsapp" class="h-4 w-4" />
+        Consultar disponibilidade da minha data
+      </a>
+      <a href="#pacotes" class="botao-contorno-claro w-full max-w-sm sm:w-auto sm:max-w-none">Ver os pacotes</a>
+    </div>
+  </Hero>
+
+  <nav aria-label="Pacotes" class="border-b border-linha px-6 py-5">
+    <ul class="flex flex-wrap justify-center gap-x-8 gap-y-1">
       {
         listaPacotes.map((pacote) => (
-          <a
-            href={`#${pacote.id}`}
-            class="border-b border-linha pt-3 pb-1 font-sans text-[0.7rem] tracking-[0.28em] text-grafite uppercase hover:border-tinta hover:text-tinta"
-          >
-            {pacote.data.nome}
-          </a>
+          <li>
+            <a href={`#${pacote.id}`} class="link-navegacao pt-2">
+              {pacote.data.nome}
+            </a>
+          </li>
         ))
       }
-      <a
-        href="#extras"
-        class="border-b border-linha pt-3 pb-1 font-sans text-[0.7rem] tracking-[0.28em] text-grafite uppercase hover:border-tinta hover:text-tinta"
-      >
-        Extras
-      </a>
-    </nav>
-  </Hero>
+      <li><a href="#comparativo" class="link-navegacao pt-2">Comparativo</a></li>
+      <li><a href="#extras" class="link-navegacao pt-2">Extras</a></li>
+    </ul>
+  </nav>
+
+  <FaixaAgenda />
 
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[2fr_3fr] md:gap-20">
-      <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vitor" sizes="(min-width: 768px) 40vw, 100vw" />
+      <div data-revelar>
+        <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vitor" sizes="(min-width: 768px) 40vw, 100vw" />
+      </div>
       <div class="text-center md:text-left">
         <TituloSecao sobrelinha={paginaSobre.data.subtitulo} titulo={paginaSobre.data.titulo} alinhamento="esquerda" class="text-center md:text-left" />
-        <p class="texto-corrido mt-8">{paginaSobre.data.resumo}</p>
-        <a href={rota('/sobre/')} class="botao mt-10">Saiba mais sobre mim</a>
+        <p class="texto-corrido mt-8" data-revelar>{paginaSobre.data.resumo}</p>
+        <a href={rota('/sobre/')} class="link-editorial mt-8">Saiba mais sobre mim</a>
       </div>
     </div>
   </section>
 
-  <section class="border-t border-linha px-6 py-24 md:py-32">
+  <section id="pacotes" class="scroll-mt-6 border-t border-linha px-6 py-24 md:py-32">
     <div class="mx-auto max-w-6xl">
       <TituloSecao sobrelinha="Investimento" titulo="Pacotes" />
       <div class="mt-20 space-y-28 md:space-y-36">
@@ -69,7 +114,20 @@ const [listaPacotes, listaExtras, faqResumido, paginaSobre] = await Promise.all(
     </div>
   </section>
 
-  <section id="extras" class="scroll-mt-10 border-t border-linha px-6 py-24 md:py-32">
+  <section id="comparativo" class="scroll-mt-6 border-t border-linha py-24 md:py-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Lado a lado" titulo="Compare os" enfase="pacotes" class="px-6" />
+      <div class="mt-14 md:px-6">
+        <ComparativoPacotes pacotes={listaPacotes} />
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ComoFunciona />
+  </div>
+
+  <section id="extras" class="scroll-mt-6 border-t border-linha px-6 py-24 md:py-32">
     <TituloSecao sobrelinha="Para acrescentar à sua cobertura" titulo="Serviços extras" />
     <div class="mt-16">
       <ListaExtras extras={listaExtras} />
@@ -90,7 +148,7 @@ const [listaPacotes, listaExtras, faqResumido, paginaSobre] = await Promise.all(
     </p>
   </section>
 
-  <div class="border-t border-linha">
-    <ChamadaWhatsApp />
-  </div>
+  <Manifesto texto="No dia, vocês só precisam viver. O resto é com a gente." />
+
+  <ChamadaWhatsApp />
 </Base>

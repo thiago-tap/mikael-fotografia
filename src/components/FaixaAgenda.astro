@@ -1,0 +1,12 @@
+---
+import { agenda, agendaVisivel } from '../lib/configuracoes';
+---
+
+{
+  agendaVisivel && (
+    <aside class="border-y border-linha bg-areia px-6 py-8 text-center" aria-label="Agenda">
+      <p class="sobrelinha">Agenda 2026 · 2027</p>
+      <p class="mx-auto mt-3 max-w-3xl font-serif text-titulo-4 text-tinta italic">{agenda.texto}</p>
+    </aside>
+  )
+}

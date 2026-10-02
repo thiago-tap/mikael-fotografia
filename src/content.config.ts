@@ -14,6 +14,27 @@ const pacotes = defineCollection({
     idealPara: z.string().optional(),
     pagamento: z.string().optional(),
     destaque: z.boolean().default(false),
+    comparativo: z
+      .object({
+        fotografos: z.string().optional(),
+        fotos: z.string().optional(),
+        preWedding: z.string().optional(),
+        makingOf: z.string().optional(),
+        galeria: z.string().optional(),
+        previas: z.string().optional(),
+        poses: z.string().optional(),
+      })
+      .default({}),
+  }),
+});
+
+const comoFunciona = defineCollection({
+  loader: file('src/content/comoFunciona.json'),
+  schema: z.object({
+    titulo: z.string(),
+    texto: z.string(),
+    detalhe: z.string().optional(),
+    ordem: z.number(),
   }),
 });
 
@@ -81,4 +102,4 @@ const blog = defineCollection({
     }),
 });
 
-export const collections = { pacotes, extras, diferenciais, paginas, faq, depoimentos, blog };
+export const collections = { pacotes, comoFunciona, extras, diferenciais, paginas, faq, depoimentos, blog };

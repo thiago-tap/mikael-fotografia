@@ -20,19 +20,21 @@ const lista = await posts();
             <ul class="grid gap-x-10 gap-y-16 md:grid-cols-2">
               {lista.map((post) => (
                 <li>
-                  <a href={rota(`/blog/${post.id}/`)} class="group block">
+                  <a href={rota(`/blog/${post.id}/`)} class="group block" data-revelar>
                     {post.data.capa && (
-                      <Image
-                        src={post.data.capa}
-                        alt={post.data.capaAlt ?? post.data.titulo}
-                        widths={[480, 800, 1200]}
-                        sizes="(min-width: 768px) 50vw, 100vw"
-                        class="aspect-[3/2] w-full object-cover transition-opacity duration-300 group-hover:opacity-85"
-                      />
+                      <div class="overflow-hidden">
+                        <Image
+                          src={post.data.capa}
+                          alt={post.data.capaAlt ?? post.data.titulo}
+                          widths={[480, 800, 1200]}
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                          class="zoom-suave aspect-[3/2] w-full object-cover"
+                        />
+                      </div>
                     )}
                     <p class="sobrelinha mt-6">{formatarData(post.data.data)}</p>
-                    <h2 class="mt-3 font-serif text-3xl font-light text-tinta">{post.data.titulo}</h2>
-                    <p class="mt-3 font-sans text-grafite">{post.data.descricao}</p>
+                    <h2 class="mt-3 font-serif text-titulo-3 font-light text-tinta group-hover:text-taupe">{post.data.titulo}</h2>
+                    <p class="mt-3 font-sans text-corpo text-grafite">{post.data.descricao}</p>
                   </a>
                 </li>
               ))}

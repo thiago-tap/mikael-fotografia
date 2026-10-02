@@ -21,7 +21,7 @@ const lista = await Promise.all(
         lista.length > 0 ? (
           <ul class="space-y-24">
             {lista.map(({ depoimento, Texto }) => (
-              <li class="grid items-center gap-10 md:grid-cols-[1fr_2fr]">
+              <li class="grid items-center gap-10 md:grid-cols-[1fr_2fr]" data-revelar>
                 {depoimento.data.foto && (
                   <Image
                     src={depoimento.data.foto}
@@ -32,7 +32,7 @@ const lista = await Promise.all(
                   />
                 )}
                 <blockquote class:list={[!depoimento.data.foto && 'md:col-span-2 text-center']}>
-                  <div class="font-serif text-2xl leading-relaxed font-light text-grafite italic">
+                  <div class="font-serif text-titulo-4 font-light text-grafite italic">
                     <Texto />
                   </div>
                   <footer class="sobrelinha mt-6 text-tinta">

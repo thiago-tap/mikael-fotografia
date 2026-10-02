@@ -14,7 +14,16 @@
       "Tratamento de cor e edição exclusiva para o seu casamento",
       "Prévias oficiais em até 15 dias"
     ],
-    "pagamento": "Carnê, à vista ou cartão"
+    "pagamento": "Carnê, à vista ou cartão",
+    "comparativo": {
+      "fotografos": "1",
+      "fotos": "Mais de 400",
+      "preWedding": "Extra",
+      "makingOf": "Extra",
+      "galeria": "3 meses",
+      "previas": "Até 15 dias",
+      "poses": ""
+    }
   },
   {
     "id": "mini-wedding",
@@ -31,7 +40,16 @@
       "Tratamento de cor e edição exclusiva para o seu casamento",
       "Prévias oficiais em até 15 dias"
     ],
-    "pagamento": "Carnê, à vista ou cartão"
+    "pagamento": "Carnê, à vista ou cartão",
+    "comparativo": {
+      "fotografos": "2",
+      "fotos": "Mais de 600",
+      "preWedding": "Extra",
+      "makingOf": "Extra",
+      "galeria": "3 meses",
+      "previas": "Até 15 dias",
+      "poses": ""
+    }
   },
   {
     "id": "promessa",
@@ -53,7 +71,16 @@
       "Prévias oficiais em até 10 dias"
     ],
     "pagamento": "Carnê, à vista ou cartão",
-    "destaque": true
+    "destaque": true,
+    "comparativo": {
+      "fotografos": "2",
+      "fotos": "Mais de 700",
+      "preWedding": "Incluso",
+      "makingOf": "Incluso",
+      "galeria": "3 meses",
+      "previas": "Até 10 dias",
+      "poses": "Incluso"
+    }
   },
   {
     "id": "eternidade",
@@ -70,6 +97,16 @@
       "Mais de 1.000 fotos editadas em alta resolução",
       "Registros espontâneos, protocolares, familiares e de todos os momentos especiais"
     ],
-    "pagamento": "Carnê, à vista ou cartão"
+    "pagamento": "Carnê, à vista ou cartão",
+    "comparativo": {
+      "fotografos": "2",
+      "fotos": "Mais de 1.000",
+      "preWedding": "Incluso",
+      "makingOf": "Incluso",
+      "galeria": "",
+      "previas": "",
+      "poses": ""
+    }
   }
 ]
+

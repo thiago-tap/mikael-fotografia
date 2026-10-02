@@ -3,13 +3,17 @@ import Base from '../layouts/Base.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import GradePortfolio from '../components/GradePortfolio.astro';
 import TituloSecao from '../components/TituloSecao.astro';
+import { regiao } from '../lib/site';
 ---
 
-<Base titulo="Portfólio de casamentos" descricao="Casamentos fotografados por Mikael Vitor e equipe.">
+<Base
+  titulo={`Portfólio de casamentos em ${regiao}`}
+  descricao={`Casamentos fotografados por Mikael Vitor e equipe em ${regiao}: cerimônia, recepção, making of e os pequenos momentos do dia.`}
+>
   <section class="px-6 pt-16 pb-24 md:pt-24">
     <div class="mx-auto max-w-7xl">
       <TituloSecao sobrelinha="Portfólio" titulo="Casamentos" nivel="h1">
-        <p class="mx-auto mt-6 max-w-xl font-sans text-grafite">
+        <p class="mx-auto mt-6 max-w-xl font-sans text-corpo text-grafite">
           Cerimônia, recepção, making of e os pequenos momentos entre uma coisa e outra.
         </p>
       </TituloSecao>

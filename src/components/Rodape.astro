@@ -1,34 +1,29 @@
 ---
 import Icone from './Icone.astro';
 import Marca from './Marca.astro';
-import { linkWhatsApp, menu, rota, site } from '../lib/site';
+import { menu } from '../lib/conteudo';
+import { linkWhatsApp, regiao, rota, site } from '../lib/site';
 
 const ano = new Date().getFullYear();
+const itens = await menu();
 ---
 
-<footer class="border-t border-linha bg-papel">
+<footer class="border-t border-linha" data-esconde-flutuante>
   <div class="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-3 md:px-10">
     <div class="flex flex-col items-center gap-5 md:items-start">
       <a href={rota('/')} aria-label="Mikael Fotografia, página inicial">
         <Marca />
       </a>
-      <p class="max-w-xs text-center font-serif text-lg text-grafite italic md:text-left">{site.frase}</p>
+      <p class="max-w-xs text-center font-serif text-titulo-4 text-grafite italic md:text-left">{site.frase}</p>
+      <p class="sobrelinha text-center md:text-left">Fotografia de casamento em {regiao}</p>
     </div>
 
     <nav aria-label="Rodapé" class="flex justify-center">
-      <ul class="grid grid-cols-2 gap-x-10 gap-y-1 text-center md:text-left">
-        <li>
-          <a href={rota('/proposta/')} class="inline-block py-2 font-sans text-[0.7rem] tracking-[0.28em] text-tinta uppercase hover:text-taupe">
-            Proposta
-          </a>
-        </li>
+      <ul class="grid grid-cols-2 gap-x-10 gap-y-1 self-start text-center md:text-left">
         {
-          menu.map((item) => (
+          itens.map((item) => (
             <li>
-              <a
-                href={rota(item.caminho)}
-                class="inline-block py-2 font-sans text-[0.7rem] tracking-[0.28em] text-grafite uppercase hover:text-tinta"
-              >
+              <a href={rota(item.caminho)} class="link-navegacao py-2">
                 {item.rotulo}
               </a>
             </li>
@@ -42,7 +37,9 @@ const ano = new Date().getFullYear();
         href={linkWhatsApp()}
         target="_blank"
         rel="noopener"
-        class="flex items-center gap-3 py-2 font-sans text-sm tracking-wide text-grafite hover:text-tinta"
+        class="link-contato"
+        data-evento="clique_whatsapp"
+        data-origem="rodape"
       >
         <Icone nome="whatsapp" class="h-4 w-4" />
         {site.whatsapp.exibicao}
@@ -51,7 +48,9 @@ const ano = new Date().getFullYear();
         href={site.instagram.url}
         target="_blank"
         rel="noopener"
-        class="flex items-center gap-3 py-2 font-sans text-sm tracking-wide text-grafite hover:text-tinta"
+        class="link-contato"
+        data-evento="clique_instagram"
+        data-origem="rodape"
       >
         <Icone nome="instagram" class="h-4 w-4" />
         @{site.instagram.usuario}
@@ -59,7 +58,7 @@ const ano = new Date().getFullYear();
     </div>
   </div>
 
-  <p class="border-t border-linha px-6 pt-6 pb-24 text-center md:pb-6 font-sans text-[0.65rem] tracking-[0.3em] text-taupe uppercase">
-    © {ano} {site.nome} · {site.fotografo}
+  <p class="border-t border-linha px-6 py-6 text-center font-sans text-rotulo tracking-[0.3em] text-taupe uppercase">
+    © {ano} {site.nome} · {site.fotografo} · {regiao}
   </p>
 </footer>

@@ -36,6 +36,8 @@ export const vagas = {
 
 export type Vaga = keyof typeof vagas;
 
+export const formatos: ('avif' | 'webp')[] = ['avif', 'webp'];
+
 /** Larguras geradas no build, sem ampliar a foto e com teto de `maxima` px. */
 export function larguras(foto: ImageMetadata, maxima = 2400): number[] {
   const padrao = [480, 800, 1200, 1600].filter((largura) => largura < Math.min(foto.width, maxima));

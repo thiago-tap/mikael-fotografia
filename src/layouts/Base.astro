@@ -1,21 +1,62 @@
 ---
 import '../styles/global.css';
+import fonteTitulo from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-300-normal.woff2?url';
 import Cabecalho from '../components/Cabecalho.astro';
+import DadosEstruturados from '../components/DadosEstruturados.astro';
 import Lightbox from '../components/Lightbox.astro';
+import Revelar from '../components/Revelar.astro';
 import Rodape from '../components/Rodape.astro';
 import WhatsAppFlutuante from '../components/WhatsAppFlutuante.astro';
-import { rota, site } from '../lib/site';
+import { faixaDePrecos, pacotes } from '../lib/conteudo';
+import { formatarPreco, regiao, rota, site } from '../lib/site';
+
+type Trilha = { nome: string; caminho: string }[];
 
 interface Props {
   titulo?: string;
   descricao?: string;
   imagemSocial?: string;
+  trilha?: Trilha;
+  dados?: Record<string, unknown>[];
 }
 
-const { titulo, descricao = site.descricao, imagemSocial } = Astro.props;
-const tituloCompleto = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · Fotografia de casamento`;
+const { titulo, descricao = site.descricao, imagemSocial, trilha, dados = [] } = Astro.props;
+const tituloCompleto = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · Fotógrafo de casamento em ${regiao}`;
 const canonica = new URL(Astro.url.pathname, Astro.site);
-const imagemOg = imagemSocial ? new URL(imagemSocial, Astro.site) : undefined;
+const inicio = new URL(rota('/'), Astro.site);
+const imagemOg = new URL(imagemSocial ?? rota('/og-padrao.png'), Astro.site);
+const [menorPreco, maiorPreco] = faixaDePrecos(await pacotes());
+
+const negocio = {
+  '@type': 'ProfessionalService',
+  '@id': `${inicio}#negocio`,
+  name: site.nome,
+  description: site.descricao,
+  url: inicio.href,
+  image: new URL(rota('/og-padrao.png'), Astro.site).href,
+  telephone: `+${site.whatsapp.numero}`,
+  priceRange: `${formatarPreco(menorPreco)} – ${formatarPreco(maiorPreco)}`,
+  sameAs: [site.instagram.url],
+  founder: { '@type': 'Person', name: site.fotografo },
+  address: { '@type': 'PostalAddress', addressLocality: site.cidade, addressRegion: site.uf, addressCountry: 'BR' },
+  areaServed: {
+    '@type': 'City',
+    name: site.cidade,
+    containedInPlace: { '@type': 'AdministrativeArea', name: 'Distrito Federal' },
+  },
+};
+
+const ehInicio = Astro.url.pathname === rota('/');
+const trilhaFinal: Trilha = trilha ?? (titulo && !ehInicio ? [{ nome: titulo, caminho: Astro.url.pathname }] : []);
+const migalhas = trilhaFinal.length > 0 && {
+  '@type': 'BreadcrumbList',
+  itemListElement: [{ nome: 'Início', caminho: rota('/') }, ...trilhaFinal].map((item, posicao) => ({
+    '@type': 'ListItem',
+    position: posicao + 1,
+    name: item.nome,
+    item: new URL(item.caminho, Astro.site).href,
+  })),
+};
 ---
 
 <!doctype html>
@@ -23,9 +64,11 @@ const imagemOg = imagemSocial ? new URL(imagemSocial, Astro.site) : undefined;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     <link rel="canonical" href={canonica} />
+    <link rel="preload" href={fonteTitulo} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href={rota('/favicon.svg')} />
     <link rel="sitemap" href={rota('/sitemap-index.xml')} />
     <meta name="theme-color" content="#faf8f5" />
@@ -36,8 +79,21 @@ const imagemOg = imagemSocial ? new URL(imagemSocial, Astro.site) : undefined;
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonica} />
-    {imagemOg && <meta property="og:image" content={imagemOg} />}
-    <meta name="twitter:card" content={imagemOg ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={imagemOg} />
+    {
+      !imagemSocial && (
+        <>
+          <meta property="og:image:width" content="1200" />
+          <meta property="og:image:height" content="630" />
+          <meta property="og:image:alt" content={`${site.nome} · Fotógrafo de casamento em ${regiao}`} />
+        </>
+      )
+    }
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <DadosEstruturados dados={negocio} />
+    {migalhas && <DadosEstruturados dados={migalhas} />}
+    {dados.map((item) => <DadosEstruturados dados={item} />)}
   </head>
   <body class="flex min-h-screen flex-col">
     <a
@@ -53,5 +109,6 @@ const imagemOg = imagemSocial ? new URL(imagemSocial, Astro.site) : undefined;
     <Rodape />
     <WhatsAppFlutuante />
     <Lightbox />
+    <Revelar />
   </body>
 </html>

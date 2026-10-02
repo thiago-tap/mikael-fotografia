@@ -1,28 +1,60 @@
 ---
-import FotoVaga from './FotoVaga.astro';
-import type { Vaga } from '../lib/fotos';
+import { Picture } from 'astro:assets';
+import { fotoDoSite, formatos, larguras, vagas, type Vaga } from '../lib/fotos';
 
 interface Props {
   vaga: Vaga;
   alt: string;
   sobrelinha: string;
   titulo: string;
+  enfase?: string;
 }
 
-const { vaga, alt, sobrelinha, titulo } = Astro.props;
+const { vaga, alt, sobrelinha, titulo, enfase } = Astro.props;
+const imagem = fotoDoSite(vaga);
 ---
 
-<section>
-  <FotoVaga
-    vaga={vaga}
-    alt={alt}
-    carregamento="eager"
-    sizes="(min-width: 768px) 100vw, 190vw"
-    class="max-md:aspect-[4/5] max-md:max-h-[80svh] md:aspect-[2/1] xl:aspect-[12/5]"
-  />
-  <div class="px-6 pt-20 pb-6 text-center md:pt-28">
-    <p class="sobrelinha">{sobrelinha}</p>
-    <h1 class="mx-auto mt-6 max-w-4xl font-serif text-5xl leading-[1.08] font-light text-tinta md:text-7xl">{titulo}</h1>
-    <slot />
+<section
+  class:list={[
+    'relative isolate flex min-h-[calc(100svh-var(--altura-cabecalho))] items-end overflow-hidden',
+    imagem ? 'bg-tinta' : 'bg-taupe',
+  ]}
+  data-hero
+>
+  {
+    imagem ? (
+      <Picture
+        src={imagem}
+        alt={alt}
+        widths={larguras(imagem)}
+        sizes="(max-aspect-ratio: 3/2) 150vh, 100vw"
+        formats={formatos}
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 -z-20 h-full w-full animate-aproximar object-cover"
+      />
+    ) : (
+      <div class="absolute inset-x-6 top-6 -z-20 flex justify-center md:top-10" role="img" aria-label={alt}>
+        <span class="border border-dashed border-papel/30 px-4 py-2 font-sans text-xs tracking-wide text-papel/75">
+          Foto 3:2 · {vaga} · {vagas[vaga].medida}
+        </span>
+      </div>
+    )
+  }
+  <div
+    class="absolute inset-0 -z-10 bg-tinta/20 bg-linear-to-t from-tinta/85 via-tinta/45 via-50% to-tinta/0 md:bg-tinta/10"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="mx-auto w-full max-w-6xl px-6 pt-28 pb-12 text-center text-papel [text-shadow:0_1px_28px_rgb(0_0_0/0.22)] md:px-10 md:pb-20">
+    <p class="sobrelinha animate-surgir text-papel/85">{sobrelinha}</p>
+    <h1 class="mx-auto mt-5 max-w-5xl animate-surgir font-serif text-manchete font-light text-balance [animation-delay:120ms]">
+      {titulo}
+      {enfase && <span class="block italic">{enfase}</span>}
+    </h1>
+    <div class="animate-surgir [animation-delay:260ms]">
+      <slot />
+    </div>
   </div>
 </section>

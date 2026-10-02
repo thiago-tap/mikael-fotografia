@@ -2,7 +2,6 @@
 @import '@fontsource/cormorant-garamond/300.css';
 @import '@fontsource/cormorant-garamond/400.css';
 @import '@fontsource/cormorant-garamond/400-italic.css';
-@import '@fontsource/cormorant-garamond/500.css';
 @import '@fontsource-variable/jost';
 
 @theme {
@@ -13,11 +12,54 @@
   --color-areia: #efe9e1;
   --color-tinta: #1d1b18;
   --color-grafite: #4a4640;
-  --color-taupe: #8c7b68;
+  --color-taupe: #6f5f4e;
   --color-linha: #ddd5ca;
+
+  --text-rotulo: 0.75rem;
+  --text-rotulo--line-height: 1.5;
+  --text-pequeno: 0.875rem;
+  --text-pequeno--line-height: 1.7;
+  --text-corpo: 1.0625rem;
+  --text-corpo--line-height: 1.85;
+  --text-titulo-4: clamp(1.375rem, 1.25rem + 0.5vw, 1.75rem);
+  --text-titulo-4--line-height: 1.3;
+  --text-titulo-3: clamp(1.75rem, 1.45rem + 1.1vw, 2.5rem);
+  --text-titulo-3--line-height: 1.15;
+  --text-titulo-2: clamp(2.25rem, 1.7rem + 2.4vw, 3.75rem);
+  --text-titulo-2--line-height: 1.1;
+  --text-titulo-1: clamp(2.5rem, 1.75rem + 3.4vw, 4.75rem);
+  --text-titulo-1--line-height: 1.05;
+  --text-manchete: clamp(2.6rem, 1.6rem + 4.6vw, 6rem);
+  --text-manchete--line-height: 1.04;
+  --text-preco: clamp(2.5rem, 2rem + 2vw, 3.75rem);
+  --text-preco--line-height: 1;
+
+  --animate-surgir: surgir 1.1s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  --animate-aproximar: aproximar 2.6s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+
+  @keyframes surgir {
+    from {
+      opacity: 0;
+      translate: 0 14px;
+    }
+  }
+
+  @keyframes aproximar {
+    from {
+      scale: 1.05;
+    }
+  }
 }
 
 @layer base {
+  :root {
+    --altura-cabecalho: 5rem;
+
+    @media (width >= 48rem) {
+      --altura-cabecalho: 6.5rem;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
@@ -25,7 +67,8 @@
 
   body {
     @apply bg-papel font-sans text-tinta antialiased;
-    font-weight: 350;
+    font-weight: 400;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   }
 
   h1,
@@ -40,26 +83,77 @@
   }
 
   :focus-visible {
-    outline: 1px solid var(--color-tinta);
+    outline: 1px solid currentColor;
     outline-offset: 4px;
   }
 }
 
 @utility sobrelinha {
-  @apply font-sans text-[0.7rem] font-normal tracking-[0.32em] text-taupe uppercase;
+  @apply font-sans text-rotulo font-normal tracking-[0.32em] text-taupe uppercase;
+}
+
+@utility enfase {
+  @apply font-serif italic;
 }
 
 @utility botao {
-  @apply inline-flex items-center justify-center gap-3 border border-tinta px-8 py-4 text-center font-sans text-[0.72rem] tracking-[0.28em] text-tinta uppercase transition-colors duration-300 hover:bg-tinta hover:text-papel;
+  @apply inline-flex items-center justify-center gap-3 border border-tinta px-8 py-4 text-center font-sans text-rotulo tracking-[0.28em] text-tinta uppercase transition-colors duration-300 hover:bg-tinta hover:text-papel;
 }
 
 @utility botao-cheio {
   @apply botao bg-tinta text-papel hover:bg-transparent hover:text-tinta;
 }
 
+@utility botao-claro {
+  @apply botao border-papel bg-papel text-balance text-tinta hover:bg-transparent hover:text-papel max-sm:px-5 max-sm:tracking-[0.18em];
+}
+
+@utility botao-contorno-claro {
+  @apply botao border-papel/70 text-papel hover:border-papel hover:bg-papel hover:text-tinta max-sm:tracking-[0.18em];
+}
+
+@utility sublinhado-animado {
+  background:
+    linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat,
+    linear-gradient(var(--color-linha), var(--color-linha)) left bottom / 100% 1px no-repeat;
+  transition: background-size 500ms cubic-bezier(0.2, 0.6, 0.2, 1), color 300ms;
+
+  &:hover,
+  &:focus-visible,
+  &[aria-current='page'] {
+    background-size:
+      100% 1px,
+      100% 1px;
+  }
+}
+
+@utility link-editorial {
+  @apply sublinhado-animado inline-block pt-3 pb-1 font-sans text-rotulo tracking-[0.28em] text-tinta uppercase;
+}
+
+@utility link-navegacao {
+  @apply inline-block pb-1 font-sans text-rotulo tracking-[0.26em] whitespace-nowrap text-grafite uppercase hover:text-tinta aria-[current=page]:text-tinta;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+  transition: background-size 500ms cubic-bezier(0.2, 0.6, 0.2, 1), color 300ms;
+
+  &:hover,
+  &:focus-visible,
+  &[aria-current='page'] {
+    background-size: 100% 1px;
+  }
+}
+
+@utility link-contato {
+  @apply flex items-center gap-3 py-2 font-sans text-pequeno tracking-wide text-grafite transition-colors hover:text-tinta;
+}
+
+@utility zoom-suave {
+  @apply transition-transform duration-[1400ms] ease-[cubic-bezier(0.2,0.6,0.2,1)] group-hover:scale-[1.03];
+}
+
 @layer components {
   .texto-corrido {
-    @apply font-sans text-[1.02rem] leading-[1.9] text-grafite;
+    @apply font-sans text-corpo text-grafite;
   }
 
   .texto-corrido p + p {
@@ -67,11 +161,44 @@
   }
 
   .texto-corrido h2 {
-    @apply mt-12 mb-4 font-serif text-3xl text-tinta;
+    @apply mt-12 mb-4 font-serif text-titulo-3 text-tinta;
   }
 
   .texto-corrido a {
     @apply underline decoration-linha underline-offset-4 hover:decoration-tinta;
+  }
+
+  .divisor {
+    @apply mx-auto flex max-w-7xl items-center gap-5 px-6 text-linha md:px-10;
+  }
+
+  .divisor::before,
+  .divisor::after {
+    @apply h-px flex-1 bg-linha;
+    content: '';
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 350ms;
+  }
+
+  .revelando [data-revelar] {
+    transition:
+      opacity 900ms ease,
+      translate 900ms cubic-bezier(0.2, 0.6, 0.2, 1);
+    transition-delay: var(--atraso, 0ms);
+  }
+
+  .revelando [data-revelar]:not([data-revelado]) {
+    opacity: 0;
+    translate: 0 14px;
   }
 }
 
