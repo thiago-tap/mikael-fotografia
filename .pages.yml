@@ -99,40 +99,51 @@ content:
       - name: fotos
         label: Fotos fixas do site
         type: object
-        description: "Escolha a foto de cada espaço. Sem escolha, o site procura em Fotos do site um arquivo com o nome do espaço (ex.: home-hero.jpg)."
+        description: "Escolha a foto de cada espaço. Sem escolha, o site procura em Fotos do site um arquivo com o nome do espaço (ex.: home-hero.jpg). Envie JPG exportado em sRGB, lado maior de 2400 a 3000 px e até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC (foto direto do iPhone)."
         fields:
           - name: home-hero
             label: Topo da página inicial (3:2 horizontal, 3000 × 2000 px)
+            description: "Foto horizontal 3:2, 3000 × 2000 px, até 3 MB. Ocupa a tela inteira e é cortada pelo centro: casal centralizado, com folga ao redor e sem detalhe importante embaixo (fica o título)."
             component: vaga
           - name: proposta-hero
             label: Topo da proposta (3:2 horizontal, 3000 × 2000 px)
+            description: "Foto horizontal 3:2, 3000 × 2000 px, até 3 MB. Cortada pelo centro: casal centralizado, com folga ao redor."
             component: vaga
           - name: faixa
             label: Faixa larga da proposta (3:2 horizontal, 3000 × 2000 px)
+            description: "Foto horizontal 3:2, 3000 × 2000 px, até 3 MB. Aparece como faixa larga e baixa: escolha uma cena com o assunto no meio da altura."
             component: vaga
           - name: sobre-retrato
             label: Retrato da página Sobre (4:5 vertical, 1600 × 2000 px)
+            description: "Retrato vertical 4:5, 1600 × 2000 px (até 2400 × 3000), até 3 MB."
             component: vaga
           - name: pacote-micro-wedding
             label: Pacote Micro Wedding (3:2 horizontal, 2400 × 1600 px)
+            description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB."
             component: vaga
           - name: pacote-mini-wedding
             label: Pacote Mini Wedding (3:2 horizontal, 2400 × 1600 px)
+            description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB."
             component: vaga
           - name: pacote-promessa
             label: Pacote Promessa (3:2 horizontal, 2400 × 1600 px)
+            description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB."
             component: vaga
           - name: pacote-eternidade
             label: Pacote Eternidade (3:2 horizontal, 2400 × 1600 px)
+            description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB."
             component: vaga
           - name: pdf-capa
-            label: Capa do PDF (9:16 vertical, 1800 × 3200 px)
+            label: Capa do PDF (9:16 vertical, 1690 × 3000 px)
+            description: "Foto vertical 9:16, 1690 × 3000 px, até 3 MB. Sem foto aqui, a capa usa a do topo da proposta."
             component: vaga
           - name: pdf-extras
             label: Página de extras do PDF (3:2 horizontal, 2400 × 1600 px)
+            description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB. Sem foto aqui, usa a faixa larga."
             component: vaga
           - name: pdf-diferenciais
             label: Página "Por que Mikael Fotografia?" do PDF (2:3 vertical, 1600 × 2400 px)
+            description: "Foto vertical 2:3, 1600 × 2400 px (até 2000 × 3000), até 3 MB. Sem foto aqui, usa o retrato da página Sobre."
             component: vaga
 
   - name: agenda
@@ -376,6 +387,7 @@ content:
       - name: foto
         label: Foto do casal
         type: image
+        description: "Opcional. JPG em sRGB, lado maior até 2000 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
         options:
           media: depoimentos
       - name: ordem
@@ -414,6 +426,7 @@ content:
       - name: capa
         label: Foto de capa
         type: image
+        description: "Foto horizontal 3:2, 2400 × 1600 px (até 3000 × 2000), até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
         options:
           media: blog
       - name: capaAlt
@@ -422,6 +435,7 @@ content:
       - name: body
         label: Texto
         type: rich-text
+        description: "Fotos no meio do texto: JPG em sRGB, lado maior até 2400 px, até 3 MB."
         options:
           format: markdown
           media: blog
@@ -461,6 +475,7 @@ content:
         label: Foto
         type: image
         required: true
+        description: "Proporção livre (3:2 horizontal ou 4:5 vertical ficam melhor), lado maior de 2400 a 3000 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
         options:
           media: portfolio
       - name: alt
@@ -481,6 +496,7 @@ content:
         label: Foto
         type: image
         required: true
+        description: "Foto quadrada 1:1, 1080 × 1080 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
         options:
           media: instagram
       - name: link

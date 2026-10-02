@@ -36,7 +36,7 @@ O conteúdo é editado pelo [Pages CMS](https://pagescms.org), configurado em `.
    - **Página Sobre**, **Portfólio** (ordem e legendas) e **Instagram** (até 6 fotos).
 3. Edite e clique em **Save**. O site publica a mudança sozinho em poucos minutos, e o PDF da proposta é atualizado junto.
 
-**Fotos:** em qualquer campo de foto, clique para enviar do computador ou escolher uma que já está no painel. Use JPG editado, em sRGB, de 1 a 4 MB. Na aba **Media** ficam as pastas: *Fotos do site*, *Portfólio*, *Instagram*, *Depoimentos* e *Blog*.
+**Fotos:** em qualquer campo de foto, clique para enviar do computador ou escolher uma que já está no painel. Use JPG editado, em sRGB, lado maior de 2400 a 3000 px, até 3 MB (veja [Fotos: tamanho e otimização](#fotos-tamanho-e-otimização)). Na aba **Media** ficam as pastas: *Fotos do site*, *Portfólio*, *Instagram*, *Depoimentos* e *Blog*.
 
 **Portfólio:** envie as fotos em *Media → Portfólio*. Todas aparecem no site. Para definir a ordem, a legenda e a descrição (para leitores de tela), adicione a foto em **Portfólio (ordem e legendas)**: as fotos da lista vêm primeiro, na ordem da lista, e as demais seguem pelo nome do arquivo.
 
@@ -134,7 +134,7 @@ Texto do post.
 
 ## Fotos
 
-JPG editado, cor sRGB, de 1 a 4 MB por arquivo. O site gera as versões menores (AVIF e WebP) sozinho. Enquanto a foto não existe, a página mostra um espaço tracejado com o nome do espaço e a medida.
+JPG editado, cor sRGB, lado maior de 2400 a 3000 px, até 3 MB por arquivo. O site gera as versões menores (AVIF e WebP) sozinho. Enquanto a foto não existe, a página mostra um espaço tracejado com o nome do espaço e a medida.
 
 Cada espaço fixo recebe a foto de um destes jeitos:
 
@@ -151,7 +151,7 @@ Cada espaço fixo recebe a foto de um destes jeitos:
 | `pacote-mini-wedding` | Pacote Mini Wedding | 3:2 horizontal | 2400 × 1600 px |
 | `pacote-promessa` | Pacote Promessa | 3:2 horizontal | 2400 × 1600 px |
 | `pacote-eternidade` | Pacote Eternidade | 3:2 horizontal | 2400 × 1600 px |
-| `pdf-capa` | Capa do PDF da proposta (sem ela, usa `proposta-hero`) | 9:16 vertical | 1800 × 3200 px |
+| `pdf-capa` | Capa do PDF da proposta (sem ela, usa `proposta-hero`) | 9:16 vertical | 1690 × 3000 px |
 | `pdf-extras` | Página de valores adicionais do PDF (sem ela, usa `faixa`) | 3:2 horizontal | 2400 × 1600 px |
 | `pdf-diferenciais` | Página "Por que Mikael Fotografia?" do PDF (sem ela, usa `sobre-retrato`) | 2:3 vertical | 1600 × 2400 px |
 
@@ -168,3 +168,36 @@ As fotos do topo (`home-hero` e `proposta-hero`) ocupam a tela inteira e são co
 ```
 
 **Marca:** logo horizontal em `src/assets/marca/logo.png` (ou `.svg`/`.webp`), fundo transparente, largura mínima de 1200 px. Sem o arquivo, o cabeçalho usa o nome em texto. O ícone da aba fica em `public/favicon.svg`.
+
+## Fotos: tamanho e otimização
+
+**Como exportar no Lightroom (Mikael):**
+
+- Formato **JPG**, espaço de cor **sRGB**, qualidade **80 a 85**.
+- Redimensionar: **lado maior 3000 px** (2400 px já basta para pacotes, portfólio e blog). Resolução (ppi) não importa.
+- Nitidez de saída: **tela, padrão**.
+- Sem marca d'água grande no meio da foto. Se quiser, uma assinatura pequena no canto.
+- Nada de RAW (`.cr3`, `.nef`, `.dng`...), HEIC (foto direto do iPhone) ou TIFF. O painel só aceita JPG, PNG e WebP.
+
+Cada campo de foto do painel mostra a medida ideal daquele espaço (topo: horizontal 3:2 com o casal no centro; retrato: vertical 4:5; pacotes: 3:2; portfólio: livre; Instagram: quadrada).
+
+**O que o site faz sozinho:**
+
+1. **Otimiza o arquivo enviado**, como o TinyPNG faz: a cada envio pelo painel, o deploy roda `npm run otimizar-imagens`, que gira a foto pela orientação da câmera, reduz para no máximo 3000 px no lado maior, converte para sRGB, remove os metadados (EXIF, GPS) e recomprime no mesmo formato e com o mesmo nome (JPG com mozjpeg qualidade 82, PNG com paleta, WebP qualidade 82). Só substitui quando a foto foi reduzida ou ficou mais de 5% menor, então rodar de novo não muda nada. A versão otimizada volta para a `main` num commit "Otimiza imagens enviadas [skip ci]" do `github-actions[bot]`, e o site publicado já usa essa versão. O resumo com antes/depois aparece na página da execução em **Actions**.
+2. **Gera as versões para o navegador:** no build, o Astro cria AVIF e WebP em vários tamanhos, e cada aparelho baixa só o tamanho de que precisa.
+
+Uma foto de câmera de 15 a 20 MB costuma virar 1 a 2 MB no repositório e 100 a 300 KB no site.
+
+**TinyPNG ou Squoosh:** opcionais. Dá para passar a foto em [tinypng.com](https://tinypng.com) ou [squoosh.app](https://squoosh.app) antes de enviar, mas o site já faz o equivalente.
+
+**No computador (Thiago):**
+
+```bash
+npm run otimizar-imagens   # otimiza as fotos das pastas do painel e mostra a tabela antes/depois
+npm run verificar-imagens  # só confere: lista fotos acima de 3000 px ou 3 MB e sai com erro
+node scripts/otimizar-imagens.mjs --pasta caminho/da/pasta   # outra pasta
+```
+
+As pastas ficam no início de `scripts/otimizar-imagens.mjs`. No deploy, a verificação é só um aviso. Se aparecer um arquivo HEIC/RAW/TIFF nessas pastas (enviado fora do painel), o deploy falha com a lista dos arquivos: exporte como JPG, envie de novo e apague o original.
+
+**Tamanho do repositório:** o GitHub recomenda manter o repositório abaixo de cerca de 1 GB. Com fotos otimizadas (1 a 2 MB cada), isso dá para centenas de fotos. Foto apagada pelo painel sai do site, mas continua no histórico do git e ocupando espaço; trocar a mesma foto muitas vezes também acumula. Envie a versão final e evite subir e apagar lotes de teste.

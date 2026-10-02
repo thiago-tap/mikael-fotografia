@@ -27,7 +27,7 @@ export const vagas = {
   'pacote-mini-wedding': { proporcao: '3:2', medida: '2400 × 1600 px' },
   'pacote-promessa': { proporcao: '3:2', medida: '2400 × 1600 px' },
   'pacote-eternidade': { proporcao: '3:2', medida: '2400 × 1600 px' },
-  'pdf-capa': { proporcao: '9:16', medida: '1800 × 3200 px' },
+  'pdf-capa': { proporcao: '9:16', medida: '1690 × 3000 px' },
   'pdf-extras': { proporcao: '3:2', medida: '2400 × 1600 px' },
   'pdf-diferenciais': { proporcao: '2:3', medida: '1600 × 2400 px' },
 } as const satisfies Record<string, { proporcao: Proporcao; medida: string }>;

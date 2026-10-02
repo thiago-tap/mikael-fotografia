@@ -9,6 +9,8 @@
     "preview": "astro preview",
     "pdf": "node scripts/gerar-pdf.mjs",
     "og": "node scripts/gerar-og.mjs",
+    "otimizar-imagens": "node scripts/otimizar-imagens.mjs",
+    "verificar-imagens": "node scripts/otimizar-imagens.mjs --verificar",
     "astro": "astro"
   },
   "dependencies": {
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "playwright": "^1.63.0",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3"
   }
 }
