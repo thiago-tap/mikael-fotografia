@@ -17,7 +17,7 @@ const marca = import.meta.glob<ModuloImagem>('/src/assets/marca/logo.{png,svg,we
   eager: true,
 });
 
-export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3';
+export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3' | '9:16';
 
 /** Fotos fixas do site. O arquivo vai em src/assets/fotos com o nome indicado (jpg, png ou webp). */
 export const vagas = {
@@ -29,6 +29,9 @@ export const vagas = {
   'pacote-mini-wedding': { proporcao: '3:2', medida: '2400 × 1600 px' },
   'pacote-promessa': { proporcao: '3:2', medida: '2400 × 1600 px' },
   'pacote-eternidade': { proporcao: '3:2', medida: '2400 × 1600 px' },
+  'pdf-capa': { proporcao: '9:16', medida: '1800 × 3200 px' },
+  'pdf-extras': { proporcao: '3:2', medida: '2400 × 1600 px' },
+  'pdf-diferenciais': { proporcao: '2:3', medida: '1600 × 2400 px' },
 } as const satisfies Record<string, { proporcao: Proporcao; medida: string }>;
 
 export type Vaga = keyof typeof vagas;

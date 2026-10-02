@@ -14,6 +14,21 @@ npm run build    # verifica tipos e gera dist/
 
 Cada push na branch `main` roda `.github/workflows/deploy.yml` e publica o site. No repositório, em **Settings → Pages**, a origem deve estar como **GitHub Actions**. O endereço e o caminho base são preenchidos pelo próprio workflow, então o site funciona em `https://<usuario>.github.io/<repo>/` e também com domínio próprio.
 
+## PDF da proposta
+
+```bash
+npm run pdf                # gera o site e cria proposta/Proposta-Mikael-Fotografia.pdf
+npm run pdf -- --sem-build # reaproveita o dist/ já gerado
+```
+
+O PDF sai da página `/proposta-pdf/` (fora do menu, do sitemap e com `noindex`), no mesmo formato da proposta original do Canva: páginas verticais de 810 × 1440 pt. São 9 páginas: capa, apresentação com índice, uma página por pacote, valores adicionais, "Por que Mikael Fotografia?" e perguntas frequentes com contato. Preços, itens, extras e textos vêm dos mesmos arquivos do site, então basta editar o conteúdo e rodar de novo.
+
+No PDF dá para clicar no índice (leva à página de cada pacote), em "Índice" no rodapé de cada página, em "Quero este pacote" (abre o WhatsApp com a mensagem do pacote), no WhatsApp, no Instagram e no endereço do site.
+
+**Depois de receber as fotos do Mikael:** coloque os arquivos em `src/assets/fotos/` com os nomes da tabela de [Fotos](#fotos) (os `pacote-*`, `sobre-retrato` e, se quiser fotos próprias no PDF, `pdf-capa`, `pdf-extras` e `pdf-diferenciais`) e rode `npm run pdf`. Enquanto a foto não existe, o PDF mostra um bloco bege com o nome do arquivo esperado.
+
+O script usa o Edge ou o Chrome instalado no computador. Se nenhum for encontrado, rode `npx playwright install chromium` uma vez. Se algum texto passar do tamanho da página, o script avisa qual página estourou. A pasta `proposta/` não vai para o repositório.
+
 ## Onde editar o conteúdo
 
 | O quê | Arquivo |
@@ -70,6 +85,9 @@ Fotos fixas vão em `src/assets/fotos/`, com exatamente estes nomes (extensão `
 | `pacote-mini-wedding` | Pacote Mini Wedding | 3:2 horizontal | 2400 × 1600 px |
 | `pacote-promessa` | Pacote Promessa | 3:2 horizontal | 2400 × 1600 px |
 | `pacote-eternidade` | Pacote Eternidade | 3:2 horizontal | 2400 × 1600 px |
+| `pdf-capa` | Capa do PDF da proposta (sem ela, usa `proposta-hero`) | 9:16 vertical | 1800 × 3200 px |
+| `pdf-extras` | Página de valores adicionais do PDF (sem ela, usa `faixa`) | 3:2 horizontal | 2400 × 1600 px |
+| `pdf-diferenciais` | Página "Por que Mikael Fotografia?" do PDF (sem ela, usa `sobre-retrato`) | 2:3 vertical | 1600 × 2400 px |
 
 As fotos do topo (`home-hero` e `proposta-hero`) usam o mesmo arquivo em todas as telas, cortado a partir do centro: no celular aparecem em formato vertical (4:5), mostrando só a faixa central, cerca de metade da largura; no tablet ficam em 2:1 e no computador em 12:5, cortando um pouco em cima e embaixo. Escolha fotos com o casal no centro e com folga ao redor. A `faixa` fica 3:2 no celular e 12:5 a partir do tablet.
 

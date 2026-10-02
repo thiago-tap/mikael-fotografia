@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: process.env.SITE_URL || 'http://localhost:4321',
   base: process.env.BASE_PATH || '/',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (pagina) => !pagina.includes('/proposta-pdf') })],
   vite: {
     plugins: [tailwindcss()],
   },

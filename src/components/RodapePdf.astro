@@ -1,0 +1,21 @@
+---
+import { site } from '../lib/site';
+
+interface Props {
+  pagina: number;
+  escuro?: boolean;
+}
+
+const { pagina, escuro = false } = Astro.props;
+---
+
+<div
+  class:list={[
+    'absolute inset-x-[120px] bottom-[48px] flex items-center justify-between font-sans text-[13px] tracking-[0.3em] uppercase',
+    escuro ? 'text-papel/60' : 'text-taupe',
+  ]}
+>
+  <span>{site.nome}</span>
+  <span>{String(pagina).padStart(2, '0')}</span>
+  <a href="#indice">Índice</a>
+</div>

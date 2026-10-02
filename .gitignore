@@ -8,6 +8,9 @@ node_modules/
 # material bruto do cliente (PDF de 52 MB)
 referencia/
 
+# PDF da proposta gerado por npm run pdf
+proposta/
+
 # logs
 npm-debug.log*
 

@@ -10,6 +10,10 @@ export async function extras() {
   return (await getCollection('extras')).sort(porOrdem);
 }
 
+export async function diferenciais() {
+  return (await getCollection('diferenciais')).sort(porOrdem);
+}
+
 export async function perguntas({ somenteProposta = false } = {}) {
   const todas = (await getCollection('faq')).sort(porOrdem);
   return somenteProposta ? todas.filter((pergunta) => pergunta.data.naProposta) : todas;

@@ -1,0 +1,42 @@
+---
+import { Image } from 'astro:assets';
+import { fotoDoSite, type Vaga } from '../lib/fotos';
+
+interface Props {
+  /** Vagas em ordem de preferência: usa a primeira que tiver foto. */
+  vagas: Vaga[];
+  alt: string;
+  largura: number;
+  class?: string;
+  escura?: boolean;
+}
+
+const { vagas, alt, largura, class: classe = '', escura = false } = Astro.props;
+const imagem = vagas.map((vaga) => fotoDoSite(vaga)).find((foto) => foto !== undefined);
+---
+
+<div class:list={['relative overflow-hidden', escura ? 'bg-tinta' : 'bg-areia', classe]}>
+  {
+    imagem ? (
+      <Image
+        src={imagem}
+        alt={alt}
+        width={Math.min(imagem.width, largura * 2)}
+        format="jpg"
+        quality={85}
+        loading="eager"
+        class="absolute inset-0 h-full w-full object-cover"
+      />
+    ) : (
+      <div
+        class:list={['absolute inset-6 flex items-end justify-center border pb-6', escura ? 'border-white/10' : 'border-linha']}
+        role="img"
+        aria-label={alt}
+      >
+        <span class:list={['font-sans text-[13px] tracking-[0.3em] uppercase', escura ? 'text-white/25' : 'text-taupe/70']}>
+          {vagas[0]}
+        </span>
+      </div>
+    )
+  }
+</div>

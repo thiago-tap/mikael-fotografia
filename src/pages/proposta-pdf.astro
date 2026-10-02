@@ -1,0 +1,291 @@
+---
+import '../styles/global.css';
+import { render } from 'astro:content';
+import FotoPdf from '../components/FotoPdf.astro';
+import Icone from '../components/Icone.astro';
+import RodapePdf from '../components/RodapePdf.astro';
+import { diferenciais, extras, pacotes, perguntas, sobre } from '../lib/conteudo';
+import type { Vaga } from '../lib/fotos';
+import { formatarPreco, linkWhatsApp, rota, site } from '../lib/site';
+
+const [listaPacotes, listaExtras, listaDiferenciais, faqResumido, paginaSobre] = await Promise.all([
+  pacotes(),
+  extras(),
+  diferenciais(),
+  perguntas({ somenteProposta: true }),
+  sobre(),
+]);
+
+const faq = await Promise.all(
+  faqResumido.map(async (pergunta) => ({ pergunta, Conteudo: (await render(pergunta)).Content })),
+);
+
+const numero = (pagina: number) => String(pagina).padStart(2, '0');
+const paginaExtras = listaPacotes.length + 3;
+const paginaDiferenciais = paginaExtras + 1;
+const paginaContato = paginaExtras + 2;
+
+const indice = [
+  ...listaPacotes.map((pacote, posicao) => ({
+    ancora: pacote.id,
+    rotulo: `Pacote ${pacote.data.nome}`,
+    detalhe: formatarPreco(pacote.data.preco),
+    pagina: posicao + 3,
+  })),
+  { ancora: 'extras', rotulo: 'Valores adicionais', detalhe: '', pagina: paginaExtras },
+  { ancora: 'por-que', rotulo: `Por que ${site.nome}?`, detalhe: '', pagina: paginaDiferenciais },
+  { ancora: 'contato', rotulo: 'Antes de reservar e contato', detalhe: '', pagina: paginaContato },
+];
+
+const siteSemProtocolo = site.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero conversar sobre o meu casamento.';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1080" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Proposta de fotografia para casamento · {site.nome}</title>
+    <link rel="icon" type="image/svg+xml" href={rota('/favicon.svg')} />
+  </head>
+  <body class="proposta-pdf">
+    <section class="folha bg-tinta text-papel" id="capa">
+      <div class="absolute inset-0">
+        <FotoPdf vagas={['pdf-capa', 'proposta-hero']} alt={`Casamento fotografado por ${site.nome}`} largura={1080} escura class="h-full w-full" />
+      </div>
+      <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(0_0_0/0.35),transparent_30%,transparent_65%,rgb(0_0_0/0.55))]"></div>
+      <div class="absolute inset-x-0 top-[25%] text-center">
+        <p class="font-serif text-[64px] font-light tracking-[0.2em] uppercase">{site.nome}</p>
+      </div>
+      <div class="absolute inset-x-0 bottom-[150px] px-[120px] text-center">
+        <p class="font-sans text-[18px] tracking-[0.4em] uppercase opacity-80">Proposta de fotografia para casamento</p>
+        <p class="mt-6 font-serif text-[46px] leading-tight font-light italic">{site.frase}</p>
+        <p class="mt-10 font-sans text-[16px] tracking-[0.3em] uppercase opacity-70">por {site.fotografo}</p>
+      </div>
+    </section>
+
+    <section class="folha folha-oval" id="indice">
+      <div class="flex h-full flex-col px-[120px] pt-[150px] pb-[110px]">
+        <p class="text-center font-sans text-[16px] tracking-[0.36em] text-taupe uppercase">Proposta de fotografia para casamento</p>
+        <div class="my-auto grid grid-cols-[440px_1fr] items-center gap-14 py-12">
+          <FotoPdf vagas={['sobre-retrato']} alt={`Retrato do fotógrafo ${site.fotografo}`} largura={440} class="aspect-[4/5]" />
+          <div>
+            {paginaSobre.data.subtitulo && <p class="font-sans text-[15px] tracking-[0.32em] text-taupe uppercase">{paginaSobre.data.subtitulo}</p>}
+            <h1 class="mt-4 font-serif text-[60px] leading-[1.05] font-light text-tinta">{paginaSobre.data.titulo}</h1>
+            <p class="mt-8 font-sans text-[23px] leading-[1.75] text-grafite">{paginaSobre.data.resumo}</p>
+          </div>
+        </div>
+
+        <nav aria-label="Índice da proposta">
+          <p class="font-serif text-[40px] font-light text-tinta italic">Nesta proposta</p>
+          <ol class="mt-6 border-t border-linha">
+            {
+              indice.map((item) => (
+                <li class="border-b border-linha">
+                  <a href={`#${item.ancora}`} class="flex items-baseline gap-6 py-[18px] text-tinta">
+                    <span class="w-12 font-serif text-[26px] text-taupe">{numero(item.pagina)}</span>
+                    <span class="flex-1 font-sans text-[20px] tracking-[0.22em] uppercase">{item.rotulo}</span>
+                    {item.detalhe && <span class="font-serif text-[28px]">{item.detalhe}</span>}
+                    <Icone nome="seta" class="h-6 w-6 self-center text-taupe" />
+                  </a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </div>
+      <RodapePdf pagina={2} />
+    </section>
+
+    {
+      listaPacotes.map((pacote, posicao) => {
+        const { nome, preco, chamada, cobertura, itens, pagamento, destaque } = pacote.data;
+        const mensagem = `Olá, Mikael! Vi a proposta e tenho interesse no pacote ${nome} para o meu casamento.`;
+        return (
+          <section class="folha folha-oval" id={pacote.id}>
+            <div class="flex h-full flex-col items-center px-[120px] pt-[120px] pb-[120px] text-center">
+              <p class="font-sans text-[16px] tracking-[0.36em] text-taupe uppercase">{destaque ? 'O mais escolhido' : cobertura}</p>
+              <h2 class="mt-5 font-serif text-[56px] leading-none font-light tracking-[0.1em] whitespace-nowrap text-tinta uppercase">Pacote {nome}</h2>
+              <FotoPdf
+                vagas={[`pacote-${pacote.id}` as Vaga]}
+                alt={`Casamento fotografado por ${site.nome}, pacote ${nome}`}
+                largura={840}
+                class="mt-14 aspect-[3/2] w-full shrink-0"
+              />
+              {chamada && <p class="mt-12 max-w-[760px] font-serif text-[34px] leading-snug text-grafite italic">{chamada}</p>}
+              <ul class:list={['w-full space-y-[10px] text-left', chamada ? 'mt-10' : 'mt-14']}>
+                {itens.map((item) => (
+                  <li class="flex gap-5 font-serif text-[29px] leading-[1.35] text-grafite italic">
+                    <span class="text-taupe not-italic" aria-hidden="true">·</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div class="mt-auto">
+                <p class="font-serif text-[104px] leading-none font-light tracking-[0.06em] text-tinta">{formatarPreco(preco)}</p>
+                {pagamento && <p class="mt-4 font-sans text-[16px] tracking-[0.32em] text-taupe uppercase">Pagamento: {pagamento}</p>}
+                <a href={linkWhatsApp(mensagem)} class="mt-10 inline-flex items-center gap-4 bg-tinta px-12 py-6 font-sans text-[18px] tracking-[0.28em] text-papel uppercase">
+                  <Icone nome="whatsapp" class="h-7 w-7" />
+                  Quero este pacote
+                </a>
+              </div>
+            </div>
+            <RodapePdf pagina={posicao + 3} />
+          </section>
+        );
+      })
+    }
+
+    <section class="folha folha-oval" id="extras">
+      <div class="flex h-full flex-col px-[120px] pt-[120px] pb-[120px]">
+        <p class="text-center font-sans text-[16px] tracking-[0.36em] text-taupe uppercase">Para acrescentar à sua cobertura</p>
+        <h2 class="mt-5 text-center font-serif text-[68px] leading-none font-light text-tinta italic">Valores adicionais</h2>
+        <FotoPdf vagas={['pdf-extras', 'faixa']} alt={`Detalhe de casamento fotografado por ${site.nome}`} largura={840} class="mt-14 min-h-[300px] w-full flex-1" />
+        <ul class="mt-12 divide-y divide-linha border-y border-linha">
+          {
+            listaExtras.map(({ data }) => (
+              <li class="py-7">
+                <div class="flex items-baseline justify-between gap-8">
+                  <h3 class="font-serif text-[34px] leading-tight text-tinta">{data.nome}</h3>
+                  <p class="shrink-0 text-right font-serif text-[30px] text-tinta">
+                    {data.aPartirDe && <span class="mr-2 font-sans text-[14px] tracking-[0.24em] text-taupe uppercase">a partir de</span>}
+                    {formatarPreco(data.preco)}
+                    {data.unidade && <span class="ml-1 font-sans text-[18px] text-taupe">{data.unidade}</span>}
+                  </p>
+                </div>
+                {data.descricao && <p class="mt-2 font-sans text-[19px] leading-[1.6] text-grafite">{data.descricao}</p>}
+                {data.itens.length > 0 && <p class="mt-2 font-serif text-[21px] leading-[1.5] text-taupe italic">{data.itens.join(' · ')}</p>}
+              </li>
+            ))
+          }
+        </ul>
+        <a href={linkWhatsApp('Olá, Mikael! Vi a proposta e quero saber mais sobre os valores adicionais.')} class="mt-10 self-center font-sans text-[17px] tracking-[0.28em] text-tinta uppercase underline decoration-linha underline-offset-8">
+          Montar meu pacote pelo WhatsApp
+        </a>
+      </div>
+      <RodapePdf pagina={paginaExtras} />
+    </section>
+
+    <section class="folha folha-oval" id="por-que">
+      <div class="flex h-full flex-col items-center px-[80px] pt-[130px] pb-[120px] text-center">
+        <h2 class="font-serif text-[50px] leading-none font-light tracking-[0.06em] whitespace-nowrap text-tinta uppercase">Por que {site.nome}?</h2>
+        <ul class="mt-14 space-y-7">
+          {
+            listaDiferenciais.map(({ data }) => (
+              <li>
+                <p class="font-serif text-[30px] leading-tight tracking-[0.04em] text-tinta uppercase italic">{data.titulo}</p>
+                <p class="mt-1 font-sans text-[19px] leading-[1.55] text-grafite">{data.texto}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <FotoPdf vagas={['pdf-diferenciais', 'sobre-retrato']} alt={`Casamento fotografado por ${site.nome}`} largura={620} class="mt-14 min-h-[300px] w-[620px] flex-1" />
+        <p class="mt-12 font-serif text-[34px] font-light tracking-[0.04em] whitespace-nowrap text-tinta uppercase">Cuidamos do seu dia como se fosse nosso.</p>
+      </div>
+      <RodapePdf pagina={paginaDiferenciais} />
+    </section>
+
+    <section class="folha folha-oval" id="contato">
+      <div class="flex h-full flex-col">
+        <div class="px-[120px] pt-[130px]">
+          <p class="text-center font-sans text-[16px] tracking-[0.36em] text-taupe uppercase">Perguntas frequentes</p>
+          <h2 class="mt-5 text-center font-serif text-[64px] leading-none font-light text-tinta italic">Antes de reservar</h2>
+          <ol class="mt-12 divide-y divide-linha border-y border-linha">
+            {
+              faq.map(({ pergunta, Conteudo }, posicao) => (
+                <li class="flex gap-6 py-8">
+                  <span class="font-serif text-[26px] text-taupe">{posicao + 1}.</span>
+                  <div>
+                    <h3 class="font-serif text-[33px] leading-snug text-tinta">{pergunta.data.pergunta}</h3>
+                    <div class="faq-resposta mt-3 font-sans text-[20px] leading-[1.65] text-grafite">
+                      <Conteudo />
+                    </div>
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+
+        <div class="mt-auto bg-tinta px-[120px] pt-[80px] pb-[130px] text-center text-papel">
+          <p class="font-sans text-[16px] tracking-[0.36em] uppercase opacity-70">Vamos conversar?</p>
+          <p class="mt-5 font-serif text-[52px] leading-tight font-light italic">Reserve a data do seu casamento</p>
+          <a href={linkWhatsApp(mensagemProposta)} class="mt-10 inline-flex items-center gap-4 border border-papel px-12 py-6 font-sans text-[18px] tracking-[0.28em] uppercase">
+            <Icone nome="whatsapp" class="h-7 w-7" />
+            Chamar no WhatsApp
+          </a>
+          <div class="mt-12 flex items-center justify-center gap-12 font-sans text-[19px] tracking-[0.12em]">
+            <a href={linkWhatsApp(mensagemProposta)} class="flex items-center gap-3">
+              <Icone nome="whatsapp" class="h-6 w-6 opacity-70" />
+              {site.whatsapp.exibicao}
+            </a>
+            <a href={site.instagram.url} class="flex items-center gap-3">
+              <Icone nome="instagram" class="h-6 w-6 opacity-70" />
+              @{site.instagram.usuario}
+            </a>
+          </div>
+          <a href={site.url} class="mt-6 inline-block font-sans text-[17px] tracking-[0.18em] opacity-70">{siteSemProtocolo}</a>
+        </div>
+      </div>
+      <RodapePdf pagina={paginaContato} escuro />
+    </section>
+  </body>
+</html>
+
+<style is:global>
+  @page {
+    size: 1080px 1920px;
+    margin: 0;
+  }
+
+  html:has(.proposta-pdf) {
+    scroll-behavior: auto;
+  }
+
+  .proposta-pdf {
+    margin: 0;
+    background: var(--color-grafite);
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .folha {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    margin: 0 auto;
+    overflow: hidden;
+    break-after: page;
+  }
+
+  .folha:last-child {
+    break-after: auto;
+  }
+
+  .folha-oval {
+    background: radial-gradient(ellipse 640px 920px at 50% 50%, var(--color-papel) 99.7%, var(--color-areia) 100%);
+  }
+
+  .faq-resposta a {
+    text-decoration: underline;
+    text-decoration-color: var(--color-linha);
+  }
+
+  @media screen {
+    .proposta-pdf {
+      padding: 40px 0;
+    }
+
+    .folha + .folha {
+      margin-top: 40px;
+    }
+  }
+
+  @media print {
+    .proposta-pdf {
+      background: none;
+    }
+  }
+</style>

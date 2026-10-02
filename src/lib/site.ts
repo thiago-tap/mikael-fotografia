@@ -2,6 +2,7 @@ export const site = {
   nome: 'Mikael Fotografia',
   fotografo: 'Mikael Vitor',
   frase: 'O dia em que duas histórias se tornam uma só.',
+  url: 'https://thiago-tap.github.io/mikael-fotografia/',
   descricao:
     'Fotografia de casamento por Mikael Vitor. Pacotes Micro Wedding, Mini Wedding, Promessa e Eternidade, com fotos tratadas em alta resolução e atendimento próximo.',
   whatsapp: {
