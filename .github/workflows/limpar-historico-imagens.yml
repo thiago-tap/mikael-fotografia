@@ -1,0 +1,77 @@
+name: Limpar histórico de imagens
+
+on:
+  schedule:
+    - cron: '0 7 1 */2 *'
+  workflow_dispatch:
+    inputs:
+      forcar:
+        description: Limpar mesmo abaixo do limite de 15 MB
+        type: boolean
+        default: false
+      simular:
+        description: Apenas simular (não altera a main)
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: main-escrita
+  cancel-in-progress: false
+
+jobs:
+  limpar:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install git-filter-repo
+
+      - id: limpeza
+        name: Analisar e reescrever o histórico
+        env:
+          FORCAR: ${{ inputs.forcar }}
+          SIMULAR: ${{ inputs.simular }}
+        run: |
+          args=(--sem-enviar --backup "$RUNNER_TEMP/mikael-fotografia-historico.bundle")
+          if [ "$FORCAR" = "true" ]; then args+=(--forcar); fi
+          if [ "$SIMULAR" = "true" ]; then args+=(--simular); fi
+          node scripts/limpar-historico-imagens.mjs "${args[@]}"
+
+      - name: Guardar backup do repositório
+        if: steps.limpeza.outputs.reescrito == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-historico-${{ github.run_id }}
+          path: ${{ runner.temp }}/mikael-fotografia-historico.bundle
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
+
+      - id: envio
+        name: Enviar histórico reescrito
+        if: steps.limpeza.outputs.reescrito == 'true'
+        run: node scripts/limpar-historico-imagens.mjs --somente-enviar
+
+      - name: Republicar o site e limpar caches
+        if: steps.envio.outputs.enviado == 'true'
+        run: |
+          gh workflow run deploy.yml --ref main
+          gh cache delete --all || echo "Nenhum cache para remover."

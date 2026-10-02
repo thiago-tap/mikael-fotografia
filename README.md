@@ -200,4 +200,43 @@ node scripts/otimizar-imagens.mjs --pasta caminho/da/pasta   # outra pasta
 
 As pastas ficam no início de `scripts/otimizar-imagens.mjs`. No deploy, a verificação é só um aviso. Se aparecer um arquivo HEIC/RAW/TIFF nessas pastas (enviado fora do painel), o deploy falha com a lista dos arquivos: exporte como JPG, envie de novo e apague o original.
 
-**Tamanho do repositório:** o GitHub recomenda manter o repositório abaixo de cerca de 1 GB. Com fotos otimizadas (1 a 2 MB cada), isso dá para centenas de fotos. Foto apagada pelo painel sai do site, mas continua no histórico do git e ocupando espaço; trocar a mesma foto muitas vezes também acumula. Envie a versão final e evite subir e apagar lotes de teste.
+**Tamanho do repositório:** o GitHub recomenda manter o repositório abaixo de cerca de 1 GB. Com fotos otimizadas (1 a 2 MB cada), isso dá para centenas de fotos. Foto apagada pelo painel sai do site, mas continua no histórico do git e ocupando espaço; trocar a mesma foto muitas vezes também acumula. Envie a versão final e evite subir e apagar lotes de teste. Essas versões antigas são removidas do histórico de tempos em tempos (próxima seção).
+
+## Limpeza automática do histórico de imagens
+
+**O que faz:** o workflow `.github/workflows/limpar-historico-imagens.yml` procura no histórico inteiro as imagens (`jpg`, `jpeg`, `png`, `webp`, `gif`, `avif`, `heic`, `heif`, `tif`, `tiff`, `raw`, `dng`, `cr2`, `cr3`, `nef`, `arw`) que **não estão na versão atual** do site: fotos apagadas pelo painel, originais antes da otimização e versões trocadas. Se elas somarem **15 MB ou mais**, reescreve o histórico com `git filter-repo` removendo só esses arquivos e faz force push na `main`. O conteúdo atual não muda (o script confere que a árvore da HEAD fica idêntica e aborta se não ficar); mudam os hashes dos commits, e commits que só mexiam nessas imagens somem. Depois dispara o deploy e apaga os caches do Actions. A lista de arquivos removidos, com tamanho e commits, aparece no resumo da execução em **Actions**.
+
+**Quando:** dia 1º a cada 2 meses (jan, mar, mai, jul, set, nov), às 04:00 de Brasília. Também dá para rodar em **Actions → Limpar histórico de imagens → Run workflow**, com `forcar` (limpa mesmo abaixo de 15 MB) e `simular` (só mostra o que seria removido e testa a reescrita numa cópia, sem alterar a `main`). Pelo terminal:
+
+```bash
+gh workflow run limpar-historico-imagens.yml -f simular=true
+gh workflow run limpar-historico-imagens.yml -f forcar=true
+```
+
+**Segurança:**
+
+- Antes de reescrever, guarda um `git bundle` com o repositório completo como artefato da execução (`backup-historico-<id>`), por **30 dias**. O repositório é público, então qualquer pessoa logada no GitHub pode baixar o artefato, mas ele só contém o que já era público no histórico.
+- O deploy e a limpeza usam o mesmo grupo de concorrência (`main-escrita`): nunca rodam ao mesmo tempo.
+- Se a `main` mudar durante a limpeza (Mikael salvou algo no painel), nada é enviado; a próxima execução faz a limpeza. O push usa `--force-with-lease` com o commit lido no início.
+- A `main` não pode ter proteção contra force push; se um dia for protegida, a limpeza falha no envio sem alterar nada.
+
+**Restaurar pelo backup** (até 30 dias depois): baixe o artefato na página da execução, descompacte e rode:
+
+```bash
+git clone mikael-fotografia-historico.bundle restaurado
+cd restaurado
+git push --force https://github.com/thiago-tap/mikael-fotografia.git main
+```
+
+**IMPORTANTE (Thiago):** depois de uma limpeza, o clone local fica com o histórico antigo. Faça commit e push de tudo **antes** e então ressincronize (alterações não commitadas ou não enviadas seriam perdidas):
+
+```bash
+git fetch origin
+git reset --hard origin/main
+git reflog expire --expire=now --all
+git gc --prune=now
+```
+
+**No computador:** `npm run limpar-historico-imagens` faz o mesmo localmente (exige `pip install git-filter-repo`, a branch `main` ativa, sem alterações pendentes e igual à `origin/main`). Use `-- --simular` para só ver a lista, `-- --forcar` para ignorar o limite e `-- --limite-mb 30` para mudar o limite. O backup local vai para a pasta temporária do sistema (o caminho aparece na saída) ou para `-- --backup arquivo.bundle`.
+
+**Mikael:** não precisa fazer nada. Evite só editar no painel às 04:00 do dia 1º dos meses ímpares; mesmo nesse horário é seguro, porque a limpeza desiste se a `main` mudar.
