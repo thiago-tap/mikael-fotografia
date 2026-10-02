@@ -1,0 +1,34 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  perguntas: CollectionEntry<'faq'>[];
+}
+
+const { perguntas } = Astro.props;
+const renderizadas = await Promise.all(
+  perguntas.map(async (pergunta) => ({ pergunta, Conteudo: (await render(pergunta)).Content })),
+);
+---
+
+<div class="mx-auto max-w-3xl divide-y divide-linha border-y border-linha">
+  {
+    renderizadas.map(({ pergunta, Conteudo }, indice) => (
+      <details class="group py-6" name="faq">
+        <summary class="flex cursor-pointer list-none items-baseline gap-6 [&::-webkit-details-marker]:hidden">
+          <span class="font-serif text-xl text-taupe">{indice + 1}.</span>
+          <span class="flex-1 font-serif text-2xl text-tinta md:text-[1.7rem]">{pergunta.data.pergunta}</span>
+          <span
+            class="font-sans text-2xl leading-none font-extralight text-grafite transition-transform duration-300 group-open:rotate-45"
+            aria-hidden="true"
+          >
+            +
+          </span>
+        </summary>
+        <div class="texto-corrido mt-4 pl-10">
+          <Conteudo />
+        </div>
+      </details>
+    ))
+  }
+</div>

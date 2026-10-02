@@ -1,0 +1,16 @@
+---
+import { rota } from '../lib/site';
+
+interface Props {
+  titulo: string;
+  texto: string;
+}
+
+const { titulo, texto } = Astro.props;
+---
+
+<div class="mx-auto max-w-xl border border-dashed border-linha px-8 py-16 text-center">
+  <p class="font-serif text-3xl font-light text-tinta">{titulo}</p>
+  <p class="mt-4 font-sans text-grafite">{texto}</p>
+  <a href={rota('/portfolio/')} class="botao mt-10">Ver o portfólio</a>
+</div>

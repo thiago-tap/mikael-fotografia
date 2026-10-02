@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import EstadoVazio from '../components/EstadoVazio.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { depoimentos } from '../lib/conteudo';
+
+const lista = await Promise.all(
+  (await depoimentos()).map(async (depoimento) => ({ depoimento, Texto: (await render(depoimento)).Content })),
+);
+---
+
+<Base titulo="Depoimentos" descricao="O que os casais dizem sobre a experiência com a Mikael Fotografia.">
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <TituloSecao sobrelinha="O que dizem os casais" titulo="Depoimentos" nivel="h1" />
+
+    <div class="mx-auto mt-16 max-w-4xl">
+      {
+        lista.length > 0 ? (
+          <ul class="space-y-24">
+            {lista.map(({ depoimento, Texto }) => (
+              <li class="grid items-center gap-10 md:grid-cols-[1fr_2fr]">
+                {depoimento.data.foto && (
+                  <Image
+                    src={depoimento.data.foto}
+                    alt={`${depoimento.data.casal} no dia do casamento`}
+                    widths={[480, 800]}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    class="aspect-[4/5] w-full object-cover"
+                  />
+                )}
+                <blockquote class:list={[!depoimento.data.foto && 'md:col-span-2 text-center']}>
+                  <div class="font-serif text-2xl leading-relaxed font-light text-grafite italic">
+                    <Texto />
+                  </div>
+                  <footer class="sobrelinha mt-6 text-tinta">
+                    — {depoimento.data.casal}
+                    {depoimento.data.local && <span class="text-taupe"> · {depoimento.data.local}</span>}
+                  </footer>
+                </blockquote>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EstadoVazio
+            titulo="Os primeiros depoimentos chegam em breve"
+            texto="Estamos reunindo as palavras dos casais que já fotografamos. Enquanto isso, veja alguns casamentos no portfólio."
+          />
+        )
+      }
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp />
+  </div>
+</Base>

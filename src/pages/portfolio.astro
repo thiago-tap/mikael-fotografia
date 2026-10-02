@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import GradePortfolio from '../components/GradePortfolio.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+---
+
+<Base titulo="Portfólio de casamentos" descricao="Casamentos fotografados por Mikael Vitor e equipe.">
+  <section class="px-6 pt-16 pb-24 md:pt-24">
+    <div class="mx-auto max-w-7xl">
+      <TituloSecao sobrelinha="Portfólio" titulo="Casamentos" nivel="h1">
+        <p class="mx-auto mt-6 max-w-xl font-sans text-grafite">
+          Cerimônia, recepção, making of e os pequenos momentos entre uma coisa e outra.
+        </p>
+      </TituloSecao>
+      <div class="mt-16">
+        <GradePortfolio />
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp titulo="Gostou do que viu? Vamos falar do seu casamento." />
+  </div>
+</Base>

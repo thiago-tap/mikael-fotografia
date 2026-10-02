@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatarPreco } from '../lib/site';
+
+interface Props {
+  extras: CollectionEntry<'extras'>[];
+}
+
+const { extras } = Astro.props;
+---
+
+<ul class="mx-auto grid max-w-5xl gap-px border border-linha bg-linha md:grid-cols-2">
+  {
+    extras.map(({ data }) => (
+      <li class="flex flex-col bg-papel px-8 py-10 md:px-10">
+        <h3 class="font-serif text-2xl text-tinta md:text-[1.7rem]">{data.nome}</h3>
+        <p class="mt-3 font-sans text-sm tracking-[0.16em] text-tinta uppercase">
+          {data.aPartirDe && <span class="text-taupe">A partir de </span>}
+          {formatarPreco(data.preco)}
+          {data.unidade && <span class="text-taupe normal-case tracking-normal"> {data.unidade}</span>}
+        </p>
+        {data.descricao && <p class="mt-5 font-serif text-lg text-grafite italic">{data.descricao}</p>}
+        {data.itens.length > 0 && (
+          <ul class="mt-5 space-y-2">
+            {data.itens.map((item) => (
+              <li class="flex gap-3 font-sans text-sm leading-relaxed text-grafite">
+                <span class="text-taupe" aria-hidden="true">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))
+  }
+</ul>

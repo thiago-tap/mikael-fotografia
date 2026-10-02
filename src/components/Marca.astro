@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import { logo } from '../lib/fotos';
+import { site } from '../lib/site';
+
+interface Props {
+  tamanho?: 'normal' | 'grande';
+}
+
+const { tamanho = 'normal' } = Astro.props;
+const imagem = logo();
+---
+
+{
+  imagem ? (
+    <Image
+      src={imagem}
+      alt={site.nome}
+      widths={[240, 480]}
+      sizes="240px"
+      class:list={[tamanho === 'grande' ? 'h-20 w-auto' : 'h-12 w-auto md:h-14']}
+    />
+  ) : (
+    <span class="flex flex-col items-center leading-none">
+      <span
+        class:list={[
+          'font-serif font-light tracking-[0.34em] text-tinta',
+          tamanho === 'grande' ? 'text-4xl md:text-5xl' : 'text-xl md:text-2xl',
+        ]}
+      >
+        MIKAEL
+      </span>
+      <span
+        class:list={[
+          'font-sans tracking-[0.5em] text-taupe',
+          tamanho === 'grande' ? 'mt-3 text-xs' : 'mt-1.5 text-[0.55rem]',
+        ]}
+      >
+        FOTOGRAFIA
+      </span>
+    </span>
+  )
+}

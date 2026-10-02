@@ -1,0 +1,22 @@
+---
+import Base from '../layouts/Base.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import ListaFaq from '../components/ListaFaq.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { perguntas } from '../lib/conteudo';
+
+const todas = await perguntas();
+---
+
+<Base titulo="Perguntas frequentes" descricao="Reserva de data, formas de pagamento, fotos, equipe e extras da Mikael Fotografia.">
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <TituloSecao sobrelinha="FAQ" titulo="Perguntas frequentes" nivel="h1" />
+    <div class="mt-16">
+      <ListaFaq perguntas={todas} />
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp titulo="Ficou alguma dúvida? Me chama no WhatsApp." />
+  </div>
+</Base>

@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import EstadoVazio from '../../components/EstadoVazio.astro';
+import TituloSecao from '../../components/TituloSecao.astro';
+import { formatarData, posts } from '../../lib/conteudo';
+import { rota } from '../../lib/site';
+
+const lista = await posts();
+---
+
+<Base titulo="Blog" descricao="Casamentos completos, bastidores e dicas para o grande dia.">
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Blog" titulo="Histórias de casamento" nivel="h1" />
+
+      <div class="mt-16">
+        {
+          lista.length > 0 ? (
+            <ul class="grid gap-x-10 gap-y-16 md:grid-cols-2">
+              {lista.map((post) => (
+                <li>
+                  <a href={rota(`/blog/${post.id}/`)} class="group block">
+                    {post.data.capa && (
+                      <Image
+                        src={post.data.capa}
+                        alt={post.data.capaAlt ?? post.data.titulo}
+                        widths={[480, 800, 1200]}
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        class="aspect-[3/2] w-full object-cover transition-opacity duration-300 group-hover:opacity-85"
+                      />
+                    )}
+                    <p class="sobrelinha mt-6">{formatarData(post.data.data)}</p>
+                    <h2 class="mt-3 font-serif text-3xl font-light text-tinta">{post.data.titulo}</h2>
+                    <p class="mt-3 font-sans text-grafite">{post.data.descricao}</p>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EstadoVazio
+              titulo="O blog estreia em breve"
+              texto="Aqui vão aparecer casamentos completos, contados do making of à festa."
+            />
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>

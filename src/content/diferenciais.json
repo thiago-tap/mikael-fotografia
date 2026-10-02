@@ -1,0 +1,32 @@
+[
+  {
+    "id": "equipe",
+    "titulo": "Equipe de fotógrafos",
+    "texto": "Mais de um olhar no seu dia, para registrar ângulos e momentos que acontecem ao mesmo tempo.",
+    "ordem": 1
+  },
+  {
+    "id": "conexao",
+    "titulo": "Conexão real com o casal",
+    "texto": "A gente conhece vocês antes do grande dia, para que a câmera não seja uma estranha na festa.",
+    "ordem": 2
+  },
+  {
+    "id": "emocao",
+    "titulo": "Emoção verdadeira",
+    "texto": "Fotos que guardam o que vocês sentiram, além de como vocês estavam.",
+    "ordem": 3
+  },
+  {
+    "id": "time",
+    "titulo": "Foto, vídeo, drone e story",
+    "texto": "Tudo no mesmo time, com a mesma linguagem do começo ao fim do casamento.",
+    "ordem": 4
+  },
+  {
+    "id": "atendimento",
+    "titulo": "Atendimento próximo",
+    "texto": "Humano e organizado: vocês sabem com quem falar e o que acontece em cada etapa.",
+    "ordem": 5
+  }
+]

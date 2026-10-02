@@ -1,0 +1,21 @@
+# build
+dist/
+.astro/
+
+# dependências
+node_modules/
+
+# material bruto do cliente (PDF de 52 MB)
+referencia/
+
+# logs
+npm-debug.log*
+
+# ambiente
+.env
+.env.*
+
+# sistema
+.DS_Store
+Thumbs.db
+.vscode/

@@ -1,0 +1,14 @@
+---
+import Icone from './Icone.astro';
+import { linkWhatsApp } from '../lib/site';
+---
+
+<a
+  href={linkWhatsApp()}
+  target="_blank"
+  rel="noopener"
+  class="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-tinta text-papel shadow-lg shadow-tinta/20 transition-transform duration-300 hover:scale-105 md:right-8 md:bottom-8"
+  aria-label="Conversar com o Mikael no WhatsApp"
+>
+  <Icone nome="whatsapp" class="h-6 w-6" />
+</a>

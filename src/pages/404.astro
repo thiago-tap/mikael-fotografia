@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { rota } from '../lib/site';
+---
+
+<Base titulo="Página não encontrada">
+  <section class="px-6 py-32 text-center">
+    <p class="sobrelinha">Erro 404</p>
+    <h1 class="mt-6 font-serif text-5xl font-light text-tinta md:text-6xl">Essa página não existe.</h1>
+    <p class="mx-auto mt-6 max-w-md font-sans text-grafite">O endereço pode ter mudado. Comece pela página inicial ou veja a proposta.</p>
+    <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a href={rota('/')} class="botao-cheio">Página inicial</a>
+      <a href={rota('/proposta/')} class="botao">Ver a proposta</a>
+    </div>
+  </section>
+</Base>

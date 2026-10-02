@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FotoVaga from './FotoVaga.astro';
+import { formatarPreco, linkWhatsApp } from '../lib/site';
+import type { Vaga } from '../lib/fotos';
+
+interface Props {
+  pacote: CollectionEntry<'pacotes'>;
+  invertido?: boolean;
+}
+
+const { pacote, invertido = false } = Astro.props;
+const { nome, preco, chamada, itens, idealPara, pagamento, destaque } = pacote.data;
+const vaga = `pacote-${pacote.id}` as Vaga;
+const mensagem = `Olá, Mikael! Tenho interesse no pacote ${nome} para o meu casamento.`;
+---
+
+<article id={pacote.id} class="grid scroll-mt-10 items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-24">
+  <div class:list={[invertido && 'md:order-2']}>
+    <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Fotografia — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" />
+  </div>
+
+  <div class:list={['text-center md:text-left', invertido && 'md:order-1']}>
+    {destaque && <p class="sobrelinha mb-4 text-tinta">O mais escolhido</p>}
+    <h3 class="font-serif text-4xl font-light uppercase tracking-[0.12em] text-tinta lg:text-5xl">{nome}</h3>
+    {chamada && <p class="mt-4 font-serif text-xl text-grafite italic">{chamada}</p>}
+
+    <ul class="mx-auto mt-8 max-w-md space-y-3 text-left md:mx-0">
+      {
+        itens.map((item) => (
+          <li class="flex gap-3 font-sans text-[0.95rem] leading-relaxed text-grafite">
+            <span class="text-taupe" aria-hidden="true">•</span>
+            <span>{item}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      idealPara && (
+        <div class="mt-8 border-t border-linha pt-6">
+          <p class="sobrelinha">Ideal para</p>
+          <p class="mt-2 font-serif text-xl text-grafite italic">{idealPara}</p>
+        </div>
+      )
+    }
+
+    <p class="mt-8 font-serif text-5xl font-light text-tinta md:text-6xl">{formatarPreco(preco)}</p>
+    {pagamento && <p class="mt-2 font-sans text-[0.68rem] tracking-[0.24em] text-taupe uppercase">Pagamento: {pagamento}</p>}
+
+    <a href={linkWhatsApp(mensagem)} target="_blank" rel="noopener" class="botao mt-8">Quero este pacote</a>
+  </div>
+</article>

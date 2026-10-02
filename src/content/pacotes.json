@@ -1,0 +1,75 @@
+[
+  {
+    "id": "micro-wedding",
+    "nome": "Micro Wedding",
+    "ordem": 1,
+    "preco": 1499,
+    "cobertura": "4 horas de cobertura",
+    "itens": [
+      "4 horas de cobertura fotográfica",
+      "Cerimônia e recepção",
+      "1 fotógrafo",
+      "Mais de 400 fotos editadas em alta resolução",
+      "Galeria online personalizada, disponível por 3 meses para compartilhar com família e amigos",
+      "Tratamento de cor e edição exclusiva para o seu casamento",
+      "Prévias oficiais em até 15 dias"
+    ],
+    "pagamento": "Carnê, à vista ou cartão"
+  },
+  {
+    "id": "mini-wedding",
+    "nome": "Mini Wedding",
+    "ordem": 2,
+    "preco": 2999,
+    "cobertura": "6 horas de cobertura",
+    "itens": [
+      "6 horas de cobertura fotográfica",
+      "Cerimônia e recepção",
+      "2 fotógrafos profissionais, com garantia de 2 ângulos",
+      "Mais de 600 fotos editadas em alta resolução",
+      "Galeria online personalizada, disponível por 3 meses para compartilhar com familiares e amigos",
+      "Tratamento de cor e edição exclusiva para o seu casamento",
+      "Prévias oficiais em até 15 dias"
+    ],
+    "pagamento": "Carnê, à vista ou cartão"
+  },
+  {
+    "id": "promessa",
+    "nome": "Promessa",
+    "ordem": 3,
+    "preco": 3600,
+    "cobertura": "8 horas de cobertura",
+    "chamada": "Fotografia para eternizar o início de uma nova história.",
+    "itens": [
+      "Pré-wedding",
+      "8 horas de cobertura fotográfica",
+      "Making of da noiva, cerimônia e recepção",
+      "2 fotógrafos profissionais",
+      "Registros da cerimônia, do casal, dos familiares e dos convidados",
+      "Mais de 700 fotos editadas em alta resolução",
+      "Galeria online personalizada, disponível por 3 meses",
+      "Tratamento de cor e edição exclusiva",
+      "Direcionamento de poses para o casal",
+      "Prévias oficiais em até 10 dias"
+    ],
+    "pagamento": "Carnê, à vista ou cartão",
+    "destaque": true
+  },
+  {
+    "id": "eternidade",
+    "nome": "Eternidade",
+    "ordem": 4,
+    "preco": 5000,
+    "cobertura": "Até 10 horas de cobertura",
+    "chamada": "Uma experiência completa para eternizar cada detalhe do seu casamento.",
+    "itens": [
+      "Pré-wedding",
+      "Até 10 horas de cobertura",
+      "Cobertura completa, do making of à recepção",
+      "2 fotógrafos profissionais, garantindo diferentes ângulos e momentos simultâneos",
+      "Mais de 1.000 fotos editadas em alta resolução",
+      "Registros espontâneos, protocolares, familiares e de todos os momentos especiais"
+    ],
+    "pagamento": "Carnê, à vista ou cartão"
+  }
+]

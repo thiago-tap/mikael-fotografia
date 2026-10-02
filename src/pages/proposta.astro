@@ -1,0 +1,96 @@
+---
+import Base from '../layouts/Base.astro';
+import CardPacote from '../components/CardPacote.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import Diferenciais from '../components/Diferenciais.astro';
+import FotoVaga from '../components/FotoVaga.astro';
+import Hero from '../components/Hero.astro';
+import ListaExtras from '../components/ListaExtras.astro';
+import ListaFaq from '../components/ListaFaq.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { extras, pacotes, perguntas, sobre } from '../lib/conteudo';
+import { rota } from '../lib/site';
+
+const [listaPacotes, listaExtras, faqResumido, paginaSobre] = await Promise.all([
+  pacotes(),
+  extras(),
+  perguntas({ somenteProposta: true }),
+  sobre(),
+]);
+---
+
+<Base
+  titulo="Proposta de fotografia de casamento"
+  descricao="Pacotes Micro Wedding, Mini Wedding, Promessa e Eternidade, serviços extras e formas de pagamento da Mikael Fotografia."
+>
+  <Hero
+    vaga="proposta-hero"
+    alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
+    sobrelinha="Proposta de fotografia para casamento"
+    titulo="O dia em que duas histórias se tornam uma só."
+  >
+    <nav aria-label="Pacotes" class="mt-12 flex flex-wrap justify-center gap-x-10 gap-y-3">
+      {
+        listaPacotes.map((pacote) => (
+          <a
+            href={`#${pacote.id}`}
+            class="border-b border-linha pt-3 pb-1 font-sans text-[0.7rem] tracking-[0.28em] text-grafite uppercase hover:border-tinta hover:text-tinta"
+          >
+            {pacote.data.nome}
+          </a>
+        ))
+      }
+      <a
+        href="#extras"
+        class="border-b border-linha pt-3 pb-1 font-sans text-[0.7rem] tracking-[0.28em] text-grafite uppercase hover:border-tinta hover:text-tinta"
+      >
+        Extras
+      </a>
+    </nav>
+  </Hero>
+
+  <section class="px-6 py-24 md:py-32">
+    <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[2fr_3fr] md:gap-20">
+      <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vitor" sizes="(min-width: 768px) 40vw, 100vw" />
+      <div class="text-center md:text-left">
+        <TituloSecao sobrelinha={paginaSobre.data.subtitulo} titulo={paginaSobre.data.titulo} alinhamento="esquerda" class="text-center md:text-left" />
+        <p class="texto-corrido mt-8">{paginaSobre.data.resumo}</p>
+        <a href={rota('/sobre/')} class="botao mt-10">Saiba mais sobre mim</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-linha px-6 py-24 md:py-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Investimento" titulo="Pacotes" />
+      <div class="mt-20 space-y-28 md:space-y-36">
+        {listaPacotes.map((pacote, indice) => <CardPacote pacote={pacote} invertido={indice % 2 === 1} />)}
+      </div>
+    </div>
+  </section>
+
+  <section id="extras" class="scroll-mt-10 border-t border-linha px-6 py-24 md:py-32">
+    <TituloSecao sobrelinha="Para acrescentar à sua cobertura" titulo="Serviços extras" />
+    <div class="mt-16">
+      <ListaExtras extras={listaExtras} />
+    </div>
+  </section>
+
+  <FotoVaga vaga="faixa" alt="Detalhe de casamento fotografado por Mikael Fotografia" class="md:aspect-[12/5]" />
+
+  <Diferenciais />
+
+  <section class="px-6 py-24 md:py-32">
+    <TituloSecao sobrelinha="Perguntas frequentes" titulo="Antes de reservar" />
+    <div class="mt-16">
+      <ListaFaq perguntas={faqResumido} />
+    </div>
+    <p class="mt-12 text-center">
+      <a href={rota('/faq/')} class="botao">Ver todas as perguntas</a>
+    </p>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp />
+  </div>
+</Base>

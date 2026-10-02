@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import Diferenciais from '../components/Diferenciais.astro';
+import GradePortfolio from '../components/GradePortfolio.astro';
+import Hero from '../components/Hero.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { pacotes } from '../lib/conteudo';
+import { formatarPreco, rota, site } from '../lib/site';
+
+const listaPacotes = await pacotes();
+---
+
+<Base>
+  <Hero
+    vaga="home-hero"
+    alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
+    sobrelinha="Fotografia de casamento"
+    titulo={site.frase}
+  >
+    <div class="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a href={rota('/proposta/')} class="botao-cheio">Ver a proposta</a>
+      <a href={rota('/portfolio/')} class="botao">Ver o portfólio</a>
+    </div>
+  </Hero>
+
+  <section class="px-6 py-24 md:py-32">
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="sobrelinha">Mikael Fotografia</p>
+      <p class="mt-8 font-serif text-3xl leading-snug font-light text-tinta md:text-4xl">
+        Fotos com conexão real e emoção verdadeira, feitas por uma equipe que cuida do seu dia como se fosse nosso.
+      </p>
+      <a href={rota('/sobre/')} class="botao mt-12">Conheça o Mikael</a>
+    </div>
+  </section>
+
+  <section class="border-t border-linha px-6 py-24 md:py-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Investimento" titulo="Quatro formas de contar o seu dia" />
+      <ul class="mt-16 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4">
+        {
+          listaPacotes.map((pacote) => (
+            <li class="flex flex-col items-center bg-papel px-8 py-14 text-center">
+              <h3 class="font-serif text-3xl font-light tracking-[0.1em] text-tinta uppercase">{pacote.data.nome}</h3>
+              <p class="mt-4 font-sans text-[0.7rem] tracking-[0.22em] text-taupe uppercase">{pacote.data.cobertura}</p>
+              <p class="mt-6 max-w-xs flex-1 font-serif text-lg text-grafite italic">
+                {pacote.data.chamada ?? pacote.data.itens.find((item) => item.startsWith('Mais de'))}
+              </p>
+              <p class="mt-8 font-serif text-4xl font-light text-tinta">{formatarPreco(pacote.data.preco)}</p>
+              <a href={rota(`/proposta/#${pacote.id}`)} class="mt-5 py-3 font-sans text-[0.7rem] tracking-[0.28em] text-tinta uppercase underline decoration-linha underline-offset-8 hover:decoration-tinta">
+                Detalhes do pacote
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="border-t border-linha px-6 py-24 md:py-32">
+    <div class="mx-auto max-w-7xl">
+      <TituloSecao sobrelinha="Portfólio" titulo="Casamentos" />
+      <div class="mt-16">
+        <GradePortfolio limite={6} vazios={6} />
+      </div>
+      <p class="mt-12 text-center">
+        <a href={rota('/portfolio/')} class="botao">Ver o portfólio completo</a>
+      </p>
+    </div>
+  </section>
+
+  <Diferenciais />
+
+  <ChamadaWhatsApp />
+</Base>

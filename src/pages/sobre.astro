@@ -1,0 +1,36 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
+import FotoVaga from '../components/FotoVaga.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { sobre } from '../lib/conteudo';
+import { rota } from '../lib/site';
+
+const pagina = await sobre();
+const { Content } = await render(pagina);
+---
+
+<Base titulo="Sobre" descricao={pagina.data.resumo}>
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto grid max-w-6xl items-start gap-12 md:grid-cols-[2fr_3fr] md:gap-20">
+      <div class="md:sticky md:top-10">
+        <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vitor" carregamento="eager" sizes="(min-width: 768px) 40vw, 100vw" />
+      </div>
+      <div>
+        <TituloSecao sobrelinha={pagina.data.subtitulo} titulo={pagina.data.titulo} nivel="h1" alinhamento="esquerda" />
+        <div class="texto-corrido mt-10">
+          <Content />
+        </div>
+        <div class="mt-12 flex flex-col gap-4 sm:flex-row">
+          <a href={rota('/proposta/')} class="botao-cheio">Ver a proposta</a>
+          <a href={rota('/portfolio/')} class="botao">Ver o portfólio</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp />
+  </div>
+</Base>

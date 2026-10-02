@@ -1,0 +1,22 @@
+---
+import FotoVaga from './FotoVaga.astro';
+import type { Vaga } from '../lib/fotos';
+
+interface Props {
+  vaga: Vaga;
+  alt: string;
+  sobrelinha: string;
+  titulo: string;
+}
+
+const { vaga, alt, sobrelinha, titulo } = Astro.props;
+---
+
+<section>
+  <FotoVaga vaga={vaga} alt={alt} carregamento="eager" class="md:aspect-[2/1] xl:aspect-[12/5]" />
+  <div class="px-6 pt-20 pb-6 text-center md:pt-28">
+    <p class="sobrelinha">{sobrelinha}</p>
+    <h1 class="mx-auto mt-6 max-w-4xl font-serif text-5xl leading-[1.08] font-light text-tinta md:text-7xl">{titulo}</h1>
+    <slot />
+  </div>
+</section>

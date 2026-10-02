@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { pacotes } from '../lib/conteudo';
+import { linkWhatsApp, site } from '../lib/site';
+
+const listaPacotes = await pacotes();
+const campo =
+  'mt-2 w-full border-0 border-b border-linha bg-transparent px-0 py-3 font-sans text-tinta placeholder:text-taupe/70 focus:border-tinta focus:ring-0 focus:outline-none';
+const rotulo = 'sobrelinha text-grafite';
+---
+
+<Base titulo="Contato" descricao="Fale com o Mikael pelo WhatsApp ou Instagram para reservar a data do seu casamento.">
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto grid max-w-6xl gap-16 md:grid-cols-2 md:gap-24">
+      <div>
+        <TituloSecao sobrelinha="Contato" titulo="Vamos conversar?" nivel="h1" alinhamento="esquerda" />
+        <p class="texto-corrido mt-8">
+          Preencha os dados ao lado e a mensagem já abre pronta no WhatsApp. Se preferir, chame direto pelo número ou
+          pelo Instagram.
+        </p>
+        <ul class="mt-10 space-y-5">
+          <li>
+            <a href={linkWhatsApp()} target="_blank" rel="noopener" class="flex items-center gap-4 font-sans text-lg text-tinta hover:text-taupe">
+              <Icone nome="whatsapp" class="h-5 w-5" />
+              {site.whatsapp.exibicao}
+            </a>
+          </li>
+          <li>
+            <a href={site.instagram.url} target="_blank" rel="noopener" class="flex items-center gap-4 font-sans text-lg text-tinta hover:text-taupe">
+              <Icone nome="instagram" class="h-5 w-5" />
+              @{site.instagram.usuario}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <form class="space-y-8" data-form-whatsapp data-numero={site.whatsapp.numero} novalidate>
+        <div>
+          <label for="nome" class={rotulo}>Nomes do casal</label>
+          <input id="nome" name="nome" type="text" required autocomplete="name" class={campo} placeholder="Ana e Pedro" />
+        </div>
+        <div class="grid gap-8 sm:grid-cols-2">
+          <div>
+            <label for="data" class={rotulo}>Data do casamento</label>
+            <input id="data" name="data" type="date" class={campo} />
+          </div>
+          <div>
+            <label for="cidade" class={rotulo}>Cidade</label>
+            <input id="cidade" name="cidade" type="text" class={campo} placeholder="Onde vai ser" />
+          </div>
+        </div>
+        <div>
+          <label for="local" class={rotulo}>Local da cerimônia e da festa</label>
+          <input id="local" name="local" type="text" class={campo} />
+        </div>
+        <div>
+          <label for="pacote" class={rotulo}>Pacote de interesse</label>
+          <select id="pacote" name="pacote" class={campo}>
+            <option value="">Ainda não sei</option>
+            {listaPacotes.map((pacote) => <option value={pacote.data.nome}>{pacote.data.nome}</option>)}
+          </select>
+        </div>
+        <div>
+          <label for="mensagem" class={rotulo}>Conte um pouco sobre vocês</label>
+          <textarea id="mensagem" name="mensagem" rows="4" class={campo}></textarea>
+        </div>
+        <p class="hidden font-sans text-sm text-red-800" role="alert" data-erro>Informe os nomes do casal para continuar.</p>
+        <button type="submit" class="botao-cheio w-full sm:w-auto">
+          <Icone nome="whatsapp" class="h-4 w-4" />
+          Enviar pelo WhatsApp
+        </button>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const formulario = document.querySelector<HTMLFormElement>('[data-form-whatsapp]');
+  const erro = document.querySelector<HTMLElement>('[data-erro]');
+
+  function formatarDataBr(valor: string): string {
+    const [ano, mes, dia] = valor.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  formulario?.addEventListener('submit', (evento) => {
+    evento.preventDefault();
+    const dados = new FormData(formulario);
+    const valor = (campo: string) => String(dados.get(campo) ?? '').trim();
+
+    if (!valor('nome')) {
+      erro?.classList.remove('hidden');
+      formulario.querySelector<HTMLInputElement>('#nome')?.focus();
+      return;
+    }
+    erro?.classList.add('hidden');
+
+    const detalhes: [string, string][] = [
+      ['Casal', valor('nome')],
+      ['Data', valor('data') && formatarDataBr(valor('data'))],
+      ['Cidade', valor('cidade')],
+      ['Local', valor('local')],
+      ['Pacote', valor('pacote')],
+    ];
+
+    const texto = [
+      'Olá, Mikael! Vim pelo site e quero saber sobre a fotografia do nosso casamento.',
+      '',
+      ...detalhes.filter(([, conteudo]) => conteudo).map(([rotulo, conteudo]) => `*${rotulo}:* ${conteudo}`),
+      ...(valor('mensagem') ? ['', valor('mensagem')] : []),
+    ].join('\n');
+    const url = `https://wa.me/${formulario.dataset.numero}?text=${encodeURIComponent(texto)}`;
+    window.open(url, '_blank', 'noopener');
+  });
+</script>

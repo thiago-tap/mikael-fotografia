@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import TituloSecao from './TituloSecao.astro';
+
+const diferenciais = (await getCollection('diferenciais')).sort((a, b) => a.data.ordem - b.data.ordem);
+---
+
+<section class="bg-areia px-6 py-24 md:py-32">
+  <div class="mx-auto max-w-6xl">
+    <TituloSecao sobrelinha="Por que Mikael Fotografia?" titulo="Cuidamos do seu dia como se fosse nosso." />
+    <ul class="mt-16 grid gap-x-12 gap-y-12 sm:grid-cols-2 lg:grid-cols-5">
+      {
+        diferenciais.map(({ data }, indice) => (
+          <li class="text-center">
+            <p class="font-serif text-3xl font-light text-taupe">{String(indice + 1).padStart(2, '0')}</p>
+            <h3 class="mt-4 font-sans text-[0.72rem] font-normal tracking-[0.26em] text-tinta uppercase">{data.titulo}</h3>
+            <p class="mt-4 font-sans text-sm leading-relaxed text-grafite">{data.texto}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

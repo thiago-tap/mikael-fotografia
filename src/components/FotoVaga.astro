@@ -1,0 +1,17 @@
+---
+import Foto from './Foto.astro';
+import { fotoDoSite, vagas, type Vaga } from '../lib/fotos';
+
+interface Props {
+  vaga: Vaga;
+  alt: string;
+  sizes?: string;
+  carregamento?: 'eager' | 'lazy';
+  class?: string;
+}
+
+const { vaga, ...resto } = Astro.props;
+const { proporcao, medida } = vagas[vaga];
+---
+
+<Foto {...resto} imagem={fotoDoSite(vaga)} proporcao={proporcao} aguardando={`${vaga} · ${medida}`} />

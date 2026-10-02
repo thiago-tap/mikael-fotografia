@@ -1,0 +1,48 @@
+---
+import { Image } from 'astro:assets';
+import Foto from './Foto.astro';
+import { fotosPortfolio, larguras } from '../lib/fotos';
+
+interface Props {
+  limite?: number;
+  /** Quantos espaços vazios mostrar enquanto a pasta do portfólio estiver vazia. */
+  vazios?: number;
+}
+
+const { limite, vazios = 9 } = Astro.props;
+const fotos = fotosPortfolio().slice(0, limite);
+const proporcoesVazias = ['4:5', '3:2', '4:5', '3:2', '4:5', '3:2', '3:2', '4:5', '3:2'] as const;
+---
+
+{
+  fotos.length > 0 ? (
+    <div class="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
+      {fotos.map((foto) => (
+        <figure class="break-inside-avoid">
+          <Image
+            src={foto.imagem}
+            alt={foto.alt}
+            widths={larguras(foto.imagem, 1200)}
+            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            class="h-auto w-full"
+          />
+          {foto.legenda && (
+            <figcaption class="mt-2 font-sans text-xs tracking-wide text-grafite">{foto.legenda}</figcaption>
+          )}
+        </figure>
+      ))}
+    </div>
+  ) : (
+    <div class="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
+      {proporcoesVazias.slice(0, Math.min(vazios, limite ?? vazios)).map((proporcao, indice) => (
+        <div class="break-inside-avoid">
+          <Foto
+            proporcao={proporcao}
+            alt="Espaço reservado para foto do portfólio"
+            aguardando={`portfolio/${String(indice + 1).padStart(2, '0')} · ${proporcao === '3:2' ? '2400 × 1600' : '1600 × 2000'} px`}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}

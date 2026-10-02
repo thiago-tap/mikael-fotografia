@@ -1,0 +1,51 @@
+[
+  {
+    "id": "pre-wedding",
+    "nome": "Ensaio pré-wedding / prévia da noiva",
+    "preco": 700,
+    "aPartirDe": true,
+    "descricao": "Ensaio de até 2 horas, pensado para registrar a conexão do casal de forma leve, espontânea e divertida.",
+    "itens": [
+      "Direcionamento durante todo o ensaio",
+      "Momentos espontâneos e naturais",
+      "50% da experiência construída pelo casal + 50% pelo olhar e direção do fotógrafo",
+      "Fotografias tratadas e entregues em alta resolução"
+    ],
+    "ordem": 1
+  },
+  {
+    "id": "making-of-noiva",
+    "nome": "Making of da noiva",
+    "preco": 350,
+    "aPartirDe": true,
+    "descricao": "Os detalhes que antecedem o momento mais esperado também merecem ser eternizados.",
+    "itens": [
+      "Cobertura exclusiva do making of da noiva",
+      "Registros espontâneos e de detalhes",
+      "Vestido, acessórios, maquiagem e preparação",
+      "Fotografias tratadas em alta resolução"
+    ],
+    "ordem": 2
+  },
+  {
+    "id": "hora-extra",
+    "nome": "Hora extra",
+    "preco": 350,
+    "unidade": "/ hora",
+    "descricao": "Para quem deseja prolongar a cobertura e continuar registrando cada momento especial do casamento.",
+    "itens": [
+      "Fotografia durante o período adicional",
+      "Registros espontâneos e protocolares",
+      "Entrega das fotografias tratadas em alta resolução"
+    ],
+    "ordem": 3
+  },
+  {
+    "id": "drone",
+    "nome": "Fotografia aérea com drone",
+    "preco": 350,
+    "aPartirDe": true,
+    "descricao": "Uma perspectiva diferente.",
+    "ordem": 4
+  }
+]
