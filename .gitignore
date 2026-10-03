@@ -22,3 +22,8 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 .vscode/
+
+# relatórios de testes
+relatorio-testes/
+resultados-testes/
+relatorio-lighthouse/

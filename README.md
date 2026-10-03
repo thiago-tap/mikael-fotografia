@@ -16,6 +16,40 @@ Cada push na branch `main` roda `.github/workflows/deploy.yml`: gera o site, ger
 
 Cada alteração salva no painel é um commit na `main`, então o site se atualiza sozinho em 2 a 3 minutos.
 
+## Testes automáticos antes de publicar
+
+Antes de publicar, o workflow abre o site recém-gerado num navegador de verdade (Chromium, em tela de celular 375 × 667 e de computador 1440 × 900) e confere se nada quebrou. **Se algum teste falhar, nada é publicado e o site no ar continua sendo a versão anterior.**
+
+O que é conferido (os testes não dependem de textos ou preços exatos, então editar o conteúdo pelo painel não quebra nada):
+
+- Todas as páginas principais abrem e têm título; endereço inexistente mostra a página 404.
+- Todos os links internos do menu, do rodapé e das páginas (incluindo imagens, CSS, JS e o PDF) funcionam.
+- Nenhuma página tem rolagem para o lado no celular ou no computador.
+- Todos os botões do WhatsApp usam o número cadastrado em **Configurações** e têm mensagem pronta; links do Instagram vão para instagram.com.
+- Proposta: cada pacote tem nome, pelo menos 3 itens, o valor depois dos itens e o botão do WhatsApp com o nome do pacote. A vitrine da página inicial não mostra preços.
+- Formulário de contato: gera a mensagem do WhatsApp com os dados do casal e recusa datas inexistentes (ex.: 31/02).
+- Ampliação de fotos (quando há fotos no portfólio), menu do celular abrindo e fechando com Esc.
+- Acessibilidade sem problemas graves (axe) no início, proposta e contato; dados estruturados (JSON-LD) válidos.
+- PDF da proposta gerado, com tamanho e número de páginas coerentes.
+- Lighthouse (celular) no início e na proposta: acessibilidade e SEO abaixo de 95 bloqueiam a publicação; desempenho abaixo de 85 e boas práticas abaixo de 90 só geram aviso.
+
+**Quando falha:**
+
+1. O GitHub manda um e-mail automático para o dono do repositório avisando que o workflow falhou.
+2. Em **Actions**, abra a execução com ❌. O resumo no topo lista quais testes falharam e por quê. No fim da página, baixe o artefato **relatorio-testes** (abra o `index.html` de dentro dele para ver capturas de tela). O relatório do Lighthouse fica no artefato **relatorio-lighthouse**.
+3. Para desfazer uma edição que quebrou o site: corrija pelo painel (o campo editado por último, normalmente) e salve de novo; ou, no GitHub, abra o arquivo alterado → **History**, veja o commit do painel e restaure o conteúdo anterior (editar e colar a versão antiga, ou `git revert <commit>`). Cada novo salvamento roda os testes de novo e, passando, publica.
+
+**Rodar localmente:**
+
+```bash
+npx playwright install chromium   # uma vez só
+npm test                          # gera o site, gera o PDF e roda os testes (celular + computador)
+npm run test:e2e                  # só os testes, usando o dist/ já gerado
+npm run lighthouse                # notas do Lighthouse; relatórios em relatorio-lighthouse/
+```
+
+Para simular o caminho do GitHub Pages, defina `BASE_PATH=/mikael-fotografia` antes de `npm test`. O relatório HTML dos testes fica em `relatorio-testes/` (`npx playwright show-report relatorio-testes`).
+
 ## Painel de edição (Pages CMS)
 
 O conteúdo é editado pelo [Pages CMS](https://pagescms.org), configurado em `.pages.yml`. Não é preciso instalar nada.

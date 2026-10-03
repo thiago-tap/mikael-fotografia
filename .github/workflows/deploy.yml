@@ -59,11 +59,53 @@ jobs:
           SITE_URL: ${{ steps.pages.outputs.origin }}
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
+      - id: versao-playwright
+        run: echo "versao=$(node -p "require('playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.versao-playwright.outputs.versao }}
+
       - run: npx playwright install --with-deps chromium
 
-      - run: node scripts/gerar-pdf.mjs --sem-build --saida dist/proposta-mikael-vt-fotografo.pdf
+      - run: npm run pdf:dist
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Testar o site antes de publicar
+        id: testes
+        run: npx playwright test
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Resumo dos testes
+        if: always() && steps.testes.outcome != 'skipped'
+        run: node scripts/resumo-testes.mjs
+
+      - name: Enviar relatório dos testes
+        if: failure() && steps.testes.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-testes
+          path: |
+            relatorio-testes/
+            resultados-testes/
+          retention-days: 14
+
+      - name: Lighthouse (celular)
+        id: lighthouse
+        run: npm run lighthouse
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+
+      - name: Enviar relatório do Lighthouse
+        if: always() && steps.lighthouse.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-lighthouse
+          path: relatorio-lighthouse/
+          retention-days: 14
 
       - uses: actions/upload-pages-artifact@v3
         with:
