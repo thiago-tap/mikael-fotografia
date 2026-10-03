@@ -63,18 +63,35 @@ O conteúdo é editado pelo [Pages CMS](https://pagescms.org), configurado em `.
 
 1. Abra [app.pagescms.org](https://app.pagescms.org) e escolha o site **mikael-fotografia**.
 2. No menu da esquerda, escolha o que quer mudar:
-   - **Configurações:** WhatsApp, Instagram, IDs do Google Analytics e a foto de cada espaço fixo do site (topo da página inicial, pacotes, retrato etc.).
-   - **Faixa de agenda:** liga ou desliga a faixa "Agenda 2026 · 2027" com o texto que quiser.
+   - **Configurações:** WhatsApp, Instagram, IDs do Google Analytics, a foto de cada espaço fixo do site (topo da página inicial, pacotes, retrato etc.) e o ponto de foco de cada uma.
+   - **Agenda e disponibilidade:** liga ou desliga a faixa "Agenda 2026 · 2027" e marca a situação de cada mês na página `/agenda/`.
    - **Proposta:** pacotes (preço, itens, tabela de comparação), serviços extras, "Por que Mikael Vt?" e "Como funciona".
-   - **Perguntas frequentes, Depoimentos e Blog:** cada item é uma página; use **Add an entry** para criar.
-   - **Página Sobre**, **Portfólio** (ordem e legendas) e **Instagram** (até 6 fotos).
+   - **Casamentos reais, Perguntas frequentes, Depoimentos e Blog:** cada item é uma página; use **Add an entry** para criar.
+   - **Página Sobre**, **Portfólio** (ordem, legendas, tamanho e foco) e **Instagram** (até 6 fotos).
 3. Edite e clique em **Save**. O site publica a mudança sozinho em poucos minutos, e o PDF da proposta é atualizado junto.
 
-**Fotos:** em qualquer campo de foto, clique para enviar do computador ou escolher uma que já está no painel. Use JPG editado, em sRGB, lado maior de 2400 a 3000 px, até 3 MB (veja [Fotos: tamanho e otimização](#fotos-tamanho-e-otimização)). Na aba **Media** ficam as pastas: *Fotos do site*, *Portfólio*, *Instagram*, *Depoimentos* e *Blog*.
+**Fotos:** em qualquer campo de foto, clique para enviar do computador ou escolher uma que já está no painel. Use JPG editado, em sRGB, lado maior de 2400 a 3000 px, até 3 MB (veja [Fotos: tamanho e otimização](#fotos-tamanho-e-otimização)). Na aba **Media** ficam as pastas: *Fotos do site*, *Portfólio*, *Casamentos reais*, *Instagram*, *Depoimentos* e *Blog*.
 
-**Portfólio:** envie as fotos em *Media → Portfólio*. Todas aparecem no site. Para definir a ordem, a legenda e a descrição (para leitores de tela), adicione a foto em **Portfólio (ordem e legendas)**: as fotos da lista vêm primeiro, na ordem da lista, e as demais seguem pelo nome do arquivo.
+**Ponto de foco:** o site corta as fotos para caber em cada espaço (vertical no celular, horizontal no computador). O campo **Ponto de foco** diz qual parte nunca pode sumir: centro, topo, base, esquerda, direita ou um dos cantos. Existe para cada espaço fixo (**Configurações → Ponto de foco das fotos fixas**), para cada foto do portfólio e dos casamentos, para a capa dos posts e para a foto dos depoimentos. Vazio = centro. Ex.: retrato vertical com o rosto no alto → **Topo**.
 
-**Depoimentos e Blog:** o menu do site só mostra esses itens quando existe pelo menos um depoimento ou post.
+**Portfólio:** envie as fotos em *Media → Portfólio*. Todas aparecem no site. Para definir a ordem, a legenda, a descrição (para leitores de tela), o tamanho e o foco, adicione a foto em **Portfólio (ordem e legendas)**: as fotos da lista vêm primeiro, na ordem da lista, e as demais seguem pelo nome do arquivo.
+
+A grade é editorial, em linhas de tamanhos diferentes. O campo **Tamanho na grade** decide o papel de cada foto:
+
+- **Automático** (padrão): fotos verticais viram *vertical*; as horizontais alternam *grande, médio, médio*.
+- **Grande:** ocupa 2/3 da linha ao lado de uma vertical, ou a linha inteira.
+- **Médio:** fica em par com outra média (ou ao lado de uma vertical).
+- **Vertical:** fica ao lado de uma grande, em trio com outras duas verticais ou em par. Entre pares de verticais, a grade intercala frases curtas do site (lema e assinatura).
+
+A legenda aparece pequena, em itálico, embaixo da foto, e também no modo ampliado. Clicar em qualquer foto abre o modo ampliado na ordem da página.
+
+**Casamentos reais:** cada casamento vira uma página em `/casamentos/<nome>/` com capa, dados (data, local, cidade), resumo, texto e galeria separada por etapa (*Making of, Cerimônia, O casal, Festa*; fotos sem etapa ficam no fim). Envie as fotos em *Media → Casamentos reais* e escolha-as na galeria (até 80 por casamento). Marque **Mostrar na página inicial** para aparecer na faixa "Casamentos reais" da home (até 3). O item "Casamentos" do menu e do rodapé só aparece quando existe pelo menos um casamento.
+
+**Agenda:** em **Agenda e disponibilidade → Disponibilidade por mês**, adicione o ano e marque cada mês: *Sem informação* (mostra "Consulte"), *Datas disponíveis*, *Poucas datas* ou *Esgotado*. Só marque o que for verdade. Enquanto todos os meses estiverem sem informação, a página `/agenda/` fica fora do Google e nenhum link leva até ela. Com pelo menos um mês preenchido, aparecem os links na faixa de agenda, na proposta e no contato. Meses que já passaram aparecem como encerrados.
+
+**Limites do painel:** os campos avisam antes de salvar quando passam do tamanho que cabe no layout (ex.: nome do pacote até 24 caracteres, frase de chamada até 90, de 3 a 14 itens por pacote com até 120 caracteres cada, depoimento até 900, resumo do casamento até 220, legenda de foto até 80, descrição de foto até 160, texto da faixa de agenda até 140). O número do WhatsApp precisa estar no formato `55` + DDD + número (ex.: `5561982042153`) e os links começam com `https://`. O build confere as mesmas regras, então um arquivo editado à mão fora do padrão também é barrado com a mensagem do campo.
+
+**Depoimentos e Blog:** o menu do site só mostra esses itens quando existe pelo menos um depoimento ou post. Os primeiros depoimentos (pela ordem) aparecem num carrossel na página inicial e na proposta, logo depois dos pacotes.
 
 **Instagram:** a seção "Acompanhe no Instagram" aparece na página inicial quando há pelo menos uma foto cadastrada (até 6). Sem link, a foto leva ao perfil.
 
@@ -93,12 +110,24 @@ Eventos enviados (só com consentimento):
 
 | Evento | Quando | Parâmetros |
 | --- | --- | --- |
-| `clique_whatsapp` | Qualquer botão de WhatsApp | `origem`: `hero`, `menu`, `flutuante`, `chamada`, `rodape`, `contato`, `pacote:<nome>` |
-| `clique_instagram` | Links para o Instagram | `origem` |
+| `view_proposta` | Abertura da página `/proposta/` (uma vez por visita à página) | — |
+| `ver_pacote` | Um card de pacote fica pelo menos metade visível na proposta (uma vez por pacote), ou clique em "Ver o que está incluso" na home | `pacote`; `origem`: `inicio` no clique da home |
+| `clique_quero_pacote` | Botão "Consultar data para este pacote" | `pacote`, `origem`: `pacote:<nome>` |
+| `clique_whatsapp` | Qualquer botão de WhatsApp (inclusive o do pacote, que manda os dois eventos) | `origem`: `hero`, `menu`, `flutuante`, `chamada`, `rodape`, `contato`, `pacote:<nome>`, `casamento:<slug>`, `agenda`, `agenda:<mês>-<ano>` |
 | `envio_formulario` | Envio do formulário de contato | `origem`, `pacote` |
 | `download_pdf` | Botão "Baixar proposta em PDF" | `origem`: `proposta`, `contato` |
+| `ver_casamento` | Abertura da página de um casamento | `slug` |
+| `clique_agenda` | Links para a página `/agenda/` | `origem`: `faixa`, `proposta`, `contato` |
+| `clique_instagram` | Links para o Instagram | `origem` |
 
-No código, elementos com `data-evento="nome"` e `data-origem="..."` são rastreados automaticamente; para outros casos use `rastrear(nome, parametros)` de `src/lib/rastreamento.ts`, que não faz nada sem consentimento.
+No código, elementos com `data-evento="nome"` (vários nomes separados por espaço) e `data-origem`, `data-pacote` ou `data-slug` são rastreados no clique; eventos de página vêm do `eventoPagina` do layout `Base`. Para outros casos use `rastrear(nome, parametros)` de `src/lib/rastreamento.ts`, que não faz nada sem consentimento. Os links "Quero este pacote" dentro do PDF não são rastreáveis (o PDF não roda script).
+
+**Funil no GA4.** Os parâmetros `origem`, `pacote` e `slug` precisam ser registrados uma vez em **Administrador → Definições personalizadas → Criar dimensão personalizada** (escopo *Evento*) para aparecer nos relatórios. Depois:
+
+1. **Eventos-chave:** em **Administrador → Eventos**, marque como evento-chave `clique_whatsapp`, `envio_formulario`, `clique_quero_pacote` e `download_pdf`. Os outros (`view_proposta`, `ver_pacote`, `ver_casamento`, `clique_agenda`) são etapas, não conversões.
+2. **Funil da proposta:** em **Explorar → Exploração de funil**, crie as etapas *Viu a proposta* (`view_proposta`) → *Viu um pacote* (`ver_pacote`) → *Quis o pacote* (`clique_quero_pacote`) → *Falou no WhatsApp* (`clique_whatsapp`). Marque **Funil aberto** desligado (o visitante precisa passar pela primeira etapa) e use `pacote` como detalhamento para ver qual pacote mais converte.
+3. **Funil do portfólio:** `ver_casamento` → `clique_whatsapp`, com `origem` começando por `casamento:` no filtro da última etapa.
+4. **Agenda:** `clique_agenda` → `clique_whatsapp` com `origem` começando por `agenda`.
 
 ## PDF da proposta
 
@@ -120,6 +149,19 @@ No computador, o script usa o Edge ou o Chrome instalado; no GitHub Actions, o C
 
 A imagem de compartilhamento (`public/og-padrao.png`, 1200 × 630) é gerada por `npm run og`.
 
+## Monograma e tipografia
+
+O monograma "MV" (M reto e V itálico cruzando um fio fino) é desenhado a partir da própria fonte Cormorant Garamond do site, sem SVG feito à mão:
+
+```bash
+npm run monograma   # gera src/assets/monograma.svg, src/assets/marca/icone.svg e public/favicon.svg
+npm run og          # refaz public/og-padrao.png com o monograma
+```
+
+Ele aparece nos divisores de seção, no rodapé, na capa e na página de contato do PDF, na imagem de compartilhamento e como ícone padrão (aba do navegador e atalho do celular). Um ícone enviado em **Configurações → Ícone** continua tendo prioridade; o arquivo `src/assets/marca/icone.svg` só vale enquanto nada for escolhido no painel.
+
+A fonte de títulos é um token só: `--font-serif` em `src/styles/global.css` (o texto corrido é Jost, em `--font-sans`). A página escondida [`/tipografia/`](https://thiago-tap.github.io/mikael-fotografia/tipografia/) (fora do menu, do sitemap e com `noindex`) mostra o topo, os títulos e os nomes dos pacotes em quatro opções gratuitas: Cormorant Garamond (atual), Bodoni Moda, Playfair Display e Gloock. Para trocar, instale o pacote `@fontsource` escolhido, importe em `global.css` e mude `--font-serif`; depois rode `npm run monograma` e `npm run og` se quiser o monograma na nova fonte (o script lê os arquivos da Cormorant em `node_modules/@fontsource/cormorant-garamond`).
+
 ## Onde fica cada conteúdo
 
 Tudo isso é editável pelo painel; a tabela serve para quem mexe direto no código.
@@ -127,7 +169,8 @@ Tudo isso é editável pelo painel; a tabela serve para quem mexe direto no cód
 | O quê | Arquivo |
 | --- | --- |
 | WhatsApp, Instagram, Analytics e fotos das vagas | `src/content/configuracoes.json` |
-| Faixa de agenda | `src/content/agenda.json` |
+| Faixa de agenda e situação de cada mês | `src/content/agenda.json` (`anos`: `sem-info`, `disponivel`, `poucas-datas` ou `esgotado` por mês) |
+| Casamentos reais | `src/content/casamentos/<nome>.md` ou `src/content/casamentos/<nome>/index.md` (com as fotos na mesma pasta) |
 | Pacotes, preços e tabela de comparação | `src/content/pacotes.json` (`destaque: true` mostra "O mais escolhido"; `selo` mostra outra etiqueta, como "Melhor custo-benefício") |
 | Valores adicionais | `src/content/extras.json` (sem `preco`, o extra aparece como "Sob consulta") |
 | "Por que Mikael Vt?" | `src/content/diferenciais.json` |
@@ -151,6 +194,35 @@ foto: /src/content/depoimentos/ana-e-pedro.jpg   # opcional; também aceita ./an
 
 Texto do depoimento.
 ```
+
+Exemplo de casamento (`src/content/casamentos/ana-e-pedro/index.md`, com as fotos na mesma pasta):
+
+```md
+---
+casal: Ana e Pedro
+local: Capela Dom Bosco
+cidade: Brasília, DF
+data: 2026-09-20
+capa:
+  imagem: ./capa.jpg
+  alt: Ana e Pedro saindo da capela
+  foco: topo
+resumo: Uma tarde de setembro com luz dourada e a família reunida.
+destaque: true
+galeria:
+  - imagem: ./making-of-01.jpg
+    etapa: making-of            # making-of, cerimonia, casal ou festa
+    legenda: Os últimos detalhes
+  - imagem: ./cerimonia-01.jpg
+    etapa: cerimonia
+    tamanho: grande             # auto, grande, medio ou vertical
+    foco: base
+---
+
+Texto opcional contando o dia.
+```
+
+Pelo painel, o arquivo é criado como `src/content/casamentos/<casal>.md` e as fotos ficam em *Media → Casamentos reais* (caminhos `/src/content/casamentos/...`); os dois formatos funcionam.
 
 Exemplo de post (`src/content/blog/casamento-ana-e-pedro.md`):
 
@@ -191,15 +263,17 @@ Cada espaço fixo recebe a foto de um destes jeitos:
 
 As fotos do topo (`home-hero` e `proposta-hero`) ocupam a tela inteira e são cortadas a partir do centro: no celular aparece só a faixa central, em formato vertical; no computador, corta um pouco em cima e embaixo. Escolha fotos com o casal no centro, com folga ao redor e sem muito detalhe na parte de baixo, onde fica o título.
 
-**Ampliar fotos:** no portfólio e na capa dos posts, clicar na foto abre a versão grande (até 2400 px) em tela cheia, com setas, teclado e deslizar no celular.
+**Ampliar fotos:** no portfólio, na galeria dos casamentos e na capa dos posts, clicar na foto abre a versão grande (até 2400 px) em tela cheia, com setas, teclado e deslizar no celular.
 
 **Portfólio:** as fotos ficam em `src/content/portfolio/` (24 a 40 para começar, misturando 3:2 de 2400 × 1600 e 4:5 de 1600 × 2000). Ordem e textos em `legendas.json`:
 
 ```json
 [
-  { "imagem": "/src/content/portfolio/01.jpg", "alt": "Noiva entrando na cerimônia ao pôr do sol", "legenda": "Ana e Pedro" }
+  { "imagem": "/src/content/portfolio/01.jpg", "alt": "Noiva entrando na cerimônia ao pôr do sol", "legenda": "Ana e Pedro", "tamanho": "grande", "foco": "topo" }
 ]
 ```
+
+**Carregamento suave:** cada foto mostra antes uma miniatura desfocada de 20 px (embutida no HTML), que dá lugar à foto quando ela carrega. O espaço da foto já tem a proporção certa, então nada pula na página; sem JavaScript, a foto aparece direto.
 
 **Logo e ícone:** enviados em **Configurações** no painel (só PNG, SVG ou WebP; ficam em `src/assets/marca/`).
 
