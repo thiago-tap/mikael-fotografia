@@ -11,9 +11,8 @@ import GradeInstagram from '../components/GradeInstagram.astro';
 import Hero from '../components/Hero.astro';
 import Icone from '../components/Icone.astro';
 import Manifesto from '../components/Manifesto.astro';
-import PrecoPacote from '../components/PrecoPacote.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { chamadaDoPacote, depoimentos, formatarData, pacotes, posts, seloDoPacote } from '../lib/conteudo';
+import { depoimentos, destaquesDoPacote, formatarData, pacotes, posts, seloDoPacote } from '../lib/conteudo';
 import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
 const [listaPacotes, listaDepoimentos, listaPosts] = await Promise.all([pacotes(), depoimentos(), posts()]);
@@ -73,14 +72,15 @@ const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacot
               ) : (
                 <p class="sobrelinha invisible mb-3 max-sm:hidden lg:min-h-[3em]" aria-hidden="true">·</p>
               )}
-              <h3 class="font-serif text-titulo-3 font-light tracking-[0.1em] text-tinta uppercase">{pacote.data.nome}</h3>
+              <h3 class="font-serif text-titulo-3 font-light tracking-[0.1em] text-tinta uppercase sm:flex sm:min-h-[2.5em] sm:items-center">{pacote.data.nome}</h3>
               <p class="mt-4 font-sans text-rotulo tracking-[0.22em] text-taupe uppercase">{pacote.data.cobertura}</p>
-              <p class="mt-6 max-w-xs flex-1 font-serif text-lg text-grafite italic">{chamadaDoPacote(pacote.data)}</p>
-              <div class="mt-8">
-                <PrecoPacote preco={pacote.data.preco} />
-              </div>
-              <a href={rota(`/proposta/#${pacote.id}`)} class="link-editorial mt-5">
-                Detalhes do pacote
+              <ul class="mt-8 w-full max-w-xs flex-1 space-y-3 border-t border-linha pt-6">
+                {destaquesDoPacote(pacote.data).map((item) => (
+                  <li class="font-serif text-lg text-grafite italic">{item}</li>
+                ))}
+              </ul>
+              <a href={rota(`/proposta/#${pacote.id}`)} class="link-editorial mt-8">
+                Ver o que está incluso
               </a>
             </li>
           ))

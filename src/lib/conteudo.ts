@@ -61,9 +61,14 @@ async function montarMenu(): Promise<ItemMenu[]> {
 
 type DadosPacote = CollectionEntry<'pacotes'>['data'];
 
-export function chamadaDoPacote({ chamada, comparativo }: DadosPacote): string | undefined {
-  if (chamada) return chamada;
-  return comparativo.fotos ? `${comparativo.fotos} fotos editadas em alta resolução.` : undefined;
+export function destaquesDoPacote({ comparativo }: DadosPacote): string[] {
+  const { fotografos, fotos, preWedding, makingOf } = comparativo;
+  const extrasInclusos = [preWedding === 'Incluso' && 'Pré-wedding', makingOf === 'Incluso' && 'making of'].filter(Boolean);
+  return [
+    fotografos && `${fotografos} ${fotografos === '1' ? 'fotógrafo' : 'fotógrafos profissionais'}`,
+    fotos && `${fotos} fotos editadas`,
+    extrasInclusos.length > 0 ? `${extrasInclusos.join(' e ')} inclusos` : 'Cerimônia e recepção',
+  ].filter((item): item is string => Boolean(item));
 }
 
 export function seloDoPacote({ destaque, selo }: DadosPacote): string | undefined {
