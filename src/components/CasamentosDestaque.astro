@@ -1,0 +1,42 @@
+---
+import CartaoCasamento from './CartaoCasamento.astro';
+import TituloSecao from './TituloSecao.astro';
+import { casamentos } from '../lib/conteudo';
+import { rota } from '../lib/site';
+
+interface Props {
+  numero?: string;
+}
+
+const { numero } = Astro.props;
+const destaques = (await casamentos()).filter((casamento) => casamento.data.destaque).slice(0, 3);
+---
+
+{
+  destaques.length > 0 && (
+    <section class="border-t border-linha px-6 py-24 md:py-32">
+      <div class="mx-auto max-w-6xl">
+        <TituloSecao sobrelinha="Casamentos reais" numero={numero} titulo="Histórias" enfase="do começo ao fim" />
+        <ul
+          class:list={[
+            'mt-16 grid gap-x-8 gap-y-16 md:mt-20 lg:gap-x-10',
+            destaques.length === 1 && 'mx-auto max-w-md',
+            destaques.length === 2 && 'mx-auto max-w-4xl sm:grid-cols-2',
+            destaques.length === 3 && 'sm:grid-cols-2 lg:grid-cols-3',
+          ]}
+        >
+          {destaques.map((casamento, indice) => (
+            <li data-revelar style={`--atraso: ${indice * 90}ms`} class:list={[destaques.length === 3 && indice === 1 && 'lg:mt-16']}>
+              <CartaoCasamento casamento={casamento} />
+            </li>
+          ))}
+        </ul>
+        <p class="mt-14 text-center">
+          <a href={rota('/casamentos/')} class="botao">
+            Ver todos os casamentos
+          </a>
+        </p>
+      </div>
+    </section>
+  )
+}

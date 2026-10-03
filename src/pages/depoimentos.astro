@@ -1,9 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import EstadoVazio from '../components/EstadoVazio.astro';
+import Foto from '../components/Foto.astro';
 import TituloSecao from '../components/TituloSecao.astro';
 import { depoimentos } from '../lib/conteudo';
 import { imagemDoRepositorio } from '../lib/fotos';
@@ -28,12 +28,14 @@ const lista = await Promise.all(
             {lista.map(({ depoimento, foto, Texto }) => (
               <li class="grid items-center gap-10 md:grid-cols-[1fr_2fr]" data-revelar>
                 {foto && (
-                  <Image
-                    src={foto}
+                  <Foto
+                    imagem={foto}
                     alt={`${depoimento.data.casal} no dia do casamento`}
-                    widths={[480, 800]}
+                    proporcao="4:5"
+                    foco={depoimento.data.fotoFoco}
+                    aguardando=""
                     sizes="(min-width: 768px) 33vw, 100vw"
-                    class="aspect-[4/5] w-full object-cover"
+                    larguraMaxima={800}
                   />
                 )}
                 <blockquote class:list={[!foto && 'md:col-span-2 text-center']}>

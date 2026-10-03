@@ -1,9 +1,9 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { Image } from 'astro:assets';
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ChamadaWhatsApp from '../../components/ChamadaWhatsApp.astro';
+import Foto from '../../components/Foto.astro';
 import { formatarData, posts } from '../../lib/conteudo';
 import { imagemDoRepositorio, versaoAmpliada } from '../../lib/fotos';
 import { rota } from '../../lib/site';
@@ -26,12 +26,13 @@ const capaAmpliada = capa && (await versaoAmpliada(capa));
   titulo={post.data.titulo}
   descricao={post.data.descricao}
   imagemSocial={capa?.src}
+  leitura
   trilha={[
     { nome: 'Blog', caminho: rota('/blog/') },
     { nome: post.data.titulo, caminho: Astro.url.pathname },
   ]}
 >
-  <article class="px-6 pt-16 pb-24 md:pt-24">
+  <article class="px-6 pt-16 pb-24 md:pt-24" data-leitura>
     <header class="mx-auto max-w-3xl text-center">
       <p class="sobrelinha">{formatarData(post.data.data)}</p>
       <h1 class="mt-5 font-serif text-titulo-1 font-light text-balance text-tinta">{post.data.titulo}</h1>
@@ -41,13 +42,14 @@ const capaAmpliada = capa && (await versaoAmpliada(capa));
     {
       capa && capaAmpliada && (
         <a href={capaAmpliada} class="mx-auto mt-14 block max-w-6xl cursor-zoom-in" data-lightbox="blog">
-          <Image
-            src={capa}
+          <Foto
+            imagem={capa}
             alt={post.data.capaAlt ?? post.data.titulo}
-            widths={[800, 1200, 1600, 2400]}
+            proporcao="3:2"
+            foco={post.data.capaFoco}
+            aguardando=""
             sizes="(min-width: 1280px) 1200px, 100vw"
-            loading="eager"
-            class="aspect-[3/2] w-full object-cover"
+            carregamento="eager"
           />
         </a>
       )

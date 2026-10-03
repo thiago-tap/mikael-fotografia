@@ -6,6 +6,7 @@ const pastasPadrao = [
   'src/assets/fotos',
   'src/assets/instagram',
   'src/content/portfolio',
+  'src/content/casamentos',
   'src/content/depoimentos',
   'src/content/blog',
   'src/assets/marca',

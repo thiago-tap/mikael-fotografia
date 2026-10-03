@@ -1,0 +1,176 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getImage } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import GradeEditorial from '../../components/GradeEditorial.astro';
+import Hero from '../../components/Hero.astro';
+import Icone from '../../components/Icone.astro';
+import Monograma from '../../components/Monograma.astro';
+import { capaDoCasamento, galeriaDoCasamento } from '../../lib/casamentos';
+import { casamentos, formatarData, lugarDoCasamento } from '../../lib/conteudo';
+import { linkWhatsApp, mensagemCasamento, rota, site } from '../../lib/site';
+
+export const getStaticPaths = (async () => {
+  const lista = await casamentos();
+  return lista.map((casamento, indice) => ({
+    params: { slug: casamento.id },
+    props: { casamento, proximo: lista.length > 1 ? lista[(indice + 1) % lista.length] : undefined },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  casamento: CollectionEntry<'casamentos'>;
+  proximo?: CollectionEntry<'casamentos'>;
+}
+
+const { casamento, proximo } = Astro.props;
+const { casal, data, capa: dadosCapa, resumo, cidade, local } = casamento.data;
+const { Content } = await render(casamento);
+const capa = capaDoCasamento(casamento);
+const grupos = galeriaDoCasamento(casamento);
+const lugar = lugarDoCasamento(casamento.data);
+const romanos = ['I', 'II', 'III', 'IV', 'V'];
+const caminho = rota(`/casamentos/${casamento.id}/`);
+const imagemSocial = capa && (await getImage({ src: capa, width: 1200, height: 630, fit: 'cover', format: 'jpg' })).src;
+
+const fotosDaGaleria = await Promise.all(
+  grupos.flatMap((grupo) => grupo.fotos).flatMap((foto) => (foto.imagem ? [foto] : [])).map(async (foto) => ({
+    '@type': 'ImageObject',
+    contentUrl: new URL((await getImage({ src: foto.imagem!, width: Math.min(foto.imagem!.width, 1600), format: 'jpg' })).src, Astro.site).href,
+    caption: foto.legenda ?? foto.alt,
+  })),
+);
+
+const galeria = {
+  '@type': 'ImageGallery',
+  name: `Casamento de ${casal}`,
+  description: resumo,
+  url: new URL(caminho, Astro.site).href,
+  ...(data && { datePublished: data.toISOString().slice(0, 10) }),
+  ...(lugar && { contentLocation: { '@type': 'Place', name: lugar } }),
+  author: { '@type': 'Person', name: site.fotografo },
+  publisher: { '@id': `${new URL(rota('/'), Astro.site)}#negocio` },
+  ...(fotosDaGaleria.length > 0 && { image: fotosDaGaleria }),
+};
+---
+
+<Base
+  titulo={`Casamento de ${casal}`}
+  descricao={resumo}
+  imagemSocial={imagemSocial}
+  trilha={[
+    { nome: 'Casamentos reais', caminho: rota('/casamentos/') },
+    { nome: casal, caminho },
+  ]}
+  dados={[galeria]}
+  eventoPagina={{ nome: 'ver_casamento', slug: casamento.id }}
+  leitura
+>
+  <div data-leitura>
+    <Hero
+      imagem={capa}
+      foco={dadosCapa.foco}
+      alt={dadosCapa.alt ?? `Casamento de ${casal}`}
+      sobrelinha={[lugar, data && String(data.getUTCFullYear())].filter(Boolean).join(' · ') || 'Casamento real'}
+      titulo={casal}
+    />
+
+    <section class="px-6 py-24 md:py-32">
+      <div class="mx-auto grid max-w-6xl gap-14 md:grid-cols-[1fr_2fr] md:gap-20">
+        <aside class="md:sticky md:top-10 md:self-start" data-revelar>
+          <Monograma class="h-8 w-auto text-taupe/60" />
+          <dl class="mt-8 space-y-6 border-t border-linha pt-8">
+            {
+              data && (
+                <div>
+                  <dt class="sobrelinha">Data</dt>
+                  <dd class="mt-2 font-serif text-titulo-4 text-tinta">{formatarData(data)}</dd>
+                </div>
+              )
+            }
+            {
+              local && (
+                <div>
+                  <dt class="sobrelinha">Local</dt>
+                  <dd class="mt-2 font-serif text-titulo-4 text-tinta">{local}</dd>
+                </div>
+              )
+            }
+            {
+              cidade && (
+                <div>
+                  <dt class="sobrelinha">Cidade</dt>
+                  <dd class="mt-2 font-serif text-titulo-4 text-tinta">{cidade}</dd>
+                </div>
+              )
+            }
+          </dl>
+        </aside>
+        <div data-revelar style="--atraso: 120ms">
+          <p class="font-serif text-titulo-3 font-light text-balance text-tinta italic">{resumo}</p>
+          <div class="texto-corrido mt-10">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {
+      grupos.length > 0 && (
+        <section class="px-4 pb-24 md:px-10 md:pb-32" aria-label={`Fotos do casamento de ${casal}`}>
+          <div class="mx-auto max-w-7xl space-y-20 md:space-y-28">
+            {grupos.map((grupo, indice) => (
+              <div>
+                {grupo.titulo && (
+                  <header class="mb-10 flex items-center justify-center gap-5 md:mb-14" data-revelar>
+                    <span class="h-px w-10 bg-taupe/40 md:w-20" aria-hidden="true" />
+                    <h2 class="text-center">
+                      <span class="block font-serif text-lg text-taupe italic">{romanos[indice] ?? indice + 1}</span>
+                      <span class="mt-1 block font-serif text-titulo-3 font-light text-tinta">{grupo.titulo}</span>
+                    </h2>
+                    <span class="h-px w-10 bg-taupe/40 md:w-20" aria-hidden="true" />
+                  </header>
+                )}
+                <GradeEditorial fotos={grupo.fotos} grupo="casamento" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  <section class="border-t border-linha bg-areia px-6 py-24 text-center md:py-32" data-esconde-flutuante>
+    <div class="mx-auto max-w-3xl" data-revelar>
+      <p class="sobrelinha">Vamos conversar?</p>
+      <h2 class="mt-5 font-serif text-titulo-2 font-light text-balance text-tinta">
+        Quero uma história <span class="italic">assim</span>
+      </h2>
+      <p class="mx-auto mt-6 max-w-xl font-sans text-corpo text-grafite">
+        Conte a data, a cidade e o local. Eu respondo com a disponibilidade e tudo o que vocês precisam saber.
+      </p>
+      <a
+        href={linkWhatsApp(mensagemCasamento(casal))}
+        target="_blank"
+        rel="noopener"
+        class="botao-cheio mt-10"
+        data-evento="clique_whatsapp"
+        data-origem={`casamento:${casamento.id}`}
+      >
+        <Icone nome="whatsapp" class="h-4 w-4" />
+        Quero uma história assim
+      </a>
+      <p class="mt-10 flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
+        <a href={rota('/casamentos/')} class="link-editorial">Todos os casamentos</a>
+        {
+          proximo && (
+            <a href={rota(`/casamentos/${proximo.id}/`)} class="link-editorial">
+              Próximo: {proximo.data.casal}
+            </a>
+          )
+        }
+      </p>
+    </div>
+  </section>
+</Base>

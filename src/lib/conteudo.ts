@@ -31,6 +31,16 @@ export async function posts() {
   return (await getCollection('blog')).sort((a, b) => b.data.data.getTime() - a.data.data.getTime());
 }
 
+export async function casamentos() {
+  return (await getCollection('casamentos')).sort(
+    (a, b) => a.data.ordem - b.data.ordem || (b.data.data?.getTime() ?? 0) - (a.data.data?.getTime() ?? 0),
+  );
+}
+
+export function lugarDoCasamento({ local, cidade }: CollectionEntry<'casamentos'>['data']): string {
+  return [local, cidade].filter(Boolean).join(' · ');
+}
+
 export async function sobre() {
   const pagina = await getEntry('paginas', 'sobre');
   if (!pagina) throw new Error('src/content/sobre.md não encontrado');
@@ -47,9 +57,10 @@ export function menu(): Promise<ItemMenu[]> {
 }
 
 async function montarMenu(): Promise<ItemMenu[]> {
-  const [listaDepoimentos, listaPosts] = await Promise.all([depoimentos(), posts()]);
+  const [listaDepoimentos, listaPosts, listaCasamentos] = await Promise.all([depoimentos(), posts(), casamentos()]);
   return [
     { rotulo: 'Portfólio', caminho: '/portfolio/' },
+    ...(listaCasamentos.length > 0 ? [{ rotulo: 'Casamentos', caminho: '/casamentos/' }] : []),
     { rotulo: 'Proposta', caminho: '/proposta/' },
     { rotulo: 'Sobre', caminho: '/sobre/' },
     ...(listaDepoimentos.length > 0 ? [{ rotulo: 'Depoimentos', caminho: '/depoimentos/' }] : []),
@@ -111,6 +122,29 @@ export function textoSimples(markdown: string): string {
     .replace(/[*_`#>]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+export type Numero = { valor: number; rotulo: string };
+
+const primeiroNumero = (texto: string | undefined) => {
+  const encontrado = texto?.match(/\d+/);
+  return encontrado ? Number(encontrado[0]) : undefined;
+};
+
+/** Números confirmados pelo próprio conteúdo do site; o que não estiver escrito em algum lugar não aparece. */
+export async function numerosDoSite(): Promise<Numero[]> {
+  const [paginaSobre, listaPacotes, listaEtapas] = await Promise.all([sobre(), pacotes(), etapas()]);
+  const anos = primeiroNumero(paginaSobre.data.resumo.match(/\d+\s+anos?/)?.[0]);
+  const fotografos = Math.max(0, ...listaPacotes.map((pacote) => primeiroNumero(pacote.data.comparativo.fotografos) ?? 0));
+  const etapa = (id: string) => listaEtapas.find((item) => item.id === id)?.data.detalhe;
+  const previas = primeiroNumero(etapa('previas'));
+  const entrega = primeiroNumero(etapa('entrega'));
+  return [
+    anos !== undefined && { valor: anos, rotulo: anos === 1 ? 'ano fotografando' : 'anos fotografando' },
+    fotografos > 1 && { valor: fotografos, rotulo: 'fotógrafos no seu dia' },
+    previas !== undefined && { valor: previas, rotulo: 'dias para as prévias' },
+    entrega !== undefined && { valor: entrega, rotulo: 'dias úteis para a entrega' },
+  ].filter((numero): numero is Numero => Boolean(numero));
 }
 
 export function formatarData(data: Date): string {

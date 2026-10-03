@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import GradePortfolio from '../components/GradePortfolio.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { regiao } from '../lib/site';
+import { regiao, site } from '../lib/site';
 ---
 
 <Base
@@ -18,7 +18,7 @@ import { regiao } from '../lib/site';
         </p>
       </TituloSecao>
       <div class="mt-16">
-        <GradePortfolio />
+        <GradePortfolio citacoes={[site.lema, 'Espontâneo, documental e elegante.', site.frase]} />
       </div>
     </div>
   </section>

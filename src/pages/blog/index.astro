@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import EstadoVazio from '../../components/EstadoVazio.astro';
+import Foto from '../../components/Foto.astro';
 import TituloSecao from '../../components/TituloSecao.astro';
 import { formatarData, posts } from '../../lib/conteudo';
 import { imagemDoRepositorio } from '../../lib/fotos';
@@ -23,15 +23,16 @@ const lista = (await posts()).map((post) => ({ post, capa: imagemDoRepositorio(p
                 <li>
                   <a href={rota(`/blog/${post.id}/`)} class="group block" data-revelar>
                     {capa && (
-                      <div class="overflow-hidden">
-                        <Image
-                          src={capa}
-                          alt={post.data.capaAlt ?? post.data.titulo}
-                          widths={[480, 800, 1200]}
-                          sizes="(min-width: 768px) 50vw, 100vw"
-                          class="zoom-suave aspect-[3/2] w-full object-cover"
-                        />
-                      </div>
+                      <Foto
+                        imagem={capa}
+                        alt={post.data.capaAlt ?? post.data.titulo}
+                        proporcao="3:2"
+                        foco={post.data.capaFoco}
+                        aguardando=""
+                        sizes="(min-width: 768px) 50vw, 100vw"
+                        larguraMaxima={1200}
+                        zoom
+                      />
                     )}
                     <p class="sobrelinha mt-6">{formatarData(post.data.data)}</p>
                     <h2 class="mt-3 font-serif text-titulo-3 font-light text-tinta group-hover:text-taupe">{post.data.titulo}</h2>

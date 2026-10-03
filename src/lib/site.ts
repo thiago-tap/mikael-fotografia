@@ -37,6 +37,8 @@ const nomesDasPaginas: Record<string, string> = {
   '/depoimentos/': 'os depoimentos',
   '/blog/': 'o blog',
   '/privacidade/': 'a política de privacidade',
+  '/casamentos/': 'os casamentos reais',
+  '/agenda/': 'a agenda',
 };
 
 export function nomeDaPagina(caminhoCompleto: string): string | undefined {
@@ -44,7 +46,16 @@ export function nomeDaPagina(caminhoCompleto: string): string | undefined {
   const caminho = caminhoCompleto.startsWith(base) ? caminhoCompleto.slice(base.length) || '/' : caminhoCompleto;
   const normalizado = caminho.endsWith('/') ? caminho : `${caminho}/`;
   if (normalizado.startsWith('/blog/')) return 'o blog';
+  if (normalizado.startsWith('/casamentos/')) return 'os casamentos reais';
   return nomesDasPaginas[normalizado];
+}
+
+export function mensagemCasamento(casal: string): string {
+  return `Olá, Mikael! Vi o casamento de ${casal} no seu site e quero uma história assim. Pode consultar a disponibilidade da minha data?`;
+}
+
+export function mensagemMes(mes: string, ano: number): string {
+  return `Olá, Mikael! Vi a agenda no seu site e quero consultar uma data em ${mes} de ${ano}.`;
 }
 
 export function mensagemDisponibilidade(pagina?: string): string {

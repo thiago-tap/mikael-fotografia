@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import fonteTitulo from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-300-normal.woff2?url';
+import BarraLeitura from '../components/BarraLeitura.astro';
 import Cabecalho from '../components/Cabecalho.astro';
 import Consentimento from '../components/Consentimento.astro';
 import DadosEstruturados from '../components/DadosEstruturados.astro';
@@ -21,9 +22,12 @@ interface Props {
   imagemSocial?: string;
   trilha?: Trilha;
   dados?: Record<string, unknown>[];
+  eventoPagina?: { nome: string; slug?: string };
+  semIndice?: boolean;
+  leitura?: boolean;
 }
 
-const { titulo, descricao = site.descricao, imagemSocial, trilha, dados = [] } = Astro.props;
+const { titulo, descricao = site.descricao, imagemSocial, trilha, dados = [], eventoPagina, semIndice = false, leitura = false } = Astro.props;
 const tituloCompleto = titulo ? `${titulo} · ${site.nome}` : `${site.nome} · Fotógrafo de casamento em ${regiao}`;
 const canonica = new URL(Astro.url.pathname, Astro.site);
 const inicio = new URL(rota('/'), Astro.site);
@@ -69,9 +73,18 @@ const migalhas = trilhaFinal.length > 0 && {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      ['load', 'error'].forEach(function (tipo) {
+        document.addEventListener(tipo, function (evento) {
+          var alvo = evento.target;
+          if (alvo instanceof HTMLImageElement) alvo.closest('.foto-suave')?.setAttribute('data-carregada', '');
+        }, true);
+      });
+    </script>
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
+    {semIndice && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonica} />
     <link rel="preload" href={fonteTitulo} as="font" type="font/woff2" crossorigin />
     <Icones />
@@ -101,6 +114,8 @@ const migalhas = trilhaFinal.length > 0 && {
     {dados.map((item) => <DadosEstruturados dados={item} />)}
   </head>
   <body class="flex min-h-screen flex-col">
+    {eventoPagina && <div hidden data-evento-pagina={eventoPagina.nome} data-slug={eventoPagina.slug}></div>}
+    {leitura && <BarraLeitura />}
     <a
       href="#conteudo"
       class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-tinta focus:px-4 focus:py-2 focus:text-papel"

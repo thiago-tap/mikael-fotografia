@@ -1,8 +1,11 @@
+import { join } from 'node:path';
 import type { ImageMetadata } from 'astro';
 import { getImage } from 'astro:assets';
 import { z } from 'astro/zod';
+import sharp from 'sharp';
 import legendasJson from '../content/portfolio/legendas.json';
 import { configuracoes } from './configuracoes';
+import { esquemaFoco, esquemaTamanho, type Foco, type Tamanho } from './enquadramento';
 
 type ModuloImagem = { default: ImageMetadata };
 
@@ -11,7 +14,9 @@ const imagensDoRepositorio = import.meta.glob<ModuloImagem>(
   { eager: true },
 );
 
-export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3' | '9:16';
+const caminhoDaImagem = new Map(Object.entries(imagensDoRepositorio).map(([caminho, modulo]) => [modulo.default, caminho]));
+
+export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3' | '9:16' | '3:4' | '1:1';
 
 /** Fotos fixas do site. O arquivo vai em src/assets/fotos com o nome indicado ou é escolhido em configuracoes.json → fotos. */
 export const vagas = {
@@ -44,6 +49,26 @@ export async function versaoAmpliada(foto: ImageMetadata): Promise<string> {
   return ampliada.src;
 }
 
+const miniaturas = new Map<string, Promise<string | undefined>>();
+
+/** Miniatura de 20 px em base64, mostrada desfocada enquanto a foto carrega. */
+export function miniatura(foto: ImageMetadata | undefined): Promise<string | undefined> {
+  const caminho = foto && caminhoDaImagem.get(foto);
+  if (!caminho) return Promise.resolve(undefined);
+  let pronta = miniaturas.get(caminho);
+  if (!pronta) {
+    pronta = sharp(join(process.cwd(), caminho))
+      .rotate()
+      .resize(20)
+      .webp({ quality: 50 })
+      .toBuffer()
+      .then((dados) => `data:image/webp;base64,${dados.toString('base64')}`)
+      .catch(() => undefined);
+    miniaturas.set(caminho, pronta);
+  }
+  return pronta;
+}
+
 function nomeSemExtensao(caminho: string): string {
   return (caminho.split('/').pop() ?? caminho).replace(/\.[^.]+$/, '');
 }
@@ -69,11 +94,17 @@ export function fotoDoSite(nome: string): ImageMetadata | undefined {
   return encontrada?.[1].default;
 }
 
+export function focoDaVaga(nome: string): Foco {
+  return configuracoes.focos[nome] ?? 'centro';
+}
+
 export type FotoPortfolio = {
   id: string;
   imagem: ImageMetadata;
   alt: string;
   legenda?: string;
+  foco: Foco;
+  tamanho: Tamanho;
 };
 
 const altPadrao = 'Fotografia de casamento por Mikael Vt';
@@ -81,8 +112,10 @@ const altPadrao = 'Fotografia de casamento por Mikael Vt';
 const esquemaLegendas = z.array(
   z.object({
     imagem: z.string().nullish(),
-    alt: z.string().nullish(),
-    legenda: z.string().nullish(),
+    alt: z.string().max(160, 'Descrição da foto do portfólio com mais de 160 caracteres').nullish(),
+    legenda: z.string().max(80, 'Legenda do portfólio com mais de 80 caracteres').nullish(),
+    foco: esquemaFoco,
+    tamanho: esquemaTamanho,
   }),
 );
 
@@ -111,6 +144,8 @@ export function fotosPortfolio(): FotoPortfolio[] {
         imagem: modulo.default,
         alt: texto?.alt?.trim() || altPadrao,
         legenda: texto?.legenda?.trim() || undefined,
+        foco: texto?.foco ?? 'centro',
+        tamanho: texto?.tamanho ?? 'auto',
       };
     });
 }

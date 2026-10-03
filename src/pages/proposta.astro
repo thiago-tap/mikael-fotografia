@@ -4,6 +4,7 @@ import CardPacote from '../components/CardPacote.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import ComoFunciona from '../components/ComoFunciona.astro';
 import ComparativoPacotes from '../components/ComparativoPacotes.astro';
+import DepoimentosDestaque from '../components/DepoimentosDestaque.astro';
 import Diferenciais from '../components/Diferenciais.astro';
 import FaixaAgenda from '../components/FaixaAgenda.astro';
 import FotoVaga from '../components/FotoVaga.astro';
@@ -13,6 +14,7 @@ import ListaExtras from '../components/ListaExtras.astro';
 import ListaFaq from '../components/ListaFaq.astro';
 import Manifesto from '../components/Manifesto.astro';
 import TituloSecao from '../components/TituloSecao.astro';
+import { agendaComInformacao } from '../lib/configuracoes';
 import { extras, pacotes, perguntas, sobre } from '../lib/conteudo';
 import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
@@ -50,6 +52,7 @@ const catalogo = {
   descricao={`Pacotes Micro Wedding, Mini Wedding, Promessa e Eternidade para casamentos em ${regiao}: comparativo, serviços extras, formas de pagamento e como funciona.`}
   trilha={[{ nome: 'Proposta', caminho: rota('/proposta/') }]}
   dados={[catalogo]}
+  eventoPagina={{ nome: 'view_proposta' }}
 >
   <Hero
     vaga="proposta-hero"
@@ -87,6 +90,15 @@ const catalogo = {
       }
       <li><a href="#comparativo" class="link-navegacao pt-2">Comparativo</a></li>
       <li><a href="#extras" class="link-navegacao pt-2">Extras</a></li>
+      {
+        agendaComInformacao && (
+          <li>
+            <a href={rota('/agenda/')} class="link-navegacao pt-2" data-evento="clique_agenda" data-origem="proposta">
+              Agenda
+            </a>
+          </li>
+        )
+      }
     </ul>
   </nav>
 
@@ -98,7 +110,7 @@ const catalogo = {
         <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vt" sizes="(min-width: 768px) 40vw, 100vw" />
       </div>
       <div class="text-center md:text-left">
-        <TituloSecao sobrelinha={paginaSobre.data.subtitulo} titulo={paginaSobre.data.titulo} alinhamento="esquerda" class="text-center md:text-left" />
+        <TituloSecao sobrelinha={paginaSobre.data.subtitulo} numero="01" titulo={paginaSobre.data.titulo} alinhamento="esquerda" class="text-center md:text-left" />
         <p class="texto-corrido mt-8" data-revelar>{paginaSobre.data.resumo}</p>
         <a href={rota('/sobre/')} class="link-editorial mt-8">Saiba mais sobre mim</a>
       </div>
@@ -107,16 +119,18 @@ const catalogo = {
 
   <section id="pacotes" class="scroll-mt-6 border-t border-linha px-6 py-24 md:py-32">
     <div class="mx-auto max-w-6xl">
-      <TituloSecao sobrelinha="Investimento" titulo="Pacotes" />
+      <TituloSecao sobrelinha="Investimento" numero="02" titulo="Pacotes" />
       <div class="mt-20 space-y-28 md:space-y-36">
         {listaPacotes.map((pacote, indice) => <CardPacote pacote={pacote} invertido={indice % 2 === 1} />)}
       </div>
     </div>
   </section>
 
+  <DepoimentosDestaque limite={4} />
+
   <section id="comparativo" class="scroll-mt-6 border-t border-linha py-24 md:py-32">
     <div class="mx-auto max-w-6xl">
-      <TituloSecao sobrelinha="Lado a lado" titulo="Compare os" enfase="pacotes" class="px-6" />
+      <TituloSecao sobrelinha="Lado a lado" numero="03" titulo="Compare os" enfase="pacotes" class="px-6" />
       <div class="mt-14 md:px-6">
         <ComparativoPacotes pacotes={listaPacotes} />
       </div>
@@ -140,7 +154,7 @@ const catalogo = {
   </div>
 
   <section id="extras" class="scroll-mt-6 border-t border-linha px-6 py-24 md:py-32">
-    <TituloSecao sobrelinha="Para acrescentar à sua cobertura" titulo="Serviços extras" />
+    <TituloSecao sobrelinha="Para acrescentar à sua cobertura" numero="04" titulo="Serviços extras" />
     <div class="mt-16">
       <ListaExtras extras={listaExtras} />
     </div>

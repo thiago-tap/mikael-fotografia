@@ -1,6 +1,6 @@
 ---
 import Foto from './Foto.astro';
-import { fotoDoSite, vagas, type Vaga } from '../lib/fotos';
+import { focoDaVaga, fotoDoSite, vagas, type Vaga } from '../lib/fotos';
 
 interface Props {
   vaga: Vaga;
@@ -15,4 +15,4 @@ const { vaga, ...resto } = Astro.props;
 const { proporcao, medida } = vagas[vaga];
 ---
 
-<Foto {...resto} imagem={fotoDoSite(vaga)} proporcao={proporcao} aguardando={`${vaga} · ${medida}`} />
+<Foto {...resto} imagem={fotoDoSite(vaga)} proporcao={proporcao} foco={focoDaVaga(vaga)} aguardando={`${vaga} · ${medida}`} />

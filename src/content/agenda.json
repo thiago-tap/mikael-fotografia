@@ -1,4 +1,36 @@
 {
   "ativo": true,
-  "texto": "Últimas datas de 2026 disponíveis. Agenda de 2027 aberta."
+  "texto": "Últimas datas de 2026 disponíveis. Agenda de 2027 aberta.",
+  "anos": [
+    {
+      "ano": 2026,
+      "jan": "sem-info",
+      "fev": "sem-info",
+      "mar": "sem-info",
+      "abr": "sem-info",
+      "mai": "sem-info",
+      "jun": "sem-info",
+      "jul": "sem-info",
+      "ago": "sem-info",
+      "set": "sem-info",
+      "out": "sem-info",
+      "nov": "sem-info",
+      "dez": "sem-info"
+    },
+    {
+      "ano": 2027,
+      "jan": "sem-info",
+      "fev": "sem-info",
+      "mar": "sem-info",
+      "abr": "sem-info",
+      "mai": "sem-info",
+      "jun": "sem-info",
+      "jul": "sem-info",
+      "ago": "sem-info",
+      "set": "sem-info",
+      "out": "sem-info",
+      "nov": "sem-info",
+      "dez": "sem-info"
+    }
+  ]
 }

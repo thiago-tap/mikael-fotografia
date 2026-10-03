@@ -1,0 +1,126 @@
+---
+import Foto from './Foto.astro';
+import { montarLinhas, type FotoEditorial, type Linha, type Orientacao } from '../lib/editorial';
+import { versaoAmpliada } from '../lib/fotos';
+
+interface Props {
+  fotos: FotoEditorial[];
+  grupo: string;
+  citacoes?: string[];
+}
+
+const { fotos, grupo, citacoes = [] } = Astro.props;
+
+const preparadas = await Promise.all(
+  fotos.map(async (foto) => ({
+    ...foto,
+    orientacao: (foto.imagem ? (foto.imagem.height > foto.imagem.width ? 'vertical' : 'horizontal') : (foto.orientacaoVazia ?? 'horizontal')) as Orientacao,
+    ampliada: foto.imagem ? await versaoAmpliada(foto.imagem) : undefined,
+  })),
+);
+
+type Preparada = (typeof preparadas)[number];
+type Celula = { foto: Preparada; quadro: string; figura?: string; sizes: string; largura: number };
+
+const linhas = montarLinhas(preparadas, citacoes);
+
+function grade(linha: Linha<Preparada>): string {
+  switch (linha.tipo) {
+    case 'larga':
+      return 'grid';
+    case 'destaque':
+      return linha.principal === 0 ? 'grid gap-4 md:grid-cols-[2fr_1fr] md:gap-6' : 'grid gap-4 md:grid-cols-[1fr_2fr] md:gap-6';
+    case 'par':
+      return linha.itens.every((item) => item.papel === 'medio')
+        ? 'grid gap-4 md:grid-cols-2 md:gap-6'
+        : 'grid grid-cols-2 gap-3 md:gap-6';
+    case 'trio':
+      return 'grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6';
+    case 'citacao':
+      return 'grid grid-cols-2 items-center gap-3 md:grid-cols-3 md:gap-6';
+    case 'sozinha':
+      return 'grid md:mx-auto md:w-1/2';
+    default: {
+      const inesperada: never = linha;
+      throw new Error(`Linha desconhecida: ${JSON.stringify(inesperada)}`);
+    }
+  }
+}
+
+function celulas(linha: Linha<Preparada>): Celula[] {
+  switch (linha.tipo) {
+    case 'larga':
+      return [{ foto: linha.itens[0], quadro: 'aspect-[3/2] md:aspect-[16/9]', sizes: '(min-width: 1280px) 1240px, 100vw', largura: 2400 }];
+    case 'destaque':
+      return linha.itens.map((foto, indice) =>
+        indice === linha.principal
+          ? { foto, quadro: 'aspect-[3/2]', sizes: '(min-width: 768px) 66vw, 100vw', largura: 1800 }
+          : { foto, quadro: 'aspect-[4/5] md:aspect-auto md:h-full', sizes: '(min-width: 768px) 33vw, 100vw', largura: 1200 },
+      );
+    case 'par': {
+      const medias = linha.itens.every((item) => item.papel === 'medio');
+      return linha.itens.map((foto) => ({
+        foto,
+        quadro: medias ? 'aspect-[3/2]' : 'aspect-[4/5]',
+        sizes: medias ? '(min-width: 768px) 50vw, 100vw' : '50vw',
+        largura: 1600,
+      }));
+    }
+    case 'trio':
+      return linha.itens.map((foto, indice) => ({
+        foto,
+        quadro: 'aspect-[4/5]',
+        figura: indice === 2 ? 'max-md:col-span-2' : undefined,
+        sizes: indice === 2 ? '(min-width: 768px) 33vw, 100vw' : '(min-width: 768px) 33vw, 50vw',
+        largura: 1200,
+      }));
+    case 'citacao':
+      return linha.itens.map((foto) => ({ foto, quadro: 'aspect-[4/5]', sizes: '(min-width: 768px) 33vw, 50vw', largura: 1200 }));
+    case 'sozinha':
+      return [{ foto: linha.itens[0], quadro: 'aspect-[4/5]', sizes: '(min-width: 768px) 50vw, 100vw', largura: 1600 }];
+    default: {
+      const inesperada: never = linha;
+      throw new Error(`Linha desconhecida: ${JSON.stringify(inesperada)}`);
+    }
+  }
+}
+
+const montadas = linhas.map((linha) => ({ linha, classe: grade(linha), celulas: celulas(linha) }));
+---
+
+<div class="space-y-4 md:space-y-6">
+  {
+    montadas.map(({ linha, classe, celulas }) => (
+      <div class={classe} data-revelar>
+        {celulas.map(({ foto, quadro, figura, sizes, largura }, indice) => (
+          <>
+            {linha.tipo === 'citacao' && indice === 1 && (
+              <blockquote class="flex flex-col items-center px-4 py-8 text-center max-md:order-first max-md:col-span-2 md:px-6">
+                <span class="h-8 w-px bg-taupe/40" aria-hidden="true" />
+                <p class="mt-6 font-serif text-titulo-3 font-light text-balance text-grafite italic">{linha.texto}</p>
+                <span class="mt-6 h-8 w-px bg-taupe/40" aria-hidden="true" />
+              </blockquote>
+            )}
+            <figure class:list={['flex min-w-0 flex-col', figura]}>
+              {foto.imagem && foto.ampliada ? (
+                <a
+                  href={foto.ampliada}
+                  class="block flex-1 cursor-zoom-in"
+                  data-lightbox={grupo}
+                  data-legenda={foto.legenda}
+                >
+                  <Foto imagem={foto.imagem} alt={foto.alt} foco={foto.foco} aguardando="" sizes={sizes} larguraMaxima={largura} class={quadro} zoom />
+                </a>
+              ) : (
+                <div class="flex-1">
+                  <Foto alt={foto.alt} aguardando={foto.aguardando ?? ''} class={quadro} />
+                </div>
+              )}
+              {foto.legenda && <figcaption class="mt-3 font-serif text-base text-taupe italic">{foto.legenda}</figcaption>}
+            </figure>
+          </>
+        ))}
+      </div>
+    ))
+  }
+</div>

@@ -1,12 +1,21 @@
 ---
-import { agenda, agendaVisivel } from '../lib/configuracoes';
+import { agenda, agendaComInformacao, agendaVisivel } from '../lib/configuracoes';
+import { rota } from '../lib/site';
+
+const anos = agenda.anos.map((ano) => ano.ano).sort((a, b) => a - b);
+const periodo = anos.length > 0 ? anos.join(' · ') : '2026 · 2027';
 ---
 
 {
   agendaVisivel && (
     <aside class="border-y border-linha bg-areia px-6 py-8 text-center" aria-label="Agenda">
-      <p class="sobrelinha">Agenda 2026 · 2027</p>
+      <p class="sobrelinha">Agenda {periodo}</p>
       <p class="mx-auto mt-3 max-w-3xl font-serif text-titulo-4 text-tinta italic">{agenda.texto}</p>
+      {agendaComInformacao && (
+        <a href={rota('/agenda/')} class="link-editorial mt-4" data-evento="clique_agenda" data-origem="faixa">
+          Ver os meses disponíveis
+        </a>
+      )}
     </aside>
   )
 }

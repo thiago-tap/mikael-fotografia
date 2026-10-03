@@ -1,0 +1,190 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import TituloSecao from '../components/TituloSecao.astro';
+import { agenda, agendaComInformacao, meses, type Mes, type Situacao } from '../lib/configuracoes';
+import { linkWhatsApp, mensagemDisponibilidade, mensagemMes, regiao } from '../lib/site';
+
+const nomesDosMeses: Record<Mes, string> = {
+  jan: 'Janeiro',
+  fev: 'Fevereiro',
+  mar: 'Março',
+  abr: 'Abril',
+  mai: 'Maio',
+  jun: 'Junho',
+  jul: 'Julho',
+  ago: 'Agosto',
+  set: 'Setembro',
+  out: 'Outubro',
+  nov: 'Novembro',
+  dez: 'Dezembro',
+};
+
+type Estado = Situacao | 'encerrado';
+
+function rotulo(estado: Estado): string {
+  switch (estado) {
+    case 'disponivel':
+      return 'Datas disponíveis';
+    case 'poucas-datas':
+      return 'Poucas datas';
+    case 'esgotado':
+      return 'Esgotado';
+    case 'sem-info':
+      return 'Consulte';
+    case 'encerrado':
+      return 'Encerrado';
+    default: {
+      const inesperado: never = estado;
+      throw new Error(`Situação desconhecida: ${String(inesperado)}`);
+    }
+  }
+}
+
+const hoje = new Date();
+const anos = [...agenda.anos]
+  .sort((a, b) => a.ano - b.ano)
+  .filter((ano) => ano.ano >= hoje.getFullYear())
+  .map((ano) => ({
+    ano: ano.ano,
+    meses: meses.map((mes, indice) => {
+      const passou = ano.ano < hoje.getFullYear() || (ano.ano === hoje.getFullYear() && indice < hoje.getMonth());
+      const estado: Estado = passou ? 'encerrado' : ano[mes];
+      return { mes, nome: nomesDosMeses[mes], estado, consultavel: estado === 'disponivel' || estado === 'poucas-datas' };
+    }),
+  }));
+const periodo = anos.map((ano) => ano.ano).join(' · ');
+const legenda: Situacao[] = ['disponivel', 'poucas-datas', 'esgotado', 'sem-info'];
+---
+
+<Base
+  titulo={`Agenda e disponibilidade · ${regiao}`}
+  descricao={`Veja os meses com datas disponíveis para fotografia de casamento em ${regiao} e consulte a sua data pelo WhatsApp.`}
+  semIndice={!agendaComInformacao}
+>
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Agenda" titulo="Datas" enfase={periodo || 'disponíveis'} nivel="h1">
+        <p class="mx-auto mt-6 max-w-xl font-sans text-corpo text-grafite">
+          Um panorama dos meses. A confirmação da data é sempre pelo WhatsApp, e a reserva acontece com o contrato e o sinal.
+        </p>
+      </TituloSecao>
+
+      {
+        agendaComInformacao ? (
+          <>
+            <ul class="mt-14 flex flex-wrap justify-center gap-x-8 gap-y-3" aria-label="Legenda">
+              {legenda.map((estado) => (
+                <li class="flex items-center gap-3 font-sans text-rotulo tracking-[0.2em] text-grafite uppercase">
+                  <span class="marca-agenda" data-estado={estado} aria-hidden="true" />
+                  {rotulo(estado)}
+                </li>
+              ))}
+            </ul>
+
+            <div class="mt-16 space-y-20">
+              {anos.map(({ ano, meses: lista }) => (
+                <section aria-labelledby={`ano-${ano}`} data-revelar>
+                  <h2 id={`ano-${ano}`} class="flex items-center gap-6 font-serif text-titulo-2 font-light text-tinta">
+                    {ano}
+                    <span class="h-px flex-1 bg-linha" aria-hidden="true" />
+                  </h2>
+                  <ul class="mt-8 grid grid-cols-2 gap-px border border-linha bg-linha sm:grid-cols-3 lg:grid-cols-4">
+                    {lista.map(({ mes, nome, estado, consultavel }) => {
+                      const conteudo = (
+                        <>
+                          <span class="font-serif text-titulo-4 text-tinta group-data-[estado=encerrado]:text-taupe/60 group-data-[estado=esgotado]:text-taupe group-data-[estado=esgotado]:line-through group-data-[estado=esgotado]:decoration-1">
+                            {nome}
+                          </span>
+                          <span class="mt-3 flex items-center gap-2.5 font-sans text-rotulo tracking-[0.2em] text-grafite uppercase group-data-[estado=encerrado]:text-taupe/60">
+                            <span class="marca-agenda" data-estado={estado} aria-hidden="true" />
+                            {rotulo(estado)}
+                          </span>
+                          {consultavel && (
+                            <span class="mt-5 inline-flex items-center gap-2 font-sans text-rotulo tracking-[0.24em] text-tinta uppercase opacity-70 transition-opacity group-hover:opacity-100">
+                              <Icone nome="whatsapp" class="h-3.5 w-3.5" />
+                              Consultar
+                            </span>
+                          )}
+                        </>
+                      );
+                      return (
+                        <li class="group bg-papel" data-estado={estado}>
+                          {consultavel ? (
+                            <a
+                              href={linkWhatsApp(mensagemMes(nome.toLowerCase(), ano))}
+                              target="_blank"
+                              rel="noopener"
+                              class="flex h-full flex-col p-6 transition-colors hover:bg-areia md:p-8"
+                              data-evento="clique_whatsapp"
+                              data-origem={`agenda:${mes}-${ano}`}
+                            >
+                              {conteudo}
+                            </a>
+                          ) : (
+                            <div class="flex h-full flex-col p-6 md:p-8">{conteudo}</div>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </>
+        ) : (
+          <div class="mx-auto mt-16 max-w-xl border border-dashed border-linha px-8 py-16 text-center">
+            <p class="font-serif text-titulo-3 font-light text-tinta">A agenda está sendo atualizada</p>
+            <p class="mt-4 font-sans text-corpo text-grafite">Mande a data do casamento pelo WhatsApp e eu confirmo a disponibilidade.</p>
+          </div>
+        )
+      }
+
+      <p class="mt-20 text-center">
+        <a
+          href={linkWhatsApp(mensagemDisponibilidade('a agenda'))}
+          target="_blank"
+          rel="noopener"
+          class="botao-cheio"
+          data-evento="clique_whatsapp"
+          data-origem="agenda"
+        >
+          <Icone nome="whatsapp" class="h-4 w-4" />
+          Consultar minha data
+        </a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .marca-agenda {
+    display: inline-block;
+    width: 0.625rem;
+    height: 0.625rem;
+    flex: none;
+    border: 1px solid var(--color-taupe);
+    border-radius: 9999px;
+  }
+
+  .marca-agenda[data-estado='disponivel'] {
+    border-color: var(--color-tinta);
+    background: var(--color-tinta);
+  }
+
+  .marca-agenda[data-estado='poucas-datas'] {
+    border-color: var(--color-tinta);
+    background: linear-gradient(90deg, var(--color-tinta) 50%, transparent 50%);
+  }
+
+  .marca-agenda[data-estado='esgotado'] {
+    border-radius: 0;
+    border-width: 0;
+    height: 1px;
+    background: var(--color-taupe);
+  }
+
+  .marca-agenda[data-estado='encerrado'] {
+    opacity: 0.4;
+  }
+</style>

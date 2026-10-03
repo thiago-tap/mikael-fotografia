@@ -18,7 +18,7 @@ const selo = seloDoPacote(pacote.data);
 const vaga = `pacote-${pacote.id}` as Vaga;
 ---
 
-<article id={pacote.id} class="grid scroll-mt-10 items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-24">
+<article id={pacote.id} class="grid scroll-mt-10 items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-24" data-pacote-visto={nome}>
   <div class:list={[invertido && 'md:order-2']} data-revelar>
     <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Vt — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" zoom />
   </div>
@@ -57,11 +57,33 @@ const vaga = `pacote-${pacote.id}` as Vaga;
       target="_blank"
       rel="noopener"
       class="botao mt-8"
-      data-evento="clique_whatsapp"
+      data-evento="clique_quero_pacote clique_whatsapp"
       data-origem={`pacote:${nome}`}
+      data-pacote={nome}
     >
       <Icone nome="whatsapp" class="h-4 w-4" />
       Consultar data para este pacote
     </a>
   </div>
 </article>
+
+<script>
+  import { rastrear } from '../lib/rastreamento';
+
+  const cartoes = document.querySelectorAll<HTMLElement>('[data-pacote-visto]');
+
+  if (cartoes.length > 0 && 'IntersectionObserver' in window) {
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        for (const entrada of entradas) {
+          const metadeDaTela = entrada.intersectionRect.height >= innerHeight * 0.5;
+          if (!entrada.isIntersecting || (entrada.intersectionRatio < 0.5 && !metadeDaTela)) continue;
+          observador.unobserve(entrada.target);
+          rastrear('ver_pacote', { pacote: (entrada.target as HTMLElement).dataset.pacoteVisto ?? '', origem: 'proposta' });
+        }
+      },
+      { threshold: [0, 0.25, 0.5, 0.75] },
+    );
+    cartoes.forEach((cartao) => observador.observe(cartao));
+  }
+</script>

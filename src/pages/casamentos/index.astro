@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import CartaoCasamento from '../../components/CartaoCasamento.astro';
+import ChamadaWhatsApp from '../../components/ChamadaWhatsApp.astro';
+import EstadoVazio from '../../components/EstadoVazio.astro';
+import TituloSecao from '../../components/TituloSecao.astro';
+import { casamentos } from '../../lib/conteudo';
+import { regiao, rota } from '../../lib/site';
+
+const lista = await casamentos();
+---
+
+<Base
+  titulo={`Casamentos reais em ${regiao}`}
+  descricao={`Histórias completas de casamentos fotografados por Mikael Vt em ${regiao}: making of, cerimônia, o casal e a festa.`}
+  trilha={[{ nome: 'Casamentos reais', caminho: rota('/casamentos/') }]}
+>
+  <section class="px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+    <div class="mx-auto max-w-6xl">
+      <TituloSecao sobrelinha="Casamentos reais" titulo="Histórias contadas" enfase="do começo ao fim" nivel="h1">
+        <p class="mx-auto mt-6 max-w-xl font-sans text-corpo text-grafite">
+          Do making of à última música da festa: cada casamento como ele aconteceu.
+        </p>
+      </TituloSecao>
+
+      <div class="mt-16 md:mt-20">
+        {
+          lista.length > 0 ? (
+            <ul class="grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-10">
+              {lista.map((casamento, indice) => (
+                <li data-revelar style={`--atraso: ${(indice % 3) * 90}ms`} class:list={[indice % 3 === 1 && 'lg:mt-16']}>
+                  <CartaoCasamento casamento={casamento} nivel="h2" />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EstadoVazio
+              titulo="As primeiras histórias chegam em breve"
+              texto="Enquanto isso, veja uma seleção de fotos no portfólio."
+            />
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-linha">
+    <ChamadaWhatsApp titulo="Quer que o próximo seja o de vocês?" />
+  </div>
+</Base>

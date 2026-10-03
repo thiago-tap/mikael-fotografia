@@ -1,60 +1,26 @@
 ---
-import { Picture } from 'astro:assets';
-import Foto from './Foto.astro';
-import { formatos, fotosPortfolio, larguras, versaoAmpliada } from '../lib/fotos';
+import GradeEditorial from './GradeEditorial.astro';
+import type { FotoEditorial } from '../lib/editorial';
+import { fotosPortfolio } from '../lib/fotos';
 
 interface Props {
   limite?: number;
   /** Quantos espaços vazios mostrar enquanto a pasta do portfólio estiver vazia. */
   vazios?: number;
+  citacoes?: string[];
 }
 
-const { limite, vazios = 9 } = Astro.props;
-const fotos = await Promise.all(
-  fotosPortfolio()
-    .slice(0, limite)
-    .map(async (foto) => ({ ...foto, ampliada: await versaoAmpliada(foto.imagem) })),
-);
-const proporcoesVazias = ['4:5', '3:2', '4:5', '3:2', '4:5', '3:2', '3:2', '4:5', '3:2'] as const;
+const { limite, vazios = 9, citacoes = [] } = Astro.props;
+const fotos: FotoEditorial[] = fotosPortfolio().slice(0, limite);
+
+const ritmoVazio = ['horizontal', 'vertical', 'horizontal', 'horizontal', 'vertical', 'vertical', 'horizontal', 'vertical', 'vertical'] as const;
+const espacos: FotoEditorial[] = ritmoVazio.slice(0, Math.min(vazios, limite ?? vazios)).map((orientacao, indice) => ({
+  alt: 'Espaço reservado para foto do portfólio',
+  foco: 'centro',
+  tamanho: 'auto',
+  orientacaoVazia: orientacao,
+  aguardando: `portfolio/${String(indice + 1).padStart(2, '0')} · ${orientacao === 'horizontal' ? '2400 × 1600' : '1600 × 2000'} px`,
+}));
 ---
 
-{
-  fotos.length > 0 ? (
-    <div class="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
-      {fotos.map((foto) => (
-        <figure class="break-inside-avoid" data-revelar>
-          <a
-            href={foto.ampliada}
-            class="group block cursor-zoom-in overflow-hidden bg-areia"
-            data-lightbox="portfolio"
-            data-legenda={foto.legenda}
-          >
-            <Picture
-              src={foto.imagem}
-              alt={foto.alt}
-              widths={larguras(foto.imagem, 1200)}
-              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-              formats={formatos}
-              class="zoom-suave h-auto w-full"
-            />
-          </a>
-          {foto.legenda && (
-            <figcaption class="mt-2 font-serif text-lg text-grafite italic">{foto.legenda}</figcaption>
-          )}
-        </figure>
-      ))}
-    </div>
-  ) : (
-    <div class="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4">
-      {proporcoesVazias.slice(0, Math.min(vazios, limite ?? vazios)).map((proporcao, indice) => (
-        <div class="break-inside-avoid">
-          <Foto
-            proporcao={proporcao}
-            alt="Espaço reservado para foto do portfólio"
-            aguardando={`portfolio/${String(indice + 1).padStart(2, '0')} · ${proporcao === '3:2' ? '2400 × 1600' : '1600 × 2000'} px`}
-          />
-        </div>
-      ))}
-    </div>
-  )
-}
+<GradeEditorial fotos={fotos.length > 0 ? fotos : espacos} grupo="portfolio" citacoes={citacoes} />

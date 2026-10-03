@@ -39,7 +39,14 @@ const ativo = gaId.length > 0 || gtmId.length > 0;
 }
 
 <script>
-  import { consentimentoSalvo, rastrear, salvarConsentimento, type Consentimento } from '../lib/rastreamento';
+  import {
+    consentimentoSalvo,
+    parametrosDe,
+    rastrear,
+    rastrearPagina,
+    salvarConsentimento,
+    type Consentimento,
+  } from '../lib/rastreamento';
 
   const aviso = document.querySelector<HTMLElement>('[data-consentimento]');
 
@@ -85,8 +92,10 @@ const ativo = gaId.length > 0 || gtmId.length > 0;
     function decidir(valor: Consentimento) {
       salvarConsentimento(valor);
       aviso!.hidden = true;
-      if (valor === 'aceito') carregar();
-      else if (carregado) window.gtag!('consent', 'update', { analytics_storage: 'denied' });
+      if (valor === 'aceito') {
+        carregar();
+        rastrearPagina();
+      } else if (carregado) window.gtag!('consent', 'update', { analytics_storage: 'denied' });
     }
 
     aviso.querySelectorAll<HTMLButtonElement>('[data-consentir]').forEach((botao) => {
@@ -105,13 +114,16 @@ const ativo = gaId.length > 0 || gtmId.length > 0;
     });
 
     const salvo = consentimentoSalvo();
-    if (salvo === 'aceito') carregar();
-    else if (salvo === null) aviso.hidden = false;
+    if (salvo === 'aceito') {
+      carregar();
+      rastrearPagina();
+    } else if (salvo === null) aviso.hidden = false;
 
     document.addEventListener('click', (evento) => {
       const alvo = (evento.target as Element | null)?.closest<HTMLElement>('[data-evento]');
       if (!alvo?.dataset.evento) return;
-      rastrear(alvo.dataset.evento, alvo.dataset.origem ? { origem: alvo.dataset.origem } : {});
+      const parametros = parametrosDe(alvo);
+      for (const nome of alvo.dataset.evento.split(/\s+/).filter(Boolean)) rastrear(nome, parametros);
     });
   }
 </script>

@@ -1,0 +1,189 @@
+---
+import { render } from 'astro:content';
+import Foto from './Foto.astro';
+import TituloSecao from './TituloSecao.astro';
+import { depoimentos, textoSimples } from '../lib/conteudo';
+import { imagemDoRepositorio } from '../lib/fotos';
+import { rota } from '../lib/site';
+
+interface Props {
+  numero?: string;
+  limite?: number;
+}
+
+const { numero, limite = 6 } = Astro.props;
+const slides = await Promise.all(
+  (await depoimentos()).slice(0, limite).map(async (depoimento) => ({
+    depoimento,
+    foto: imagemDoRepositorio(depoimento.data.foto, 'src/content/depoimentos'),
+    longo: textoSimples(depoimento.body ?? '').length > 280,
+    Texto: (await render(depoimento)).Content,
+  })),
+);
+const varios = slides.length > 1;
+---
+
+{
+  slides.length > 0 && (
+    <section class="border-t border-linha px-6 py-24 md:py-32" aria-label="Depoimentos dos casais">
+      <div class="mx-auto max-w-6xl">
+        <TituloSecao sobrelinha="O que dizem os casais" numero={numero} titulo="Nas palavras" enfase="de quem viveu" />
+        <div class="mt-16 md:mt-20" data-carrossel>
+          <div class="carrossel-faixa space-y-24" aria-live="polite" data-carrossel-faixa>
+            {slides.map(({ depoimento, foto, longo, Texto }, indice) => (
+              <div
+                class:list={['carrossel-slide grid items-center gap-10 md:gap-16', foto && 'md:grid-cols-[2fr_3fr]']}
+                role="group"
+                aria-roledescription="depoimento"
+                aria-label={`${indice + 1} de ${slides.length}`}
+                data-slide
+                data-ativo={indice === 0 ? '' : undefined}
+              >
+                {foto && (
+                  <Foto
+                    imagem={foto}
+                    alt={`${depoimento.data.casal} no dia do casamento`}
+                    proporcao="4:5"
+                    foco={depoimento.data.fotoFoco}
+                    aguardando=""
+                    sizes="(min-width: 768px) 40vw, 100vw"
+                    larguraMaxima={1000}
+                    class="mx-auto w-full max-w-sm md:max-w-none"
+                  />
+                )}
+                <div class:list={[!foto && 'mx-auto max-w-3xl text-center']}>
+                  <span class="block font-serif text-7xl leading-[0.6] text-taupe/50 select-none" aria-hidden="true">
+                    “
+                  </span>
+                  <blockquote
+                    class:list={[
+                      'mt-4 font-serif font-light text-balance text-tinta italic [&_p+p]:mt-4',
+                      longo ? 'text-titulo-4' : 'text-titulo-3',
+                    ]}
+                  >
+                    <Texto />
+                  </blockquote>
+                  <p class:list={['mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1', !foto && 'justify-center']}>
+                    <span class="sobrelinha text-tinta">{depoimento.data.casal}</span>
+                    {depoimento.data.local && <span class="font-serif text-base text-taupe italic">{depoimento.data.local}</span>}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {varios && (
+            <div class="mt-12 flex items-center justify-center gap-6" hidden data-carrossel-controles>
+              <button type="button" class="flex h-11 w-11 items-center justify-center text-grafite transition-colors hover:text-tinta" aria-label="Depoimento anterior" data-carrossel-anterior>
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                  <path d="M15 5l-7 7 7 7" />
+                </svg>
+              </button>
+              <p class="min-w-[4.5rem] text-center font-serif text-lg text-taupe tabular-nums italic" data-carrossel-contador>
+                1 / {slides.length}
+              </p>
+              <button type="button" class="flex h-11 w-11 items-center justify-center text-grafite transition-colors hover:text-tinta" aria-label="Próximo depoimento" data-carrossel-proximo>
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <button type="button" class="link-editorial ml-2 pt-1" hidden data-carrossel-pausa>
+                Pausar
+              </button>
+            </div>
+          )}
+        </div>
+        <p class="mt-14 text-center">
+          <a href={rota('/depoimentos/')} class="link-editorial">Ler todos os depoimentos</a>
+        </p>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  :global(.js) [data-carrossel-faixa] {
+    display: grid;
+  }
+
+  :global(.js) [data-slide] {
+    grid-area: 1 / 1;
+    margin-block: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 700ms ease,
+      visibility 0s linear 700ms;
+  }
+
+  :global(.js) [data-slide][data-ativo] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 700ms ease 150ms;
+  }
+</style>
+
+<script>
+  const intervalo = 8000;
+  const movimentoReduzido = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const carrossel of document.querySelectorAll<HTMLElement>('[data-carrossel]')) {
+    const faixa = carrossel.querySelector<HTMLElement>('[data-carrossel-faixa]')!;
+    const slides = [...carrossel.querySelectorAll<HTMLElement>('[data-slide]')];
+    const controles = carrossel.querySelector<HTMLElement>('[data-carrossel-controles]');
+    const contador = carrossel.querySelector<HTMLElement>('[data-carrossel-contador]');
+    const pausa = carrossel.querySelector<HTMLButtonElement>('[data-carrossel-pausa]');
+    if (slides.length < 2 || !controles) continue;
+
+    controles.hidden = false;
+    let atual = 0;
+    let temporizador: number | undefined;
+    let pausadoPeloUsuario = movimentoReduzido;
+    let interagindo = false;
+
+    function mostrar(indice: number) {
+      atual = (indice + slides.length) % slides.length;
+      slides.forEach((slide, posicao) => {
+        slide.toggleAttribute('data-ativo', posicao === atual);
+        slide.inert = posicao !== atual;
+      });
+      if (contador) contador.textContent = `${atual + 1} / ${slides.length}`;
+    }
+
+    function atualizarRotacao() {
+      window.clearInterval(temporizador);
+      temporizador = undefined;
+      const girando = !pausadoPeloUsuario && !interagindo;
+      if (girando) temporizador = window.setInterval(() => mostrar(atual + 1), intervalo);
+      faixa.setAttribute('aria-live', girando ? 'off' : 'polite');
+      if (pausa) pausa.textContent = pausadoPeloUsuario ? 'Retomar' : 'Pausar';
+    }
+
+    carrossel.querySelector('[data-carrossel-anterior]')?.addEventListener('click', () => mostrar(atual - 1));
+    carrossel.querySelector('[data-carrossel-proximo]')?.addEventListener('click', () => mostrar(atual + 1));
+
+    if (pausa && !movimentoReduzido) {
+      pausa.hidden = false;
+      pausa.addEventListener('click', () => {
+        pausadoPeloUsuario = !pausadoPeloUsuario;
+        atualizarRotacao();
+      });
+    }
+
+    const pausar = () => {
+      interagindo = true;
+      atualizarRotacao();
+    };
+    const retomar = () => {
+      interagindo = carrossel.matches(':hover') || carrossel.contains(document.activeElement);
+      atualizarRotacao();
+    };
+    carrossel.addEventListener('mouseenter', pausar);
+    carrossel.addEventListener('mouseleave', retomar);
+    carrossel.addEventListener('focusin', pausar);
+    carrossel.addEventListener('focusout', () => setTimeout(retomar));
+
+    mostrar(0);
+    atualizarRotacao();
+  }
+</script>

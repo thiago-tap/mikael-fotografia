@@ -1,8 +1,9 @@
 ---
-import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import CasamentosDestaque from '../components/CasamentosDestaque.astro';
 import ChamadaWhatsApp from '../components/ChamadaWhatsApp.astro';
 import ComoFunciona from '../components/ComoFunciona.astro';
+import DepoimentosDestaque from '../components/DepoimentosDestaque.astro';
 import Diferenciais from '../components/Diferenciais.astro';
 import Divisor from '../components/Divisor.astro';
 import FaixaAgenda from '../components/FaixaAgenda.astro';
@@ -11,14 +12,13 @@ import GradeInstagram from '../components/GradeInstagram.astro';
 import Hero from '../components/Hero.astro';
 import Icone from '../components/Icone.astro';
 import Manifesto from '../components/Manifesto.astro';
+import Numeros from '../components/Numeros.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { depoimentos, destaquesDoPacote, formatarData, pacotes, posts, seloDoPacote } from '../lib/conteudo';
+import { casamentos, destaquesDoPacote, formatarData, pacotes, posts, seloDoPacote } from '../lib/conteudo';
 import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
-const [listaPacotes, listaDepoimentos, listaPosts] = await Promise.all([pacotes(), depoimentos(), posts()]);
-const destaquesDepoimentos = await Promise.all(
-  listaDepoimentos.slice(0, 2).map(async (depoimento) => ({ depoimento, Texto: (await render(depoimento)).Content })),
-);
+const [listaPacotes, listaPosts, listaCasamentos] = await Promise.all([pacotes(), posts(), casamentos()]);
+const temCasamentos = listaCasamentos.some((casamento) => casamento.data.destaque);
 const ultimosPosts = listaPosts.slice(0, 3);
 const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacote.data) }));
 ---
@@ -58,11 +58,11 @@ const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacot
     </div>
   </section>
 
-  <Divisor />
+  <Numeros />
 
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-6xl">
-      <TituloSecao sobrelinha="Investimento" titulo="Quatro formas de" enfase="contar o seu dia" />
+      <TituloSecao sobrelinha="Investimento" numero="01" titulo="Quatro formas de" enfase="contar o seu dia" />
       <ul class="mt-16 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4" data-revelar>
         {
           vitrine.map(({ pacote, selo }) => (
@@ -79,7 +79,13 @@ const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacot
                   <li class="font-serif text-lg text-grafite italic">{item}</li>
                 ))}
               </ul>
-              <a href={rota(`/proposta/#${pacote.id}`)} class="link-editorial mt-8">
+              <a
+                href={rota(`/proposta/#${pacote.id}`)}
+                class="link-editorial mt-8"
+                data-evento="ver_pacote"
+                data-pacote={pacote.data.nome}
+                data-origem="inicio"
+              >
                 Ver o que está incluso
               </a>
             </li>
@@ -97,7 +103,7 @@ const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacot
 
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-7xl">
-      <TituloSecao sobrelinha="Portfólio" titulo="Casamentos" />
+      <TituloSecao sobrelinha="Portfólio" numero="02" titulo="Casamentos" />
       <div class="mt-16">
         <GradePortfolio limite={6} vazios={6} />
       </div>
@@ -107,30 +113,11 @@ const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacot
     </div>
   </section>
 
-  {
-    destaquesDepoimentos.length > 0 && (
-      <section class="border-t border-linha px-6 py-24 md:py-32">
-        <div class="mx-auto max-w-5xl">
-          <TituloSecao sobrelinha="O que dizem os casais" titulo="Depoimentos" />
-          <ul class="mt-16 grid gap-16 md:grid-cols-2">
-            {destaquesDepoimentos.map(({ depoimento, Texto }) => (
-              <li data-revelar>
-                <blockquote>
-                  <div class="font-serif text-titulo-4 font-light text-grafite italic">
-                    <Texto />
-                  </div>
-                  <footer class="sobrelinha mt-6 text-tinta">— {depoimento.data.casal}</footer>
-                </blockquote>
-              </li>
-            ))}
-          </ul>
-          <p class="mt-12 text-center">
-            <a href={rota('/depoimentos/')} class="link-editorial">Ler todos os depoimentos</a>
-          </p>
-        </div>
-      </section>
-    )
-  }
+  <Divisor />
+
+  <CasamentosDestaque numero="03" />
+
+  <DepoimentosDestaque numero={temCasamentos ? '04' : '03'} />
 
   {
     ultimosPosts.length > 0 && (

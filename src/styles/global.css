@@ -96,20 +96,46 @@
   @apply font-serif italic;
 }
 
+@utility botao-base {
+  @apply inline-flex items-center justify-center gap-3 border px-8 py-4 text-center font-sans text-rotulo tracking-[0.28em] uppercase;
+  background-image: linear-gradient(var(--preenchimento), var(--preenchimento));
+  background-repeat: no-repeat;
+  background-position: var(--preenchimento-lado, left) center;
+  background-size: var(--preenchimento-inicio, 0%) 100%;
+  transition:
+    background-size 550ms cubic-bezier(0.65, 0, 0.35, 1),
+    color 350ms ease,
+    border-color 350ms ease;
+
+  &:hover {
+    background-size: var(--preenchimento-fim, 100%) 100%;
+  }
+}
+
 @utility botao {
-  @apply inline-flex items-center justify-center gap-3 border border-tinta px-8 py-4 text-center font-sans text-rotulo tracking-[0.28em] text-tinta uppercase transition-colors duration-300 hover:bg-tinta hover:text-papel;
+  @apply botao-base border-tinta text-tinta hover:text-papel;
+  --preenchimento: var(--color-tinta);
 }
 
 @utility botao-cheio {
-  @apply botao bg-tinta text-papel hover:bg-transparent hover:text-tinta;
+  @apply botao-base border-tinta text-papel hover:text-tinta;
+  --preenchimento: var(--color-tinta);
+  --preenchimento-lado: right;
+  --preenchimento-inicio: 100%;
+  --preenchimento-fim: 0%;
 }
 
 @utility botao-claro {
-  @apply botao border-papel bg-papel text-balance text-tinta hover:bg-transparent hover:text-papel max-sm:px-5 max-sm:tracking-[0.18em];
+  @apply botao-base border-papel text-balance text-tinta hover:text-papel max-sm:px-5 max-sm:tracking-[0.18em];
+  --preenchimento: var(--color-papel);
+  --preenchimento-lado: right;
+  --preenchimento-inicio: 100%;
+  --preenchimento-fim: 0%;
 }
 
 @utility botao-contorno-claro {
-  @apply botao border-papel/70 text-papel hover:border-papel hover:bg-papel hover:text-tinta max-sm:tracking-[0.18em];
+  @apply botao-base border-papel/70 text-papel hover:border-papel hover:text-tinta max-sm:tracking-[0.18em];
+  --preenchimento: var(--color-papel);
 }
 
 @utility sublinhado-animado {
@@ -166,6 +192,24 @@
 
   .texto-corrido a {
     @apply underline decoration-linha underline-offset-4 hover:decoration-tinta;
+  }
+
+  .foto-suave::before {
+    position: absolute;
+    inset: 0;
+    background: var(--lqip) var(--foco, 50% 50%) / cover no-repeat;
+    filter: blur(16px);
+    scale: 1.15;
+    content: '';
+  }
+
+  .js .foto-suave img {
+    opacity: 0;
+    transition: opacity 800ms ease;
+  }
+
+  .js .foto-suave[data-carregada] img {
+    opacity: 1;
   }
 
   .divisor {

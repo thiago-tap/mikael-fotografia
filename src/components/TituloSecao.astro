@@ -1,6 +1,8 @@
 ---
 interface Props {
   sobrelinha?: string;
+  /** Numeração editorial da seção (ex.: "01"), mostrada antes da sobrelinha. */
+  numero?: string;
   titulo: string;
   enfase?: string;
   nivel?: 'h1' | 'h2';
@@ -8,12 +10,23 @@ interface Props {
   class?: string;
 }
 
-const { sobrelinha, titulo, enfase, nivel = 'h2', alinhamento = 'centro', class: classe = '' } = Astro.props;
+const { sobrelinha, numero, titulo, enfase, nivel = 'h2', alinhamento = 'centro', class: classe = '' } = Astro.props;
 const Tag = nivel;
 ---
 
 <div class:list={[alinhamento === 'centro' ? 'text-center' : 'text-left', classe]} data-revelar>
-  {sobrelinha && <p class="sobrelinha mb-5">{sobrelinha}</p>}
+  {
+    sobrelinha &&
+      (numero ? (
+        <p class:list={['sobrelinha mb-5 flex items-center gap-4', alinhamento === 'centro' ? 'justify-center' : 'justify-center md:justify-start']}>
+          <span class="font-serif text-lg tracking-normal text-taupe normal-case italic">{numero}</span>
+          <span class="h-px w-8 bg-taupe/50" aria-hidden="true" />
+          <span>{sobrelinha}</span>
+        </p>
+      ) : (
+        <p class="sobrelinha mb-5">{sobrelinha}</p>
+      ))
+  }
   <Tag
     class:list={[
       'font-serif font-light text-balance text-tinta',

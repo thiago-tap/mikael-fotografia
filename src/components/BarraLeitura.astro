@@ -1,0 +1,30 @@
+<div class="pointer-events-none fixed inset-x-0 top-0 z-40 h-[2px]" aria-hidden="true">
+  <div class="h-full origin-left bg-taupe" style="transform: scaleX(0)" data-barra-leitura></div>
+</div>
+
+<script>
+  const barra = document.querySelector<HTMLElement>('[data-barra-leitura]');
+
+  if (barra) {
+    let agendado = false;
+
+    function atualizar() {
+      agendado = false;
+      const alvo = document.querySelector<HTMLElement>('[data-leitura]') ?? document.documentElement;
+      const caixa = alvo.getBoundingClientRect();
+      const percurso = caixa.height - innerHeight;
+      const progresso = percurso > 0 ? Math.min(1, Math.max(0, -caixa.top / percurso)) : 1;
+      barra!.style.transform = `scaleX(${progresso})`;
+    }
+
+    function agendar() {
+      if (agendado) return;
+      agendado = true;
+      requestAnimationFrame(atualizar);
+    }
+
+    addEventListener('scroll', agendar, { passive: true });
+    addEventListener('resize', agendar);
+    atualizar();
+  }
+</script>

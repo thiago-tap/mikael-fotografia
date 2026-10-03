@@ -29,6 +29,12 @@ media:
     output: /src/content/blog
     rename: safe
     extensions: [jpg, jpeg, png, webp]
+  - name: casamentos
+    label: Casamentos reais
+    input: src/content/casamentos
+    output: /src/content/casamentos
+    rename: safe
+    extensions: [jpg, jpeg, png, webp]
   - name: marca
     label: Logo e ícone
     input: src/assets/marca
@@ -41,6 +47,59 @@ components:
     type: image
     options:
       media: fotos
+  foco:
+    type: select
+    label: Ponto de foco
+    description: "Parte da foto que deve ficar sempre visível quando o site corta a imagem para caber no espaço (celular, computador). Vazio = centro."
+    options:
+      placeholder: Centro
+      values:
+        - name: centro
+          label: Centro
+        - name: topo
+          label: Topo
+        - name: base
+          label: Base
+        - name: esquerda
+          label: Esquerda
+        - name: direita
+          label: Direita
+        - name: topo-esquerda
+          label: Topo à esquerda
+        - name: topo-direita
+          label: Topo à direita
+        - name: base-esquerda
+          label: Base à esquerda
+        - name: base-direita
+          label: Base à direita
+  tamanho:
+    type: select
+    label: Tamanho na grade
+    description: "Grande ocupa 2/3 da linha (ou a linha inteira), médio fica em par, vertical fica ao lado de uma grande ou em trio. Automático escolhe pelo formato da foto."
+    options:
+      placeholder: Automático
+      values:
+        - name: auto
+          label: Automático
+        - name: grande
+          label: Grande
+        - name: medio
+          label: Médio
+        - name: vertical
+          label: Vertical
+  situacao:
+    type: select
+    options:
+      placeholder: Sem informação
+      values:
+        - name: sem-info
+          label: Sem informação (mostra "Consulte")
+        - name: disponivel
+          label: Datas disponíveis
+        - name: poucas-datas
+          label: Poucas datas
+        - name: esgotado
+          label: Esgotado
 
 content:
   - name: configuracoes
@@ -87,11 +146,15 @@ content:
             type: string
             required: true
             description: "Ex.: (61) 98204-2153"
+            options:
+              maxlength: 24
           - name: mensagem
             label: Mensagem padrão
             type: text
             required: true
-            description: "Texto que já vem escrito quando a pessoa clica no WhatsApp do rodapé."
+            description: "Texto que já vem escrito quando a pessoa clica no WhatsApp do rodapé. Até 300 caracteres."
+            options:
+              maxlength: 300
       - name: instagram
         label: Instagram
         type: object
@@ -100,11 +163,17 @@ content:
             label: Usuário (sem @)
             type: string
             required: true
+            pattern:
+              regex: "^@?[A-Za-z0-9._]{1,30}$"
+              message: "Só letras, números, ponto e sublinhado (ex.: mikaelvt_fotografia)."
           - name: url
             label: Endereço do perfil
             type: string
             required: true
             description: "Ex.: https://www.instagram.com/mikaelvt_fotografia/"
+            pattern:
+              regex: "^https://\\S+$"
+              message: "O endereço começa com https:// (ex.: https://www.instagram.com/mikaelvt_fotografia/)."
       - name: analytics
         label: Google Analytics / Tag Manager
         type: object
@@ -172,9 +241,47 @@ content:
             label: Página "Por que Mikael Vt?" do PDF (2:3 vertical, 1600 × 2400 px)
             description: "Foto vertical 2:3, 1600 × 2400 px (até 2000 × 3000), até 3 MB. Sem foto aqui, usa o retrato da página Sobre."
             component: vaga
+      - name: focos
+        label: Ponto de foco das fotos fixas
+        type: object
+        description: "Para cada espaço, a parte da foto que nunca pode ser cortada (ex.: o rosto do casal no topo de uma foto vertical). Vale no celular e no computador. Vazio = centro."
+        fields:
+          - name: home-hero
+            label: Topo da página inicial
+            component: foco
+          - name: proposta-hero
+            label: Topo da proposta
+            component: foco
+          - name: faixa
+            label: Faixa larga da proposta
+            component: foco
+          - name: sobre-retrato
+            label: Retrato da página Sobre
+            component: foco
+          - name: pacote-micro-wedding
+            label: Pacote Micro Wedding
+            component: foco
+          - name: pacote-mini-wedding
+            label: Pacote Mini Wedding
+            component: foco
+          - name: pacote-promessa
+            label: Pacote Promessa
+            component: foco
+          - name: pacote-eternidade
+            label: Pacote Eternidade
+            component: foco
+          - name: pdf-capa
+            label: Capa do PDF
+            component: foco
+          - name: pdf-extras
+            label: Página de extras do PDF
+            component: foco
+          - name: pdf-diferenciais
+            label: Página "Por que Mikael Vt?" do PDF
+            component: foco
 
   - name: agenda
-    label: Faixa de agenda
+    label: Agenda e disponibilidade
     type: file
     path: src/content/agenda.json
     format: json
@@ -185,7 +292,62 @@ content:
       - name: texto
         label: Texto da faixa
         type: string
-        description: "Ex.: Últimas datas de 2026 disponíveis. Agenda de 2027 aberta."
+        description: "Ex.: Últimas datas de 2026 disponíveis. Agenda de 2027 aberta. Até 140 caracteres."
+        options:
+          maxlength: 140
+      - name: anos
+        label: Disponibilidade por mês
+        type: object
+        description: "Situação de cada mês na página Agenda. Só marque o que for verdade: \"Sem informação\" mostra \"Consulte\". Enquanto todos os meses estiverem sem informação, o link para a página Agenda não aparece no site. Meses que já passaram aparecem como encerrados."
+        list:
+          max: 4
+          collapsible:
+            collapsed: true
+            summary: "{ano}"
+        fields:
+          - name: ano
+            label: Ano
+            type: number
+            required: true
+            options:
+              min: 2024
+              max: 2100
+          - name: jan
+            label: Janeiro
+            component: situacao
+          - name: fev
+            label: Fevereiro
+            component: situacao
+          - name: mar
+            label: Março
+            component: situacao
+          - name: abr
+            label: Abril
+            component: situacao
+          - name: mai
+            label: Maio
+            component: situacao
+          - name: jun
+            label: Junho
+            component: situacao
+          - name: jul
+            label: Julho
+            component: situacao
+          - name: ago
+            label: Agosto
+            component: situacao
+          - name: set
+            label: Setembro
+            component: situacao
+          - name: out
+            label: Outubro
+            component: situacao
+          - name: nov
+            label: Novembro
+            component: situacao
+          - name: dez
+            label: Dezembro
+            component: situacao
 
   - name: proposta
     label: Proposta
@@ -208,40 +370,65 @@ content:
             label: Nome
             type: string
             required: true
+            description: "Até 24 caracteres (ex.: Mini Wedding)."
+            options:
+              maxlength: 24
           - name: ordem
             label: Ordem
             type: number
             required: true
+            options:
+              min: 0
           - name: preco
             label: Preço (R$)
             type: number
             required: true
+            description: "Só o número, sem R$ e sem ponto de milhar (ex.: 2999)."
+            options:
+              min: 0
+              max: 100000
           - name: cobertura
             label: Cobertura
             type: string
             required: true
-            description: "Ex.: 6 horas de cobertura"
+            description: "Ex.: 6 horas de cobertura. Até 40 caracteres."
+            options:
+              maxlength: 40
           - name: chamada
             label: Frase de chamada
             type: text
+            description: "Uma frase curta, até 90 caracteres."
+            options:
+              maxlength: 90
           - name: itens
             label: O que está incluso
             type: string
-            list: true
+            description: "De 3 a 14 itens, cada um com até 120 caracteres."
+            list:
+              min: 3
+              max: 14
             required: true
+            options:
+              maxlength: 120
           - name: idealPara
             label: Ideal para
             type: text
+            options:
+              maxlength: 160
           - name: pagamento
             label: Forma de pagamento
             type: text
+            options:
+              maxlength: 80
           - name: destaque
             label: Destacar como "o mais escolhido"
             type: boolean
           - name: selo
             label: Selo
             type: string
-            description: "Etiqueta curta acima do nome (ex.: Melhor custo-benefício). Não aparece se o pacote estiver marcado como \"o mais escolhido\"."
+            description: "Etiqueta curta acima do nome (ex.: Melhor custo-benefício), até 32 caracteres. Não aparece se o pacote estiver marcado como \"o mais escolhido\"."
+            options:
+              maxlength: 32
           - name: comparativo
             label: Tabela de comparação
             type: object
@@ -289,10 +476,15 @@ content:
             label: Nome
             type: string
             required: true
+            options:
+              maxlength: 48
           - name: preco
             label: Preço (R$)
             type: number
             description: "Deixe vazio para mostrar \"Sob consulta\"."
+            options:
+              min: 0
+              max: 100000
           - name: aPartirDe
             label: Mostrar "a partir de"
             type: boolean
@@ -300,13 +492,20 @@ content:
             label: Unidade
             type: string
             description: "Ex.: por hora"
+            options:
+              maxlength: 24
           - name: descricao
             label: Descrição
             type: text
+            options:
+              maxlength: 200
           - name: itens
             label: Itens
             type: string
-            list: true
+            list:
+              max: 10
+            options:
+              maxlength: 120
           - name: ordem
             label: Ordem
             type: number
@@ -328,10 +527,14 @@ content:
             label: Título
             type: string
             required: true
+            options:
+              maxlength: 40
           - name: texto
             label: Texto
             type: text
             required: true
+            options:
+              maxlength: 180
           - name: ordem
             label: Ordem
             type: number
@@ -357,14 +560,20 @@ content:
             label: Título
             type: string
             required: true
+            options:
+              maxlength: 40
           - name: texto
             label: Texto
             type: text
             required: true
+            options:
+              maxlength: 220
           - name: detalhe
             label: Detalhe curto
             type: string
             description: "Ex.: Em até 15 dias"
+            options:
+              maxlength: 32
 
   - name: faq
     label: Perguntas frequentes
@@ -381,6 +590,8 @@ content:
         label: Pergunta
         type: string
         required: true
+        options:
+          maxlength: 120
       - name: ordem
         label: Ordem
         type: number
@@ -392,6 +603,129 @@ content:
         label: Resposta
         type: text
         required: true
+
+  - name: casamentos
+    label: Casamentos reais
+    type: collection
+    path: src/content/casamentos
+    filename: "{casal}.md"
+    subfolders: true
+    view:
+      primary: casal
+      fields: [casal, cidade, data, destaque, ordem]
+      sort: ordem
+      order: asc
+    fields:
+      - name: casal
+        label: Casal
+        type: string
+        required: true
+        description: "Ex.: Ana e Pedro. Até 60 caracteres. Vira o endereço da página (ex.: /casamentos/ana-e-pedro/)."
+        options:
+          maxlength: 60
+      - name: local
+        label: Local
+        type: string
+        description: "Espaço da festa ou da cerimônia (ex.: Villa Giardini). Até 80 caracteres."
+        options:
+          maxlength: 80
+      - name: cidade
+        label: Cidade
+        type: string
+        description: "Ex.: Brasília/DF. Até 60 caracteres."
+        options:
+          maxlength: 60
+      - name: data
+        label: Data do casamento
+        type: date
+        default: ""
+        options:
+          format: yyyy-MM-dd
+      - name: capa
+        label: Capa
+        type: object
+        fields:
+          - name: imagem
+            label: Foto de capa
+            type: image
+            description: "Horizontal 3:2, 3000 × 2000 px, até 3 MB. Ocupa a tela inteira no topo da página e é cortada pelo ponto de foco; na lista de casamentos aparece vertical (4:5). JPG em sRGB, sem RAW nem HEIC."
+            options:
+              media: casamentos
+          - name: alt
+            label: Descrição da capa (acessibilidade)
+            type: string
+            options:
+              maxlength: 160
+          - name: foco
+            component: foco
+      - name: resumo
+        label: Resumo
+        type: text
+        required: true
+        description: "Uma ou duas frases que abrem a página e aparecem na lista de casamentos. Até 220 caracteres."
+        options:
+          maxlength: 220
+      - name: galeria
+        label: Galeria
+        type: object
+        description: "Até 80 fotos. O site agrupa por etapa (making of, cerimônia, o casal, festa) e mantém a ordem da lista dentro de cada etapa. Lado maior de 2400 a 3000 px, até 3 MB cada."
+        list:
+          max: 80
+          collapsible:
+            collapsed: true
+            summary: "{index}. {legenda}"
+        fields:
+          - name: imagem
+            label: Foto
+            type: image
+            required: true
+            options:
+              media: casamentos
+          - name: etapa
+            label: Etapa
+            type: select
+            options:
+              placeholder: Sem etapa (vai para o fim)
+              values:
+                - name: making-of
+                  label: Making of
+                - name: cerimonia
+                  label: Cerimônia
+                - name: casal
+                  label: O casal
+                - name: festa
+                  label: Festa
+          - name: legenda
+            label: Legenda
+            type: string
+            description: "Curta, em itálico embaixo da foto (ex.: Making of · Lago Sul). Até 80 caracteres."
+            options:
+              maxlength: 80
+          - name: alt
+            label: Descrição da foto (acessibilidade)
+            type: string
+            options:
+              maxlength: 160
+          - name: tamanho
+            component: tamanho
+          - name: foco
+            component: foco
+      - name: destaque
+        label: Mostrar na página inicial
+        type: boolean
+        description: "A página inicial mostra até 3 casamentos marcados aqui."
+      - name: ordem
+        label: Ordem
+        type: number
+        options:
+          min: 0
+      - name: body
+        label: Texto
+        type: rich-text
+        description: "A história do casamento. Fotos no meio do texto: JPG em sRGB, lado maior até 2400 px, até 3 MB."
+        options:
+          format: markdown
+          media: casamentos
 
   - name: depoimentos
     label: Depoimentos
@@ -408,10 +742,14 @@ content:
         label: Casal
         type: string
         required: true
-        description: "Ex.: Ana e Pedro"
+        description: "Ex.: Ana e Pedro. Até 60 caracteres."
+        options:
+          maxlength: 60
       - name: local
         label: Local
         type: string
+        options:
+          maxlength: 80
       - name: data
         label: Data do casamento
         type: date
@@ -421,9 +759,12 @@ content:
       - name: foto
         label: Foto do casal
         type: image
-        description: "Opcional. JPG em sRGB, lado maior até 2000 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
+        description: "Opcional. Vertical 4:5 fica melhor (1600 × 2000 px). JPG em sRGB, lado maior até 2000 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
         options:
           media: depoimentos
+      - name: fotoFoco
+        label: Ponto de foco da foto
+        component: foco
       - name: ordem
         label: Ordem
         type: number
@@ -431,6 +772,9 @@ content:
         label: Depoimento
         type: text
         required: true
+        description: "Até 900 caracteres. Os primeiros depoimentos da lista aparecem em destaque na página inicial e na proposta."
+        options:
+          maxlength: 900
 
   - name: blog
     label: Blog
@@ -447,10 +791,14 @@ content:
         label: Título
         type: string
         required: true
+        options:
+          maxlength: 90
       - name: descricao
         label: Resumo
         type: text
         required: true
+        options:
+          maxlength: 200
       - name: data
         label: Data
         type: date
@@ -466,6 +814,11 @@ content:
       - name: capaAlt
         label: Descrição da capa (acessibilidade)
         type: string
+        options:
+          maxlength: 160
+      - name: capaFoco
+        label: Ponto de foco da capa
+        component: foco
       - name: body
         label: Texto
         type: rich-text
@@ -484,13 +837,20 @@ content:
         label: Título
         type: string
         required: true
+        options:
+          maxlength: 80
       - name: subtitulo
         label: Subtítulo
         type: string
+        options:
+          maxlength: 60
       - name: resumo
         label: Resumo (aparece na proposta)
         type: text
         required: true
+        description: "Até 400 caracteres. Um número de anos escrito aqui (ex.: \"há 3 anos\") aparece na faixa de números da página inicial."
+        options:
+          maxlength: 400
       - name: body
         label: Texto
         type: rich-text
@@ -515,9 +875,18 @@ content:
       - name: alt
         label: Descrição da foto (acessibilidade)
         type: string
+        options:
+          maxlength: 160
       - name: legenda
         label: Legenda
         type: string
+        description: "Curta, em itálico embaixo da foto (ex.: Making of · Lago Sul). Até 80 caracteres."
+        options:
+          maxlength: 80
+      - name: tamanho
+        component: tamanho
+      - name: foco
+        component: foco
 
   - name: instagram
     label: Instagram (até 6 fotos)
@@ -530,13 +899,18 @@ content:
         label: Foto
         type: image
         required: true
-        description: "Foto quadrada 1:1, 1080 × 1080 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC."
+        description: "Foto quadrada 1:1, 1080 × 1080 px, até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC. Mais de 6 fotos impede a publicação."
         options:
           media: instagram
       - name: link
         label: Link do post
         type: string
         description: "Ex.: https://www.instagram.com/p/XXXX/. Vazio leva ao perfil."
+        pattern:
+          regex: "^(https://\\S+)?$"
+          message: "O link começa com https:// (ou deixe vazio)."
       - name: alt
         label: Descrição da foto (acessibilidade)
         type: string
+        options:
+          maxlength: 160
