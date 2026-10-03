@@ -3,39 +3,46 @@
     "id": "primeira-conversa",
     "ordem": 1,
     "titulo": "Primeira conversa",
-    "texto": "Vocês chamam no WhatsApp com a data, a cidade e o local. Eu verifico a disponibilidade da data e tiro as dúvidas sobre os pacotes."
+    "texto": "Vocês chamam no WhatsApp com a data, a cidade e o local. Eu consulto a disponibilidade da data e tiro as dúvidas sobre os pacotes."
   },
   {
     "id": "reserva",
     "ordem": 2,
-    "titulo": "Contrato e reserva da data",
-    "texto": "Combinamos os próximos passos e a forma de pagamento, e a data fica reservada para vocês."
+    "titulo": "Contrato e reserva",
+    "detalhe": "Sinal de 30% a 50%",
+    "texto": "O contrato pode ser digital ou presencial. Com o sinal, a data fica reservada para vocês."
+  },
+  {
+    "id": "alinhamento",
+    "ordem": 3,
+    "titulo": "Reunião de alinhamento",
+    "texto": "Uma conversa leve, antes do casamento, para combinarmos tudo com calma."
   },
   {
     "id": "pre-wedding",
-    "ordem": 3,
+    "ordem": 4,
     "titulo": "Pré-wedding",
     "detalhe": "Quando incluso",
     "texto": "Um ensaio de até 2 horas para registrar a conexão de vocês de forma leve e espontânea. Já vem no Promessa e no Eternidade."
   },
   {
     "id": "grande-dia",
-    "ordem": 4,
+    "ordem": 5,
     "titulo": "O grande dia",
     "texto": "No dia, vocês só precisam viver. O resto é com a gente."
   },
   {
     "id": "previas",
-    "ordem": 5,
+    "ordem": 6,
     "titulo": "Prévias",
     "detalhe": "Em até 15 dias",
     "texto": "As prévias oficiais chegam em até 15 dias, ou em até 10 dias no pacote Promessa."
   },
   {
-    "id": "galeria",
-    "ordem": 6,
-    "titulo": "Galeria online",
-    "detalhe": "Por 3 meses",
-    "texto": "Todas as fotos editadas em alta resolução, numa galeria personalizada para compartilhar com a família e os amigos."
+    "id": "entrega",
+    "ordem": 7,
+    "titulo": "Entrega completa",
+    "detalhe": "Em até 30 dias úteis",
+    "texto": "Todas as fotos editadas em alta resolução, numa galeria online disponível por 3 meses para compartilhar com a família e os amigos."
   }
 ]

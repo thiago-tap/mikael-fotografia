@@ -11,7 +11,7 @@ const pularBuild = argumentos.includes('--sem-build');
 const indiceSaida = argumentos.indexOf('--saida');
 const saida = indiceSaida >= 0 && argumentos[indiceSaida + 1]
   ? resolve(raiz, argumentos[indiceSaida + 1])
-  : join(raiz, 'proposta', 'Proposta-Mikael-Fotografia.pdf');
+  : join(raiz, 'proposta', 'Proposta-Mikael-Vt-Fotografo.pdf');
 const emIntegracao = Boolean(process.env.CI);
 const base = pularBuild ? (process.env.BASE_PATH ?? '/').replace(/\/+$/, '') : '';
 

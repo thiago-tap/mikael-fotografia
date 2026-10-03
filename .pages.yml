@@ -169,7 +169,7 @@ content:
             description: "Foto horizontal 3:2, 2400 × 1600 px, até 3 MB. Sem foto aqui, usa a faixa larga."
             component: vaga
           - name: pdf-diferenciais
-            label: Página "Por que Mikael Fotografia?" do PDF (2:3 vertical, 1600 × 2400 px)
+            label: Página "Por que Mikael Vt?" do PDF (2:3 vertical, 1600 × 2400 px)
             description: "Foto vertical 2:3, 1600 × 2400 px (até 2000 × 3000), até 3 MB. Sem foto aqui, usa o retrato da página Sobre."
             component: vaga
 
@@ -238,6 +238,10 @@ content:
           - name: destaque
             label: Destacar como "o mais escolhido"
             type: boolean
+          - name: selo
+            label: Selo
+            type: string
+            description: "Etiqueta curta acima do nome (ex.: Melhor custo-benefício). Não aparece se o pacote estiver marcado como \"o mais escolhido\"."
           - name: comparativo
             label: Tabela de comparação
             type: object
@@ -260,6 +264,9 @@ content:
                 type: string
               - name: previas
                 label: Prévias oficiais
+                type: string
+              - name: entrega
+                label: Entrega completa
                 type: string
               - name: poses
                 label: Direcionamento de poses
@@ -285,7 +292,7 @@ content:
           - name: preco
             label: Preço (R$)
             type: number
-            required: true
+            description: "Deixe vazio para mostrar \"Sob consulta\"."
           - name: aPartirDe
             label: Mostrar "a partir de"
             type: boolean
@@ -306,7 +313,7 @@ content:
             required: true
 
       - name: diferenciais
-        label: Por que Mikael Fotografia?
+        label: Por que Mikael Vt?
         type: file
         path: src/content/diferenciais.json
         format: json

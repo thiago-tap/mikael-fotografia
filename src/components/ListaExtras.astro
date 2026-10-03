@@ -15,9 +15,15 @@ const { extras } = Astro.props;
       <li class="flex flex-col bg-papel px-8 py-10 md:px-10">
         <h3 class="font-serif text-titulo-4 text-tinta">{data.nome}</h3>
         <p class="mt-3 font-sans text-pequeno tracking-[0.16em] text-tinta uppercase">
-          {data.aPartirDe && <span class="text-taupe">A partir de </span>}
-          {formatarPreco(data.preco)}
-          {data.unidade && <span class="tracking-normal text-taupe normal-case"> {data.unidade}</span>}
+          {data.preco === undefined ? (
+            <span class="text-taupe">Sob consulta</span>
+          ) : (
+            <>
+              {data.aPartirDe && <span class="text-taupe">A partir de </span>}
+              {formatarPreco(data.preco)}
+              {data.unidade && <span class="tracking-normal text-taupe normal-case"> {data.unidade}</span>}
+            </>
+          )}
         </p>
         {data.descricao && <p class="mt-5 font-serif text-lg text-grafite italic">{data.descricao}</p>}
         {data.itens.length > 0 && (

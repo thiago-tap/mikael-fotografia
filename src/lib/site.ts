@@ -1,14 +1,17 @@
 import { configuracoes } from './configuracoes';
 
 export const site = {
-  nome: 'Mikael Fotografia',
-  fotografo: 'Mikael Vitor',
+  nome: 'Mikael Vt Fotógrafo',
+  fotografo: 'Mikael Vt',
+  marca: { nome: 'MIKAEL VT', complemento: 'FOTÓGRAFO' },
+  arquivoPdf: 'proposta-mikael-vt-fotografo.pdf',
   frase: 'O dia em que duas histórias se tornam uma só.',
+  lema: 'Tá cansado de ouvir “olha pra câmera e sorri”? Eu também.',
   cidade: 'Brasília',
   uf: 'DF',
   url: 'https://thiago-tap.github.io/mikael-fotografia/',
   descricao:
-    'Fotógrafo de casamento em Brasília/DF. Mikael Vitor e equipe fotografam Micro Wedding, Mini Wedding e casamentos completos, com fotos tratadas em alta resolução e atendimento próximo.',
+    'Fotógrafo de casamento em Brasília/DF. Mikael Vt e equipe fotografam Micro Wedding, Mini Wedding e casamentos completos com um olhar espontâneo, documental e elegante, e fotos tratadas em alta resolução.',
   whatsapp: configuracoes.whatsapp,
   instagram: configuracoes.instagram,
 };

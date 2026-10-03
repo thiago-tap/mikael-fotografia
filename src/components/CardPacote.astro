@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import FotoVaga from './FotoVaga.astro';
 import Icone from './Icone.astro';
 import PrecoPacote from './PrecoPacote.astro';
+import { seloDoPacote } from '../lib/conteudo';
 import { linkWhatsApp, mensagemPacote } from '../lib/site';
 import type { Vaga } from '../lib/fotos';
 
@@ -12,17 +13,18 @@ interface Props {
 }
 
 const { pacote, invertido = false } = Astro.props;
-const { nome, preco, chamada, itens, idealPara, pagamento, destaque } = pacote.data;
+const { nome, preco, chamada, itens, idealPara, pagamento } = pacote.data;
+const selo = seloDoPacote(pacote.data);
 const vaga = `pacote-${pacote.id}` as Vaga;
 ---
 
 <article id={pacote.id} class="grid scroll-mt-10 items-center gap-10 md:grid-cols-2 md:gap-16 lg:gap-24">
   <div class:list={[invertido && 'md:order-2']} data-revelar>
-    <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Fotografia — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" zoom />
+    <FotoVaga vaga={vaga} alt={`Casamento fotografado por Mikael Vt — pacote ${nome}`} sizes="(min-width: 768px) 50vw, 100vw" zoom />
   </div>
 
   <div class:list={['text-center md:text-left', invertido && 'md:order-1']} data-revelar style="--atraso: 120ms">
-    {destaque && <p class="sobrelinha mb-4 text-tinta">O mais escolhido</p>}
+    {selo && <p class="sobrelinha mb-4 text-tinta">{selo}</p>}
     <h3 class="font-serif text-titulo-2 font-light tracking-[0.1em] text-tinta uppercase">{nome}</h3>
     {chamada && <p class="mt-4 font-serif text-titulo-4 text-grafite italic">{chamada}</p>}
 

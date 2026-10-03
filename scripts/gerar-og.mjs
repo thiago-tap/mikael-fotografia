@@ -29,8 +29,8 @@ const html = `<!doctype html>
 <body>
   <div class="moldura"></div>
   <div class="conteudo">
-    <p class="marca">MIKAEL</p>
-    <p class="sub">FOTOGRAFIA</p>
+    <p class="marca">MIKAEL VT</p>
+    <p class="sub">FOTÓGRAFO</p>
     <div class="linha"></div>
     <p class="frase">O dia em que duas histórias se tornam uma só.</p>
     <p class="local">Fotógrafo de casamento · Brasília/DF</p>

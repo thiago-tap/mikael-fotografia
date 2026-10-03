@@ -1,32 +1,32 @@
 [
   {
-    "id": "equipe",
-    "titulo": "Equipe de fotógrafos",
-    "texto": "Mais de um olhar no seu dia, para registrar ângulos e momentos que acontecem ao mesmo tempo.",
+    "id": "conexao",
+    "titulo": "Conexão real com o casal",
+    "texto": "Quero que vocês se sintam à vontade comigo, possam conversar, compartilhar ideias e confiar no meu olhar.",
     "ordem": 1
   },
   {
-    "id": "conexao",
-    "titulo": "Conexão real com o casal",
-    "texto": "A gente conhece vocês antes do grande dia, para que a câmera não seja uma estranha na festa.",
+    "id": "estilo",
+    "titulo": "Espontâneo, documental e elegante",
+    "texto": "As coisas acontecem de forma natural, sem transformar o casamento numa sequência de poses.",
     "ordem": 2
   },
   {
-    "id": "emocao",
-    "titulo": "Emoção verdadeira",
-    "texto": "Fotos que guardam o que vocês sentiram, além de como vocês estavam.",
+    "id": "direcao",
+    "titulo": "Direção leve",
+    "texto": "Direciono poses e oriento o casal quando é preciso, principalmente quem não está acostumado a ser fotografado.",
     "ordem": 3
   },
   {
-    "id": "time",
-    "titulo": "Foto, vídeo, drone e story",
-    "texto": "Tudo no mesmo time, com a mesma linguagem do começo ao fim do casamento.",
+    "id": "equipe",
+    "titulo": "Equipe de confiança",
+    "texto": "Trabalho ao lado do meu irmão, sócio e cinegrafista, com uma equipe alinhada e lentes e cartões reserva em todo casamento.",
     "ordem": 4
   },
   {
-    "id": "atendimento",
-    "titulo": "Atendimento próximo",
-    "texto": "Humano e organizado: vocês sabem com quem falar e o que acontece em cada etapa.",
+    "id": "drone-filmagem",
+    "titulo": "Drone e filmagem",
+    "texto": "Fotos aéreas com drone e filmagem com nosso cinegrafista parceiro, sob consulta.",
     "ordem": 5
   }
 ]

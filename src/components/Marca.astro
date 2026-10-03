@@ -36,8 +36,8 @@ const classesImagem = ['w-auto max-w-full object-contain', medida.imagem];
     )
   ) : (
     <span class="flex flex-col items-center leading-none">
-      <span class:list={['font-serif font-light tracking-[0.34em]', escuro ? 'text-papel' : 'text-tinta', medida.nome]}>MIKAEL</span>
-      <span class:list={['font-sans tracking-[0.5em]', escuro ? 'text-papel/70' : 'text-taupe', medida.complemento]}>FOTOGRAFIA</span>
+      <span class:list={['-mr-[0.3em] font-serif font-light tracking-[0.3em] whitespace-nowrap', escuro ? 'text-papel' : 'text-tinta', medida.nome]}>{site.marca.nome}</span>
+      <span class:list={['-mr-[0.5em] font-sans tracking-[0.5em]', escuro ? 'text-papel/70' : 'text-taupe', medida.complemento]}>{site.marca.complemento}</span>
     </span>
   )
 }

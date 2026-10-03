@@ -19,6 +19,7 @@ const pacotes = defineCollection({
     idealPara: textoOpcional,
     pagamento: textoOpcional,
     destaque: z.boolean().default(false),
+    selo: textoOpcional,
     comparativo: z
       .object({
         fotografos: textoOpcional,
@@ -27,6 +28,7 @@ const pacotes = defineCollection({
         makingOf: textoOpcional,
         galeria: textoOpcional,
         previas: textoOpcional,
+        entrega: textoOpcional,
         poses: textoOpcional,
       })
       .prefault({}),
@@ -47,7 +49,7 @@ const extras = defineCollection({
   loader: file('src/content/extras.json'),
   schema: z.object({
     nome: z.string(),
-    preco: z.number(),
+    preco: z.preprocess((valor) => (valor === '' || valor === null ? undefined : valor), z.number().optional()),
     aPartirDe: z.boolean().default(false),
     unidade: textoOpcional,
     descricao: textoOpcional,

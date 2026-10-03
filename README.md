@@ -1,6 +1,6 @@
-# Mikael Fotografia
+# Mikael Vt Fotógrafo
 
-Site de fotografia de casamento do Mikael Vitor, feito com [Astro](https://astro.build) e Tailwind CSS e publicado no GitHub Pages.
+Site de fotografia de casamento do Mikael Vt (Mikael Vt Fotógrafo), feito com [Astro](https://astro.build) e Tailwind CSS e publicado no GitHub Pages.
 
 ## Rodar localmente
 
@@ -31,7 +31,7 @@ O conteúdo é editado pelo [Pages CMS](https://pagescms.org), configurado em `.
 2. No menu da esquerda, escolha o que quer mudar:
    - **Configurações:** WhatsApp, Instagram, IDs do Google Analytics e a foto de cada espaço fixo do site (topo da página inicial, pacotes, retrato etc.).
    - **Faixa de agenda:** liga ou desliga a faixa "Agenda 2026 · 2027" com o texto que quiser.
-   - **Proposta:** pacotes (preço, itens, tabela de comparação), serviços extras, "Por que Mikael Fotografia?" e "Como funciona".
+   - **Proposta:** pacotes (preço, itens, tabela de comparação), serviços extras, "Por que Mikael Vt?" e "Como funciona".
    - **Perguntas frequentes, Depoimentos e Blog:** cada item é uma página; use **Add an entry** para criar.
    - **Página Sobre**, **Portfólio** (ordem e legendas) e **Instagram** (até 6 fotos).
 3. Edite e clique em **Save**. O site publica a mudança sozinho em poucos minutos, e o PDF da proposta é atualizado junto.
@@ -68,17 +68,17 @@ No código, elementos com `data-evento="nome"` e `data-origem="..."` são rastre
 
 ## PDF da proposta
 
-O deploy gera o PDF e publica em `/proposta-mikael-fotografia.pdf` (no GitHub Pages: [thiago-tap.github.io/mikael-fotografia/proposta-mikael-fotografia.pdf](https://thiago-tap.github.io/mikael-fotografia/proposta-mikael-fotografia.pdf)). Os botões "Baixar proposta em PDF" da proposta e do contato apontam para esse arquivo. No `npm run dev` o arquivo não existe, então o botão dá 404 até rodar o deploy.
+O deploy gera o PDF e publica em `/proposta-mikael-vt-fotografo.pdf` (no GitHub Pages: [thiago-tap.github.io/mikael-fotografia/proposta-mikael-vt-fotografo.pdf](https://thiago-tap.github.io/mikael-fotografia/proposta-mikael-vt-fotografo.pdf)). Os botões "Baixar proposta em PDF" da proposta e do contato apontam para esse arquivo. No `npm run dev` o arquivo não existe, então o botão dá 404 até rodar o deploy.
 
 Para gerar no computador:
 
 ```bash
-npm run pdf                # gera o site e cria proposta/Proposta-Mikael-Fotografia.pdf
+npm run pdf                # gera o site e cria proposta/Proposta-Mikael-Vt-Fotografo.pdf
 npm run pdf -- --sem-build # reaproveita o dist/ já gerado (se o build usou BASE_PATH, defina a mesma variável)
 npm run pdf -- --saida caminho/arquivo.pdf
 ```
 
-O PDF sai da página `/proposta-pdf/` (fora do menu, do sitemap e com `noindex`), no mesmo formato da proposta original do Canva: páginas verticais de 810 × 1440 pt. São 9 páginas: capa, apresentação com índice, uma página por pacote, valores adicionais, "Por que Mikael Fotografia?" e perguntas frequentes com contato. Preços, itens, extras e textos vêm dos mesmos arquivos do site.
+O PDF sai da página `/proposta-pdf/` (fora do menu, do sitemap e com `noindex`), no mesmo formato da proposta original do Canva: páginas verticais de 810 × 1440 pt. São 10 páginas: capa, apresentação com índice, uma página por pacote, valores adicionais (os extras sem preço aparecem em "Também sob consulta"), "Por que Mikael Vt?", perguntas frequentes e contato. Preços, itens, extras e textos vêm dos mesmos arquivos do site.
 
 No PDF dá para clicar no índice (leva à página de cada pacote), em "Índice" no rodapé de cada página, em "Quero este pacote" (abre o WhatsApp com a mensagem do pacote), no WhatsApp, no Instagram e no endereço do site.
 
@@ -94,9 +94,9 @@ Tudo isso é editável pelo painel; a tabela serve para quem mexe direto no cód
 | --- | --- |
 | WhatsApp, Instagram, Analytics e fotos das vagas | `src/content/configuracoes.json` |
 | Faixa de agenda | `src/content/agenda.json` |
-| Pacotes, preços e tabela de comparação | `src/content/pacotes.json` |
-| Valores adicionais | `src/content/extras.json` |
-| "Por que Mikael Fotografia?" | `src/content/diferenciais.json` |
+| Pacotes, preços e tabela de comparação | `src/content/pacotes.json` (`destaque: true` mostra "O mais escolhido"; `selo` mostra outra etiqueta, como "Melhor custo-benefício") |
+| Valores adicionais | `src/content/extras.json` (sem `preco`, o extra aparece como "Sob consulta") |
+| "Por que Mikael Vt?" | `src/content/diferenciais.json` |
 | "Como funciona" | `src/content/comoFunciona.json` |
 | Texto da página Sobre | `src/content/sobre.md` |
 | Perguntas frequentes | `src/content/faq/*.md` (`naProposta: true` mostra a pergunta na proposta) |
@@ -153,7 +153,7 @@ Cada espaço fixo recebe a foto de um destes jeitos:
 | `pacote-eternidade` | Pacote Eternidade | 3:2 horizontal | 2400 × 1600 px |
 | `pdf-capa` | Capa do PDF da proposta (sem ela, usa `proposta-hero`) | 9:16 vertical | 1690 × 3000 px |
 | `pdf-extras` | Página de valores adicionais do PDF (sem ela, usa `faixa`) | 3:2 horizontal | 2400 × 1600 px |
-| `pdf-diferenciais` | Página "Por que Mikael Fotografia?" do PDF (sem ela, usa `sobre-retrato`) | 2:3 vertical | 1600 × 2400 px |
+| `pdf-diferenciais` | Página "Por que Mikael Vt?" do PDF (sem ela, usa `sobre-retrato`) | 2:3 vertical | 1600 × 2400 px |
 
 As fotos do topo (`home-hero` e `proposta-hero`) ocupam a tela inteira e são cortadas a partir do centro: no celular aparece só a faixa central, em formato vertical; no computador, corta um pouco em cima e embaixo. Escolha fotos com o casal no centro, com folga ao redor e sem muito detalhe na parte de baixo, onde fica o título.
 
@@ -171,7 +171,7 @@ As fotos do topo (`home-hero` e `proposta-hero`) ocupam a tela inteira e são co
 
 | Campo | Arquivo | Onde aparece | Sem o arquivo |
 | --- | --- | --- | --- |
-| **Logo** | PNG com fundo transparente ou SVG, horizontal, mínimo 1200 px de largura (ideal 2000 × 600 px). Versão escura, para fundo claro | Cabeçalho (36 px de altura no celular, 48 px no computador), rodapé e dados estruturados do Google (`logo`) | Nome "MIKAEL / FOTOGRAFIA" em texto |
+| **Logo** | PNG com fundo transparente ou SVG, horizontal, mínimo 1200 px de largura (ideal 2000 × 600 px). Versão escura, para fundo claro | Cabeçalho (36 px de altura no celular, 48 px no computador), rodapé e dados estruturados do Google (`logo`) | Nome "MIKAEL VT / FOTÓGRAFO" em texto |
 | **Logo para fundo escuro** (opcional) | Mesma logo em branco/clara, PNG transparente ou SVG, mínimo 1200 px de largura | Capa e bloco de contato do PDF da proposta | Capa com o nome em texto claro; contato sem logo |
 | **Ícone** | Quadrado, PNG transparente ou SVG, mínimo 512 × 512 px (ideal 1024 × 1024), com uma pequena margem ao redor do desenho | Aba do navegador, atalho do celular (`apple-touch-icon`) e `site.webmanifest` | `public/favicon.svg` (monograma MV) |
 

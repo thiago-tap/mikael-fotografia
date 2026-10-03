@@ -13,7 +13,7 @@ import Icone from '../components/Icone.astro';
 import Manifesto from '../components/Manifesto.astro';
 import PrecoPacote from '../components/PrecoPacote.astro';
 import TituloSecao from '../components/TituloSecao.astro';
-import { chamadaDoPacote, depoimentos, formatarData, pacotes, posts } from '../lib/conteudo';
+import { chamadaDoPacote, depoimentos, formatarData, pacotes, posts, seloDoPacote } from '../lib/conteudo';
 import { linkWhatsApp, mensagemDisponibilidade, regiao, rota, site } from '../lib/site';
 
 const [listaPacotes, listaDepoimentos, listaPosts] = await Promise.all([pacotes(), depoimentos(), posts()]);
@@ -21,12 +21,13 @@ const destaquesDepoimentos = await Promise.all(
   listaDepoimentos.slice(0, 2).map(async (depoimento) => ({ depoimento, Texto: (await render(depoimento)).Content })),
 );
 const ultimosPosts = listaPosts.slice(0, 3);
+const vitrine = listaPacotes.map((pacote) => ({ pacote, selo: seloDoPacote(pacote.data) }));
 ---
 
 <Base>
   <Hero
     vaga="home-hero"
-    alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
+    alt="Casal no dia do casamento, fotografado por Mikael Vt"
     sobrelinha={`Fotógrafo de casamento em ${regiao}`}
     titulo={site.frase}
   >
@@ -50,9 +51,9 @@ const ultimosPosts = listaPosts.slice(0, 3);
 
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-3xl text-center" data-revelar>
-      <p class="sobrelinha">Mikael Fotografia · {regiao}</p>
+      <p class="sobrelinha">{site.nome} · {regiao}</p>
       <p class="mt-8 font-serif text-titulo-3 font-light text-balance text-tinta">
-        Fotos com conexão real e <em>emoção verdadeira</em>, feitas por uma equipe que cuida do seu dia como se fosse nosso.
+        <em>Espontâneo, documental e elegante.</em> Deixo o dia de vocês acontecer de forma natural, com um olhar atento à beleza, à emoção e aos detalhes que fazem o casamento ser único.
       </p>
       <a href={rota('/sobre/')} class="link-editorial mt-10">Conheça o Mikael</a>
     </div>
@@ -65,12 +66,12 @@ const ultimosPosts = listaPosts.slice(0, 3);
       <TituloSecao sobrelinha="Investimento" titulo="Quatro formas de" enfase="contar o seu dia" />
       <ul class="mt-16 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4" data-revelar>
         {
-          listaPacotes.map((pacote) => (
-            <li class="flex flex-col items-center bg-papel px-8 py-14 text-center">
-              {pacote.data.destaque ? (
-                <p class="sobrelinha mb-3 text-tinta">O mais escolhido</p>
+          vitrine.map(({ pacote, selo }) => (
+            <li class="flex flex-col items-center bg-papel px-8 py-14 text-center lg:px-5">
+              {selo ? (
+                <p class="sobrelinha mb-3 text-tinta lg:flex lg:min-h-[3em] lg:items-end">{selo}</p>
               ) : (
-                <p class="sobrelinha invisible mb-3 max-sm:hidden" aria-hidden="true">·</p>
+                <p class="sobrelinha invisible mb-3 max-sm:hidden lg:min-h-[3em]" aria-hidden="true">·</p>
               )}
               <h3 class="font-serif text-titulo-3 font-light tracking-[0.1em] text-tinta uppercase">{pacote.data.nome}</h3>
               <p class="mt-4 font-sans text-rotulo tracking-[0.22em] text-taupe uppercase">{pacote.data.cobertura}</p>
@@ -92,7 +93,7 @@ const ultimosPosts = listaPosts.slice(0, 3);
     <ComoFunciona />
   </div>
 
-  <Manifesto texto="Estar perto o bastante para sentir o que está acontecendo e discreto o bastante para que vocês esqueçam que a câmera está ali." />
+  <Manifesto texto={site.lema} />
 
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto max-w-7xl">

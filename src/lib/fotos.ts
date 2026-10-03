@@ -76,7 +76,7 @@ export type FotoPortfolio = {
   legenda?: string;
 };
 
-const altPadrao = 'Fotografia de casamento por Mikael Fotografia';
+const altPadrao = 'Fotografia de casamento por Mikael Vt';
 
 const esquemaLegendas = z.array(
   z.object({

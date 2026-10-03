@@ -8,7 +8,7 @@ export const GET: APIRoute = () => {
     : [{ src: rota('/favicon.svg'), sizes: 'any', type: 'image/svg+xml' }];
   const manifesto = {
     name: site.nome,
-    short_name: site.nome,
+    short_name: site.fotografo,
     description: site.descricao,
     lang: 'pt-BR',
     start_url: rota('/'),

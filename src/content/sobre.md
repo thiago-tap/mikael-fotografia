@@ -1,17 +1,29 @@
 ---
 titulo: Oi, eu sou o Mikael
 subtitulo: Fotógrafo de casamento
-resumo: Fotografo casamentos com uma equipe que cuida do seu dia como se fosse nosso, buscando conexão real com o casal e emoção verdadeira em cada foto.
+resumo: Fotografo há 3 anos, e foi nos casamentos que encontrei o meu propósito. Estou ali para registrar não apenas o que aconteceu, mas também os sentimentos, os detalhes e aqueles momentos que muitas vezes passam despercebidos.
 ---
 
-<!-- RASCUNHO: substituir pelos textos enviados pelo Mikael. -->
+A fotografia começou como uma forma de transformar momentos em histórias que pudessem ser revividas. Com o tempo, fui me apaixonando cada vez mais por esse universo e, principalmente, pela possibilidade de participar de momentos tão importantes na vida das pessoas.
 
-Fotografar um casamento é contar o dia em que duas histórias se tornam uma só. É isso que me move: estar perto o bastante para sentir o que está acontecendo e discreto o bastante para que vocês esqueçam que a câmera está ali.
+Foi nos casamentos que encontrei o meu propósito. Cada casal tem uma história, uma personalidade e uma maneira única de viver esse dia. E é isso que me encanta: estar ali para registrar não apenas o que aconteceu, mas também os sentimentos, os detalhes e aqueles momentos que muitas vezes passam despercebidos.
 
-Trabalho com uma equipe que divide o mesmo cuidado. Foto, vídeo, drone e story ficam no mesmo time, então o casamento de vocês é contado com uma só linguagem, do making of à última música da festa.
+Hoje, vejo a fotografia como muito mais do que apertar um botão. É estar presente, observar, criar conexão e cuidar para que cada casal tenha memórias que realmente representem aquilo que viveu.
 
-Antes do grande dia, a gente conversa. Quero entender quem são vocês, como imaginam a celebração e o que não pode faltar nas fotos. No dia, vocês só precisam viver. O resto é com a gente.
+## O que mais amo
 
-## Cuidamos do seu dia como se fosse nosso
+O que mais amo é saber que estou registrando um dos dias mais importantes da história de um casal. Gosto de fotografar os grandes momentos, mas também sou apaixonado pelos pequenos: um olhar entre os noivos, a emoção dos pais, uma risada inesperada, um abraço, a reação dos convidados e todos aqueles detalhes que tornam o casamento único.
 
-Atendimento próximo, humano e organizado. Vocês sabem com quem falar, o que está incluído em cada pacote e o que acontece em cada etapa, da reserva da data até a entrega das fotos tratadas.
+No final, não quero entregar apenas fotografias bonitas. Quero entregar lembranças que façam vocês voltarem para aquele dia sempre que olharem para elas.
+
+## Espontâneo. Documental. Elegante.
+
+Gosto de deixar as coisas acontecerem de forma natural, sem transformar o casamento em uma sequência de poses. Ao mesmo tempo, acredito que o olhar do fotógrafo é fundamental para encontrar beleza, emoção e composição em cada momento.
+
+## Mais do que um fotógrafo
+
+Acredito que o meu diferencial começa na relação com o casal. Não quero que vocês sintam que contrataram apenas um fotógrafo. Quero que se sintam à vontade comigo, que possam conversar, compartilhar ideias e confiar no meu olhar.
+
+Durante o casamento e os ensaios, estou atento aos detalhes e às emoções, mas também ajudo quando é necessário: direciono poses, oriento o casal e procuro deixar tudo mais leve, principalmente para quem não está acostumado a ser fotografado.
+
+Além disso, trabalho ao lado do meu irmão, que é meu sócio e cinegrafista, e contamos com uma equipe preparada para acompanhar cada momento do casamento.

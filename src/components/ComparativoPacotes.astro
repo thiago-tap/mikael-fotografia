@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { comparativo } from '../lib/conteudo';
+import { comparativo, seloDoPacote } from '../lib/conteudo';
 import { formatarPreco, rota } from '../lib/site';
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 
 const { pacotes } = Astro.props;
 const linhas = comparativo(pacotes);
+const selos = pacotes.map((pacote) => seloDoPacote(pacote.data));
 const celula = 'px-5 py-4 align-top font-sans text-pequeno text-grafite';
 const colunaFixa = 'sticky left-0 z-10 w-36 bg-papel px-5 py-4 text-left align-top font-sans text-rotulo font-normal tracking-[0.2em] text-taupe uppercase md:w-52';
 ---
@@ -22,9 +23,9 @@ const colunaFixa = 'sticky left-0 z-10 w-36 bg-papel px-5 py-4 text-left align-t
         <tr>
           <th scope="col" class={colunaFixa}><span class="sr-only">Item</span></th>
           {
-            pacotes.map((pacote) => (
+            pacotes.map((pacote, indice) => (
               <th scope="col" class:list={['px-5 pt-8 pb-5 text-left align-bottom font-normal', pacote.data.destaque && 'bg-areia']}>
-                {pacote.data.destaque && <span class="sobrelinha mb-2 block text-tinta">O mais escolhido</span>}
+                {selos[indice] && <span class="sobrelinha mb-2 block text-tinta">{selos[indice]}</span>}
                 <a href={rota(`/proposta/#${pacote.id}`)} class="font-serif text-titulo-4 tracking-[0.08em] text-tinta uppercase hover:text-taupe">
                   {pacote.data.nome}
                 </a>

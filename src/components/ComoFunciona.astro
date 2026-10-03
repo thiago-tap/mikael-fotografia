@@ -9,7 +9,8 @@ const lista = await etapas();
   <div class="mx-auto max-w-7xl">
     <TituloSecao sobrelinha="Do primeiro oi à galeria" titulo="Como funciona" />
     <ol
-      class="relative mt-16 grid gap-y-10 before:absolute before:top-2 before:bottom-2 before:left-[0.95rem] before:w-px before:bg-linha md:mt-20 lg:grid-cols-6 lg:gap-x-8 lg:before:top-[1.05rem] lg:before:right-[8%] lg:before:bottom-auto lg:before:left-[8%] lg:before:h-px lg:before:w-auto"
+      style={`--etapas: ${lista.length}`}
+      class="relative mt-16 grid gap-y-10 before:absolute before:top-2 before:bottom-2 before:left-[0.95rem] before:w-px before:bg-linha md:mt-20 lg:grid-cols-[repeat(var(--etapas),minmax(0,1fr))] lg:gap-x-6 lg:before:top-[1.05rem] lg:before:right-[calc(50%/var(--etapas))] lg:before:bottom-auto lg:before:left-[calc(50%/var(--etapas))] lg:before:h-px lg:before:w-auto"
     >
       {
         lista.map(({ data }, indice) => (

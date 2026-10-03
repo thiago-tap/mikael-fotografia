@@ -66,6 +66,10 @@ export function chamadaDoPacote({ chamada, comparativo }: DadosPacote): string |
   return comparativo.fotos ? `${comparativo.fotos} fotos editadas em alta resolução.` : undefined;
 }
 
+export function seloDoPacote({ destaque, selo }: DadosPacote): string | undefined {
+  return destaque ? 'O mais escolhido' : selo;
+}
+
 type CampoComparativo = keyof DadosPacote['comparativo'];
 
 const linhasDoComparativo: { rotulo: string; campo: CampoComparativo }[] = [
@@ -75,6 +79,7 @@ const linhasDoComparativo: { rotulo: string; campo: CampoComparativo }[] = [
   { rotulo: 'Making of da noiva', campo: 'makingOf' },
   { rotulo: 'Galeria online', campo: 'galeria' },
   { rotulo: 'Prévias oficiais', campo: 'previas' },
+  { rotulo: 'Entrega completa', campo: 'entrega' },
   { rotulo: 'Direcionamento de poses', campo: 'poses' },
 ];
 

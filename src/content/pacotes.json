@@ -12,9 +12,11 @@
       "Mais de 400 fotos editadas em alta resolução",
       "Galeria online personalizada, disponível por 3 meses para compartilhar com família e amigos",
       "Tratamento de cor e edição exclusiva para o seu casamento",
-      "Prévias oficiais em até 15 dias"
+      "Prévias oficiais em até 15 dias",
+      "Entrega completa em até 30 dias úteis"
     ],
-    "pagamento": "Carnê, à vista ou cartão",
+    "pagamento": "Em até 6x · condições especiais à vista",
+    "selo": "Melhor custo-benefício",
     "comparativo": {
       "fotografos": "1",
       "fotos": "Mais de 400",
@@ -22,6 +24,7 @@
       "makingOf": "Extra",
       "galeria": "3 meses",
       "previas": "Até 15 dias",
+      "entrega": "Até 30 dias úteis",
       "poses": ""
     }
   },
@@ -38,9 +41,10 @@
       "Mais de 600 fotos editadas em alta resolução",
       "Galeria online personalizada, disponível por 3 meses para compartilhar com familiares e amigos",
       "Tratamento de cor e edição exclusiva para o seu casamento",
-      "Prévias oficiais em até 15 dias"
+      "Prévias oficiais em até 15 dias",
+      "Entrega completa em até 30 dias úteis"
     ],
-    "pagamento": "Carnê, à vista ou cartão",
+    "pagamento": "Em até 6x · condições especiais à vista",
     "comparativo": {
       "fotografos": "2",
       "fotos": "Mais de 600",
@@ -48,6 +52,7 @@
       "makingOf": "Extra",
       "galeria": "3 meses",
       "previas": "Até 15 dias",
+      "entrega": "Até 30 dias úteis",
       "poses": ""
     }
   },
@@ -68,9 +73,10 @@
       "Galeria online personalizada, disponível por 3 meses",
       "Tratamento de cor e edição exclusiva",
       "Direcionamento de poses para o casal",
-      "Prévias oficiais em até 10 dias"
+      "Prévias oficiais em até 10 dias",
+      "Entrega completa em até 30 dias úteis"
     ],
-    "pagamento": "Carnê, à vista ou cartão",
+    "pagamento": "Em até 6x · condições especiais à vista",
     "destaque": true,
     "comparativo": {
       "fotografos": "2",
@@ -79,6 +85,7 @@
       "makingOf": "Incluso",
       "galeria": "3 meses",
       "previas": "Até 10 dias",
+      "entrega": "Até 30 dias úteis",
       "poses": "Incluso"
     }
   },
@@ -95,18 +102,23 @@
       "Cobertura completa, do making of à recepção",
       "2 fotógrafos profissionais, garantindo diferentes ângulos e momentos simultâneos",
       "Mais de 1.000 fotos editadas em alta resolução",
-      "Registros espontâneos, protocolares, familiares e de todos os momentos especiais"
+      "Registros espontâneos, protocolares, familiares e de todos os momentos especiais",
+      "Galeria online personalizada, disponível por 3 meses",
+      "Tratamento de cor e edição exclusiva",
+      "Direcionamento de poses para o casal",
+      "Prévias oficiais",
+      "Entrega completa em até 30 dias úteis"
     ],
-    "pagamento": "Carnê, à vista ou cartão",
+    "pagamento": "Em até 6x · condições especiais à vista",
     "comparativo": {
       "fotografos": "2",
       "fotos": "Mais de 1.000",
       "preWedding": "Incluso",
       "makingOf": "Incluso",
-      "galeria": "",
-      "previas": "",
-      "poses": ""
+      "galeria": "3 meses",
+      "previas": "Inclusas",
+      "entrega": "Até 30 dias úteis",
+      "poses": "Incluso"
     }
   }
 ]
-

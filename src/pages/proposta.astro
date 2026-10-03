@@ -53,7 +53,7 @@ const catalogo = {
 >
   <Hero
     vaga="proposta-hero"
-    alt="Casal no dia do casamento, fotografado por Mikael Fotografia"
+    alt="Casal no dia do casamento, fotografado por Mikael Vt"
     sobrelinha="Proposta de fotografia para casamento"
     titulo="Fotografia de casamento"
     enfase={`em ${site.cidade}`}
@@ -95,7 +95,7 @@ const catalogo = {
   <section class="px-6 py-24 md:py-32">
     <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[2fr_3fr] md:gap-20">
       <div data-revelar>
-        <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vitor" sizes="(min-width: 768px) 40vw, 100vw" />
+        <FotoVaga vaga="sobre-retrato" alt="Retrato do fotógrafo Mikael Vt" sizes="(min-width: 768px) 40vw, 100vw" />
       </div>
       <div class="text-center md:text-left">
         <TituloSecao sobrelinha={paginaSobre.data.subtitulo} titulo={paginaSobre.data.titulo} alinhamento="esquerda" class="text-center md:text-left" />
@@ -122,7 +122,7 @@ const catalogo = {
       </div>
       <p class="mt-12 px-6 text-center">
         <a
-          href={rota('/proposta-mikael-fotografia.pdf')}
+          href={rota(`/${site.arquivoPdf}`)}
           class="botao"
           download
           data-evento="download_pdf"
@@ -146,7 +146,7 @@ const catalogo = {
     </div>
   </section>
 
-  <FotoVaga vaga="faixa" alt="Detalhe de casamento fotografado por Mikael Fotografia" class="md:aspect-[12/5]" />
+  <FotoVaga vaga="faixa" alt="Detalhe de casamento fotografado por Mikael Vt" class="md:aspect-[12/5]" />
 
   <Diferenciais />
 

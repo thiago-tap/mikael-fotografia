@@ -61,7 +61,7 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - run: node scripts/gerar-pdf.mjs --sem-build --saida dist/proposta-mikael-fotografia.pdf
+      - run: node scripts/gerar-pdf.mjs --sem-build --saida dist/proposta-mikael-vt-fotografo.pdf
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
 

@@ -47,5 +47,41 @@
     "aPartirDe": true,
     "descricao": "Uma perspectiva diferente.",
     "ordem": 4
+  },
+  {
+    "id": "making-of-noivo",
+    "nome": "Making of do noivo",
+    "descricao": "Os momentos de preparação do noivo antes da cerimônia.",
+    "ordem": 5
+  },
+  {
+    "id": "casamento-civil",
+    "nome": "Casamento civil",
+    "descricao": "Cobertura fotográfica da cerimônia civil.",
+    "ordem": 6
+  },
+  {
+    "id": "ensaio-noivado",
+    "nome": "Ensaio de noivado",
+    "descricao": "Um ensaio para celebrar o noivado de vocês.",
+    "ordem": 7
+  },
+  {
+    "id": "save-the-date",
+    "nome": "Save the date",
+    "descricao": "Fotos para anunciar a data do casamento aos convidados.",
+    "ordem": 8
+  },
+  {
+    "id": "cha-de-panela",
+    "nome": "Cobertura de chá de panela",
+    "descricao": "Registro fotográfico do chá de panela.",
+    "ordem": 9
+  },
+  {
+    "id": "despedida",
+    "nome": "Despedida de solteiro(a)",
+    "descricao": "Cobertura da despedida de solteiro ou de solteira.",
+    "ordem": 10
   }
 ]
