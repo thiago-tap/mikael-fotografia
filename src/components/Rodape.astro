@@ -58,8 +58,21 @@ const itens = await menu();
     </div>
   </div>
 
-  <p class="border-t border-linha px-6 py-6 text-center font-sans text-rotulo tracking-[0.3em] text-taupe uppercase">
-    © {ano} {site.nome} · {regiao} ·
-    <a href={rota('/privacidade/')} class="sublinhado-animado">Privacidade</a>
-  </p>
+  <div class="border-t border-linha px-6 py-6 text-center font-sans text-taupe">
+    <p class="text-rotulo tracking-[0.3em] uppercase">
+      © {ano} {site.nome} · {regiao} ·{' '}
+      <a href={rota('/privacidade/')} class="sublinhado-animado">Privacidade</a>
+    </p>
+    <p class="mt-3 text-[0.6875rem] tracking-[0.12em]">
+      Desenvolvido por:{' '}
+      <a
+        href="https://www.instagram.com/thiagaotap/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="sublinhado-animado hover:text-tinta"
+        data-evento="clique_desenvolvedor"
+        data-origem="rodape">Thiago Albuquerque</a
+      >
+    </p>
+  </div>
 </footer>
