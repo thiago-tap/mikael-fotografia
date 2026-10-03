@@ -1,0 +1,12 @@
+---
+import Desenho from '../assets/monograma.svg';
+
+interface Props {
+  class?: string;
+  rotulo?: string;
+}
+
+const { class: classe = '', rotulo } = Astro.props;
+---
+
+<Desenho class={classe} role={rotulo ? 'img' : undefined} aria-label={rotulo} aria-hidden={rotulo ? undefined : 'true'} focusable="false" />

@@ -1,0 +1,120 @@
+---
+import '@fontsource/bodoni-moda/400.css';
+import '@fontsource/bodoni-moda/400-italic.css';
+import '@fontsource/playfair-display/400.css';
+import '@fontsource/playfair-display/400-italic.css';
+import '@fontsource/gloock/400.css';
+import Base from '../layouts/Base.astro';
+import { pacotes } from '../lib/conteudo';
+import { regiao, site } from '../lib/site';
+
+const nomes = (await pacotes()).map((pacote) => ({ nome: pacote.data.nome, cobertura: pacote.data.cobertura }));
+
+const opcoes = [
+  {
+    id: 'cormorant',
+    nome: 'Cormorant Garamond',
+    nota: 'Atual. Garamond de desenho fino e alto contraste; romântica e discreta.',
+    familia: "'Cormorant Garamond', 'Times New Roman', serif",
+  },
+  {
+    id: 'bodoni',
+    nome: 'Bodoni Moda',
+    nota: 'Didone de revista de moda: contraste extremo, serifas retas, mais formal e “Vogue”.',
+    familia: "'Bodoni Moda', 'Times New Roman', serif",
+  },
+  {
+    id: 'playfair',
+    nome: 'Playfair Display',
+    nota: 'Transicional de display com itálico muito expressivo; calorosa, mas bastante vista.',
+    familia: "'Playfair Display', 'Times New Roman', serif",
+  },
+  {
+    id: 'gloock',
+    nome: 'Gloock',
+    nota: 'Serifa de display com personalidade marcada e curvas cheias; só tem peso regular e não tem itálico (o navegador inclina as letras).',
+    familia: "'Gloock', 'Times New Roman', serif",
+  },
+];
+---
+
+<Base titulo="Prévia de tipografia" descricao="Comparação de fontes para os títulos do site." semIndice>
+  <section class="px-6 pt-16 pb-10 md:pt-24">
+    <div class="mx-auto max-w-4xl text-center">
+      <p class="sobrelinha">Prévia interna · não aparece no menu</p>
+      <h1 class="mt-5 font-serif text-titulo-1 font-light text-tinta">Tipografia dos títulos</h1>
+      <p class="mx-auto mt-6 max-w-2xl font-sans text-corpo text-grafite">
+        Quatro opções gratuitas aplicadas ao topo, aos títulos de seção e aos nomes dos pacotes. O texto corrido continua em Jost.
+        Para trocar, muda-se uma única variável (<code class="font-mono text-pequeno">--font-serif</code>) e a importação da fonte.
+      </p>
+    </div>
+  </section>
+
+  {
+    opcoes.map((opcao, indice) => (
+      <section class="border-t border-linha px-6 py-16 md:py-20" style={`--font-serif: ${opcao.familia}`} data-opcao={opcao.id}>
+        <div class="mx-auto max-w-6xl">
+          <div class="flex flex-wrap items-baseline justify-between gap-4 font-sans">
+            <p class="sobrelinha text-tinta">
+              Opção {String.fromCharCode(65 + indice)} · {opcao.nome}
+            </p>
+            <p class="max-w-xl text-pequeno text-grafite">{opcao.nota}</p>
+          </div>
+
+          <div class="relative mt-8 overflow-hidden bg-tinta px-6 pt-24 pb-14 text-center text-papel md:px-10">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgb(111_95_78/0.55),transparent_60%),radial-gradient(ellipse_at_80%_80%,rgb(74_70_64/0.6),transparent_55%)]" aria-hidden="true" />
+            <div class="relative">
+              <p class="sobrelinha text-papel/85">Fotógrafo de casamento em {regiao}</p>
+              <p class="mx-auto mt-5 max-w-5xl font-serif text-manchete font-light text-balance">{site.frase}</p>
+            </div>
+          </div>
+
+          <div class="mt-14 grid gap-12 md:grid-cols-2">
+            <div>
+              <p class="sobrelinha mb-5">Investimento</p>
+              <p class="font-serif text-titulo-2 font-light text-balance text-tinta">
+                Quatro formas de <span class="italic">contar o seu dia</span>
+              </p>
+            </div>
+            <div>
+              <p class="sobrelinha mb-5">Por que Mikael Vt?</p>
+              <p class="font-serif text-titulo-2 font-light text-balance text-tinta">
+                Cuidamos do seu dia <span class="italic">como se fosse nosso.</span>
+              </p>
+            </div>
+          </div>
+
+          <ul class="mt-14 grid gap-px border border-linha bg-linha sm:grid-cols-2 lg:grid-cols-4">
+            {nomes.map(({ nome, cobertura }) => (
+              <li class="bg-papel px-6 py-10 text-center">
+                <p class="font-serif text-titulo-4 font-light tracking-[0.08em] text-tinta uppercase">{nome}</p>
+                <p class="mt-3 font-serif text-lg text-grafite italic">{cobertura}</p>
+              </li>
+            ))}
+          </ul>
+
+          <p class="mt-14 text-center font-serif text-titulo-3 font-light text-grafite italic">“{site.lema}”</p>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="border-t border-linha bg-areia px-6 py-16">
+    <div class="mx-auto max-w-3xl font-sans text-corpo text-grafite">
+      <p class="sobrelinha text-tinta">Opções pagas (licença para web)</p>
+      <ul class="mt-6 space-y-4">
+        <li>
+          <strong class="font-normal text-tinta">Canela</strong> (Commercial Type): serifa contemporânea de traços finos, muito usada por estúdios de casamento
+          e marcas de luxo. Licença web paga por visualizações.
+        </li>
+        <li>
+          <strong class="font-normal text-tinta">Ogg</strong> (Sharp Type): caligráfica e editorial, itálico marcante. Licença web paga.
+        </li>
+      </ul>
+      <p class="mt-6">
+        Com a licença, os arquivos .woff2 entram em <code class="font-mono text-pequeno">src/assets/fontes/</code> com um <code class="font-mono text-pequeno">@font-face</code>,
+        e <code class="font-mono text-pequeno">--font-serif</code> passa a apontar para a nova família.
+      </p>
+    </div>
+  </section>
+</Base>

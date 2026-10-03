@@ -5,6 +5,7 @@ import FotoPdf from '../components/FotoPdf.astro';
 import Icone from '../components/Icone.astro';
 import Icones from '../components/Icones.astro';
 import Marca from '../components/Marca.astro';
+import Monograma from '../components/Monograma.astro';
 import RodapePdf from '../components/RodapePdf.astro';
 import { diferenciais, extras, pacotes, perguntas, seloDoPacote, sobre } from '../lib/conteudo';
 import type { Vaga } from '../lib/fotos';
@@ -63,8 +64,9 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
         <FotoPdf vagas={['pdf-capa', 'proposta-hero']} alt={`Casamento fotografado por ${site.nome}`} largura={1080} escura class="h-full w-full" />
       </div>
       <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(0_0_0/0.35),transparent_30%,transparent_65%,rgb(0_0_0/0.55))]"></div>
-      <div class="absolute inset-x-0 top-[25%] flex justify-center px-[120px] text-center">
+      <div class="absolute inset-x-0 top-[25%] flex flex-col items-center px-[120px] text-center">
         <Marca tamanho="capa" escuro />
+        <Monograma class="mt-14 h-[64px] w-auto text-papel/75" />
       </div>
       <div class="absolute inset-x-0 bottom-[150px] px-[120px] text-center">
         <p class="font-sans text-[18px] tracking-[0.4em] uppercase opacity-80">Proposta de fotografia para casamento</p>
@@ -234,7 +236,8 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
     </section>
 
     <section class="folha bg-tinta text-papel" id="contato">
-      <div class="flex h-full flex-col items-center px-[120px] pt-[150px] pb-[150px] text-center">
+      <Monograma class="absolute right-[-150px] bottom-[60px] h-[700px] w-auto text-papel/[0.035]" />
+      <div class="relative flex h-full flex-col items-center px-[120px] pt-[150px] pb-[150px] text-center">
         <Marca tamanho="contato" escuro />
         <FotoPdf vagas={['faixa', 'proposta-hero']} alt={`Casamento fotografado por ${site.nome}`} largura={840} escura class="mt-16 aspect-[3/2] w-full shrink-0" />
         <figure class="mt-16 max-w-[760px]">

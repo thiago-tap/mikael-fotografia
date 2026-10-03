@@ -1,6 +1,7 @@
 ---
 import Icone from './Icone.astro';
 import Marca from './Marca.astro';
+import Monograma from './Monograma.astro';
 import { menu } from '../lib/conteudo';
 import { linkWhatsApp, regiao, rota, site } from '../lib/site';
 
@@ -58,7 +59,8 @@ const itens = await menu();
     </div>
   </div>
 
-  <div class="border-t border-linha px-6 py-6 text-center font-sans text-taupe">
+  <div class="border-t border-linha px-6 py-8 text-center font-sans text-taupe">
+    <Monograma class="mx-auto mb-5 h-9 w-auto text-tinta/70" rotulo={site.nome} />
     <p class="text-rotulo tracking-[0.3em] uppercase">
       © {ano} {site.nome} · {regiao} ·{' '}
       <a href={rota('/privacidade/')} class="sublinhado-animado">Privacidade</a>

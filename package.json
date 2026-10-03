@@ -14,6 +14,7 @@
     "lighthouse": "node scripts/lighthouse.mjs",
     "servir": "node scripts/servir-dist.mjs",
     "og": "node scripts/gerar-og.mjs",
+    "monograma": "node scripts/gerar-monograma.mjs",
     "otimizar-imagens": "node scripts/otimizar-imagens.mjs",
     "verificar-imagens": "node scripts/otimizar-imagens.mjs --verificar",
     "limpar-historico-imagens": "node scripts/limpar-historico-imagens.mjs",
@@ -22,7 +23,10 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
     "@fontsource-variable/jost": "^5.3.0",
+    "@fontsource/bodoni-moda": "^5.3.0",
     "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/gloock": "^5.3.0",
+    "@fontsource/playfair-display": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
     "tailwindcss": "^4.3.3"
@@ -32,6 +36,7 @@
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.63.0",
     "lighthouse": "^13.5.0",
+    "opentype.js": "^2.0.0",
     "playwright": "^1.63.0",
     "sharp": "^0.35.5",
     "typescript": "^6.0.3"
