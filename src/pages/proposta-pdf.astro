@@ -35,7 +35,7 @@ const indice = [
   ...listaPacotes.map((pacote, posicao) => ({
     ancora: pacote.id,
     rotulo: `Pacote ${pacote.data.nome}`,
-    detalhe: formatarPreco(pacote.data.preco),
+    detalhe: pacote.data.cobertura,
     pagina: posicao + 3,
   })),
   { ancora: 'extras', rotulo: 'Valores adicionais', detalhe: '', pagina: paginaExtras },
@@ -94,7 +94,7 @@ const mensagemProposta = 'Olá, Mikael! Vi a sua proposta de fotografia e quero 
                   <a href={`#${item.ancora}`} class="flex items-baseline gap-6 py-[18px] text-tinta">
                     <span class="w-12 font-serif text-[26px] text-taupe">{numero(item.pagina)}</span>
                     <span class="flex-1 font-sans text-[20px] tracking-[0.22em] uppercase">{item.rotulo}</span>
-                    {item.detalhe && <span class="font-serif text-[28px]">{item.detalhe}</span>}
+                    {item.detalhe && <span class="font-serif text-[22px] text-taupe italic">{item.detalhe}</span>}
                     <Icone nome="seta" class="h-6 w-6 self-center text-taupe" />
                   </a>
                 </li>
