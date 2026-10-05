@@ -7,5 +7,8 @@
   "instagram": {
     "usuario": "mikaelvt_fotografia",
     "url": "https://www.instagram.com/mikaelvt_fotografia/"
+  },
+  "fotos": {
+    "home-hero": "/src/assets/fotos/dsc09754.webp"
   }
 }
