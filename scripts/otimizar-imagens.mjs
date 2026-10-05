@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { extname, join, relative, resolve, sep } from 'node:path';
 import sharp from 'sharp';
@@ -27,6 +28,13 @@ const argumentos = process.argv.slice(2);
 const modoVerificar = argumentos.includes('--verificar');
 const pastasArgumento = argumentos.flatMap((valor, indice) => (argumentos[indice - 1] === '--pasta' ? [valor] : []));
 const pastas = (pastasArgumento.length ? pastasArgumento : pastasPadrao).map((pasta) => resolve(raiz, pasta));
+
+/** Impressões das imagens já otimizadas: reprocessar JPG/WebP com perda degrada a foto a cada publicação. */
+const arquivoRegistro = resolve(raiz, 'scripts/imagens-otimizadas.json');
+const registroAnterior = existsSync(arquivoRegistro) ? JSON.parse(readFileSync(arquivoRegistro, 'utf8')) : [];
+const jaOtimizadas = new Set(registroAnterior);
+const registroAtual = new Set(pastasArgumento.length ? registroAnterior : []);
+const impressao = (dados) => createHash('sha256').update(dados).digest('hex').slice(0, 20);
 
 const listarArquivos = (pasta) =>
   existsSync(pasta)
@@ -114,6 +122,13 @@ let totalDepois = 0;
 for (const arquivo of imagens) {
   const extensao = extname(arquivo).toLowerCase();
   const original = readFileSync(arquivo);
+  const impressaoOriginal = impressao(original);
+  if (jaOtimizadas.has(impressaoOriginal)) {
+    registroAtual.add(impressaoOriginal);
+    totalAntes += original.length;
+    totalDepois += original.length;
+    continue;
+  }
   const meta = await sharp(original).metadata();
   if ((meta.pages ?? 1) > 1) continue;
   const { largura, altura } = dimensoesOrientadas(meta);
@@ -125,6 +140,7 @@ for (const arquivo of imagens) {
   const depois = gravar ? otimizado.length : original.length;
   totalAntes += original.length;
   totalDepois += depois;
+  registroAtual.add(gravar ? impressao(otimizado) : impressaoOriginal);
   if (!gravar) continue;
   writeFileSync(arquivo, otimizado);
   const final = await sharp(otimizado).metadata();
@@ -145,6 +161,11 @@ if (linhas.length) {
   );
 } else {
   console.log(`${imagens.length} imagens verificadas, nenhuma precisou de otimização.`);
+}
+
+const registro = [...registroAtual].sort();
+if (JSON.stringify(registro) !== JSON.stringify([...registroAnterior].sort())) {
+  writeFileSync(arquivoRegistro, `${JSON.stringify(registro, null, 2)}\n`);
 }
 
 if (naoSuportados.length) process.exit(2);

@@ -1,36 +1,36 @@
 media:
   - name: fotos
-    label: Fotos do site
+    label: "Fotos do site (depois escolha em Configurações → Fotos fixas)"
     input: src/assets/fotos
     output: /src/assets/fotos
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: portfolio
-    label: Portfólio
+    label: "Portfólio (aparece sozinha; legenda em Portfólio)"
     input: src/content/portfolio
     output: /src/content/portfolio
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: instagram
-    label: Instagram
+    label: "Instagram (depois escolha em Instagram)"
     input: src/assets/instagram
     output: /src/assets/instagram
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: depoimentos
-    label: Depoimentos
+    label: "Depoimentos (depois escolha no depoimento)"
     input: src/content/depoimentos
     output: /src/content/depoimentos
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: blog
-    label: Blog
+    label: "Blog (depois escolha no post)"
     input: src/content/blog
     output: /src/content/blog
     rename: safe
     extensions: [jpg, jpeg, png, webp]
   - name: casamentos
-    label: Casamentos reais
+    label: "Casamentos reais (depois escolha no casamento)"
     input: src/content/casamentos
     output: /src/content/casamentos
     rename: safe
@@ -195,7 +195,7 @@ content:
       - name: fotos
         label: Fotos fixas do site
         type: object
-        description: "Escolha a foto de cada espaço. Sem escolha, o site procura em Fotos do site um arquivo com o nome do espaço (ex.: home-hero.jpg). Envie JPG exportado em sRGB, lado maior de 2400 a 3000 px e até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC (foto direto do iPhone)."
+        description: "Clique no espaço e envie ou escolha a foto, depois Save: enviar só na aba Media não coloca a foto no site. A publicação leva de 4 a 6 minutos. Sem escolha, o site procura em Fotos do site um arquivo com o nome do espaço (ex.: home-hero.jpg). Envie JPG exportado em sRGB, lado maior de 2400 a 3000 px e até 3 MB. O site otimiza sozinho. Não envie RAW nem HEIC (foto direto do iPhone)."
         fields:
           - name: home-hero
             label: Topo da página inicial (3:2 horizontal, 3000 × 2000 px)

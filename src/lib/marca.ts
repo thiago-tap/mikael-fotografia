@@ -6,13 +6,14 @@ type ModuloImagem = { default: ImageMetadata };
 
 const pasta = '/src/assets/marca/';
 
-const arquivos = import.meta.glob<ModuloImagem>('/src/assets/marca/*.{png,svg,webp}', { eager: true });
+const arquivos = import.meta.glob<ModuloImagem>('/src/assets/marca/*.{png,svg,webp,PNG,SVG,WEBP}', { eager: true });
 
 /** Arquivo escolhido no painel; sem escolha, procura em src/assets/marca um arquivo com o nome `padrao` (ex.: logo.png). */
 function arquivoDaMarca(escolhido: string, padrao: string): string | undefined {
-  const caminho = escolhido && `/${escolhido.replace(/^\.?\/+/, '')}`;
-  if (caminho && caminho in arquivos) return caminho;
-  return Object.keys(arquivos).find((chave) => chave.slice(pasta.length).replace(/\.[^.]+$/, '') === padrao);
+  const caminho = escolhido && `/${escolhido.replace(/^\.?\/+/, '')}`.toLowerCase();
+  const encontrado = caminho && Object.keys(arquivos).find((chave) => chave.toLowerCase() === caminho);
+  if (encontrado) return encontrado;
+  return Object.keys(arquivos).find((chave) => chave.slice(pasta.length).replace(/\.[^.]+$/, '').toLowerCase() === padrao);
 }
 
 const imagem = (caminho: string | undefined) => (caminho ? arquivos[caminho]?.default : undefined);

@@ -70,6 +70,22 @@ O conteúdo é editado pelo [Pages CMS](https://pagescms.org), configurado em `.
    - **Página Sobre**, **Portfólio** (ordem, legendas, tamanho e foco) e **Instagram** (até 6 fotos).
 3. Edite e clique em **Save**. O site publica a mudança sozinho em poucos minutos, e o PDF da proposta é atualizado junto.
 
+### Como colocar fotos no site
+
+Enviar uma foto na aba **Media** só guarda o arquivo: ela ainda não aparece em lugar nenhum (exceto no Portfólio). Para a foto aparecer, ela precisa ser **escolhida no campo de foto da seção certa**. O caminho mais simples é sempre abrir a seção e clicar no campo de foto, que já envia para a pasta certa.
+
+| Onde a foto deve aparecer | O que fazer no painel |
+| --- | --- |
+| Topo da home, topo da proposta, faixa, retrato do Sobre, pacotes, PDF | **Configurações → Fotos fixas do site**: clique no espaço, envie ou escolha a foto, **Save** |
+| Portfólio | Envie em **Media → Portfólio** (já aparece no fim da grade) e, para ordem/legenda/tamanho/foco, adicione em **Portfólio (ordem e legendas)** |
+| Casamentos reais | **Casamentos reais → (casamento) → Capa / Galeria** |
+| Depoimentos | **Depoimentos → (depoimento) → Foto do casal** |
+| Blog | **Blog → (post) → Foto de capa** ou no meio do texto |
+| Instagram da home | **Instagram (até 6 fotos)** |
+| Logo e ícone | **Configurações → Logo / Ícone** |
+
+Depois do **Save**, a publicação leva de 4 a 6 minutos (otimização, build, testes e deploy). Salvar várias vezes seguidas reinicia a fila: só a última publicação roda, e as intermediárias aparecem como *cancelled* em **Actions**, o que é normal. Se a foto ainda não aparecer, espere a execução mais recente ficar verde em **Actions** e recarregue a página com **Ctrl+F5** (no celular, abra numa aba anônima). Nomes com maiúsculas (`.JPG`), espaços ou acentos funcionam; se a foto escolhida não existir mais no repositório, o build mostra o aviso `[fotos] Foto escolhida no painel não encontrada`.
+
 **Fotos:** em qualquer campo de foto, clique para enviar do computador ou escolher uma que já está no painel. Use JPG editado, em sRGB, lado maior de 2400 a 3000 px, até 3 MB (veja [Fotos: tamanho e otimização](#fotos-tamanho-e-otimização)). Na aba **Media** ficam as pastas: *Fotos do site*, *Portfólio*, *Casamentos reais*, *Instagram*, *Depoimentos* e *Blog*.
 
 **Ponto de foco:** o site corta as fotos para caber em cada espaço (vertical no celular, horizontal no computador). O campo **Ponto de foco** diz qual parte nunca pode sumir: centro, topo, base, esquerda, direita ou um dos cantos. Existe para cada espaço fixo (**Configurações → Ponto de foco das fotos fixas**), para cada foto do portfólio e dos casamentos, para a capa dos posts e para a foto dos depoimentos. Vazio = centro. Ex.: retrato vertical com o rosto no alto → **Topo**.
@@ -299,7 +315,7 @@ Cada campo de foto do painel mostra a medida ideal daquele espaço (topo: horizo
 
 **O que o site faz sozinho:**
 
-1. **Otimiza o arquivo enviado**, como o TinyPNG faz: a cada envio pelo painel, o deploy roda `npm run otimizar-imagens`, que gira a foto pela orientação da câmera, reduz para no máximo 3000 px no lado maior, converte para sRGB, remove os metadados (EXIF, GPS) e recomprime no mesmo formato e com o mesmo nome (JPG com mozjpeg qualidade 82, PNG com paleta, WebP qualidade 82). Só substitui quando a foto foi reduzida ou ficou mais de 5% menor, então rodar de novo não muda nada. A versão otimizada volta para a `main` num commit "Otimiza imagens enviadas [skip ci]" do `github-actions[bot]`, e o site publicado já usa essa versão. O resumo com antes/depois aparece na página da execução em **Actions**.
+1. **Otimiza o arquivo enviado**, como o TinyPNG faz: a cada envio pelo painel, o deploy roda `npm run otimizar-imagens`, que gira a foto pela orientação da câmera, reduz para no máximo 3000 px no lado maior, converte para sRGB, remove os metadados (EXIF, GPS) e recomprime no mesmo formato e com o mesmo nome (JPG com mozjpeg qualidade 82, PNG com paleta, WebP qualidade 82). Só substitui quando a foto foi reduzida ou ficou mais de 5% menor, e cada foto é otimizada uma única vez: a impressão (hash) do arquivo final fica em `scripts/imagens-otimizadas.json`, e fotos já registradas não são recomprimidas nas publicações seguintes (recomprimir JPG/WebP com perda a cada push degradaria a foto). A versão otimizada volta para a `main` num commit "Otimiza imagens enviadas [skip ci]" do `github-actions[bot]`, e o site publicado já usa essa versão. O resumo com antes/depois aparece na página da execução em **Actions**.
 2. **Gera as versões para o navegador:** no build, o Astro cria AVIF e WebP em vários tamanhos, e cada aparelho baixa só o tamanho de que precisa.
 
 Uma foto de câmera de 15 a 20 MB costuma virar 1 a 2 MB no repositório e 100 a 300 KB no site.

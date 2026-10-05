@@ -10,11 +10,29 @@ import { esquemaFoco, esquemaTamanho, type Foco, type Tamanho } from './enquadra
 type ModuloImagem = { default: ImageMetadata };
 
 const imagensDoRepositorio = import.meta.glob<ModuloImagem>(
-  ['/src/assets/**/*.{jpg,jpeg,png,webp,avif}', '/src/content/**/*.{jpg,jpeg,png,webp,avif}'],
+  [
+    '/src/assets/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF,Jpg,Jpeg,Png,Webp}',
+    '/src/content/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF,Jpg,Jpeg,Png,Webp}',
+  ],
   { eager: true },
 );
 
 const caminhoDaImagem = new Map(Object.entries(imagensDoRepositorio).map(([caminho, modulo]) => [modulo.default, caminho]));
+
+/** Chave de comparação que ignora maiúsculas, acentos decompostos, %20 e ./ do início (ex.: Foto%20Um.JPG = foto um.jpg). */
+function chaveDoCaminho(caminho: string): string {
+  let limpo = caminho.trim();
+  try {
+    limpo = decodeURI(limpo);
+  } catch {
+    // caminho com % solto: usa como está
+  }
+  return `/${limpo.replace(/^\.?\/+/, '')}`.normalize('NFC').toLowerCase();
+}
+
+const imagemPorChave = new Map(Object.entries(imagensDoRepositorio).map(([caminho, modulo]) => [chaveDoCaminho(caminho), modulo.default]));
+
+const avisados = new Set<string>();
 
 export type Proporcao = '3:2' | '4:5' | '16:9' | '2:3' | '9:16' | '3:4' | '1:1';
 
@@ -81,7 +99,12 @@ export function imagemDoRepositorio(caminho: string | null | undefined, pasta?: 
   const limpo = caminho?.trim();
   if (!limpo) return undefined;
   const relativo = limpo.startsWith('./') && pasta ? `${pasta}/${limpo.slice(2)}` : limpo;
-  return imagensDoRepositorio[`/${relativo.replace(/^\.?\/+/, '')}`]?.default;
+  const imagem = imagemPorChave.get(chaveDoCaminho(relativo));
+  if (!imagem && !avisados.has(relativo)) {
+    avisados.add(relativo);
+    console.warn(`[fotos] Foto escolhida no painel não encontrada no repositório: ${limpo}`);
+  }
+  return imagem;
 }
 
 /** Usa a foto escolhida no painel para a vaga; sem escolha, procura em src/assets/fotos um arquivo com esse nome. */
@@ -89,7 +112,7 @@ export function fotoDoSite(nome: string): ImageMetadata | undefined {
   const escolhida = imagemDoRepositorio(configuracoes.fotos[nome]);
   if (escolhida) return escolhida;
   const encontrada = Object.entries(imagensDoRepositorio).find(
-    ([caminho]) => caminho.startsWith('/src/assets/fotos/') && nomeSemExtensao(caminho) === nome,
+    ([caminho]) => caminho.startsWith('/src/assets/fotos/') && nomeSemExtensao(caminho).toLowerCase() === nome,
   );
   return encontrada?.[1].default;
 }
@@ -130,7 +153,7 @@ export function fotosPortfolio(): FotoPortfolio[] {
     .sort(([a], [b]) => a.localeCompare(b, 'pt-BR', { numeric: true }));
 
   const posicao = (caminho: string) => {
-    const indice = legendas.findIndex((item) => item.imagem && `/${item.imagem.replace(/^\.?\/+/, '')}` === caminho);
+    const indice = legendas.findIndex((item) => item.imagem && chaveDoCaminho(item.imagem) === chaveDoCaminho(caminho));
     return indice === -1 ? Number.POSITIVE_INFINITY : indice;
   };
 
